@@ -1,0 +1,34 @@
+//filelist.jsuser
+"use strict";
+//加载 base 库的 file 模块
+require("base","file");
+//包装 main 函数，让 CFile 对象可以自动释放资源。
+Class(function main(){
+	//显示控制台窗口。
+	Console.show();
+	//初始化一个 CFileList 对象。
+	var fl = new CFileList();
+	//设置搜索子文件夹。
+	fl.child = true;
+	//设置回调函数。
+	fl.onList = function(inf){
+		//显示搜索到的文件。
+		var path = FilePath.linkPath(fl.path,inf.sub,inf.name);
+		Console.log(path);
+		//注释掉下面的语句，则当搜索到 filelist.jsuser 文件时，终止搜索。
+		//if(FilePath.isSame(inf.name,"filelist.jsuser"))
+		//	inf.stop = true;
+	}
+	//添加要搜索的文件类型，如果 filter 没有任何元素，则搜索全部文件。
+	fl.addFilter("jsuser,gif");
+	//用以下两种方式清空文件类型过滤
+	//fl.filter.splice(0);
+	//fl.filter.length = 0;
+	//不要用 fl.filter = [];这种方式，因为 fl.filter 是只读属性。
+	//搜索当前目录
+	fl.search(".");
+	Console.log("按回车继续...");
+	Console.readln();
+},true);
+
+main();

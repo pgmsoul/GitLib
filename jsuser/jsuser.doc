@@ -1,0 +1,25 @@
+	//*{
+	//	"type":"library",
+	//	"name":"jsuser",
+	//	"text":"jsuser 文档",
+	//	"member":[
+	//	{
+	//		"type":"library",
+	//		"name":"base",
+	//		"text":"base 库是 jsuser 的内置库，使用 base 库的功能无需加载其它 dll 。获取 base 库的组件列表调用函数 require(\"base\"); 并且查看它的返回值，它的返回值应该是 “gdi,file,net,reg,ker”，如果某些组件不需要，可以选择加载，如 require(\"base\",\"file\"); 将只会加载 file 组件，file 组件提供文件系统的相关功能。",
+	//		"example":[
+	//			"require(\"base\");//加载所有组件",
+	//			"require(\"base\",\"ker,net,file\");//加载指定的组件",
+	//			"require(\"base\",\"\");//这样调用没有加载任何组件"
+	//		]
+	//	},
+	//	{
+	//		"type":"library",
+	//		"name":"wnd",
+	//		"text":"wnd 库是 jsuser 的内置库，使用 wnd 库的功能无需加载其它 dll 。获取 wnd 库的组件列表调用函数 require(\"wnd\"); 并且查看它的返回值，它的返回值应该是 “wnd”。",
+	//		"example":[
+	//			"require(\"wnd\");//加载所有组件"
+	//		]
+	//	}
+	//	]
+	//}//*

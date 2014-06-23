@@ -1,0 +1,117 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	margin: 0px;
+	padding: 0px;
+	font-size: 16px;
+	font-family: "宋体", Verdana, Geneva, sans-serif;
+	background-color: #ffffff;
+}
+img{
+	border:0;
+	max-width:100%;		/*确保最大尺寸等于容器宽度, 高度会按比例自动调节*/
+}
+table{
+	table-layout:fixed;
+}
+div#container{
+	padding-top:10px;
+	width:90%
+}
+div#header {
+	height:50px;
+	color:#00F;
+	padding-top:10px;
+	background-color: #f6f6f6;
+	border-bottom: 1px solid #e0e3e6;
+}
+div#title{
+	text-align:center;
+	font-size:24px;
+	font-weight:900;
+	color:#090;
+}
+.cla_logo {
+	font-size: 24px;
+	text-align: left;
+	font-weight: bold;
+	font-family: "华文新魏";
+}
+.cla_logo_j {
+	color: #F00;
+}
+.cla_logo_s {
+	color: #090;
+}
+.cla_our {
+	text-align:right;
+}
+.menu{
+	text-align:left;
+}
+.menu a{
+	text-decoration:none;
+}
+.info{
+	text-align:right;
+	font-style:italic;
+	color:#f09;
+}
+.comment {
+	width:200px;
+	text-align:left;
+	line-height:1.5em;
+	padding:15px;
+	vertical-align:top;
+	overflow:hidden;
+	word-break:keep-all;
+}
+.scholium{
+	color:#090;
+}
+.codeline{
+	white-space:normal;
+	word-break:break-all;
+	line-height:1.2em;
+	margin:-0.5em 0px -0.5em 0px;
+}
+.content {
+	padding-left:2em;
+	padding-right:1em;
+	text-indent:2em;
+	text-align:left;
+	line-height:1.6em;
+	vertical-align:top;
+}
+div#footer {
+	margin-top:1em;
+	background-color: #D6D6D6;
+	border-bottom: 1px solid #B0B3B6;
+	border-top: 1px solid #B0B3B6;
+	padding:5px;
+	clear:both;
+	text-align:center;
+	font-size:16px;
+	line-height:26px;
+}
+.classic{
+	color:#060;
+	font-weight:900;
+}
+.list{
+	padding-left:2em;
+	white-space:nowrap;
+}
+.param{
+	padding-left:2em;
+}
+.type{
+	color:#099;
+	font-weight:900;
+}
+.param_name{
+	color:#F00;
+	font-style:italic;
+	font-weight:900;
+}
+

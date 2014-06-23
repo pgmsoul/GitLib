@@ -1,0 +1,91 @@
+{
+	"name" : "Root",
+	"style" : 0,
+	"weight" : 0.0000000000000000,
+	"length" : 0,
+	"margin_left" : 10,
+	"margin_top" : 10,
+	"margin_right" : 10,
+	"margin_bottom" : 10,
+	"childs" : [
+		{
+			"name" : "layout",
+			"style" : 1,
+			"weight" : 1.000000000000000,
+			"length" : 0,
+			"margin_left" : 0,
+			"margin_top" : 0,
+			"margin_right" : 0,
+			"margin_bottom" : 0,
+			"childs" : [
+				{
+					"name" : "layout1",
+					"style" : 0,
+					"weight" : 1.000000000000000,
+					"length" : 0,
+					"margin_left" : 0,
+					"margin_top" : 0,
+					"margin_right" : 0,
+					"margin_bottom" : 0
+				},
+				{
+					"name" : "layout2",
+					"style" : 0,
+					"weight" : 1.000000000000000,
+					"length" : 0,
+					"margin_left" : 0,
+					"margin_top" : 0,
+					"margin_right" : 0,
+					"margin_bottom" : 0,
+					"ctrl_class" : "Button",
+					"ctrl_text" : "Button",
+					"ctrl_style" : 1342242816,
+					"ctrl_exstyle" : 0,
+					"ctrl_id" : 0
+				},
+				{
+					"name" : "layout6",
+					"style" : 0,
+					"weight" : 1.000000000000000,
+					"length" : 0,
+					"margin_left" : 0,
+					"margin_top" : 0,
+					"margin_right" : 0,
+					"margin_bottom" : 0
+				}
+			]
+		},
+		{
+			"name" : "layout3",
+			"style" : 1,
+			"weight" : 1.000000000000000,
+			"length" : 0,
+			"margin_left" : 0,
+			"margin_top" : 0,
+			"margin_right" : 0,
+			"margin_bottom" : 0,
+			"childs" : [
+				{
+					"name" : "layout4",
+					"style" : 0,
+					"weight" : 1.000000000000000,
+					"length" : 0,
+					"margin_left" : 0,
+					"margin_top" : 0,
+					"margin_right" : 0,
+					"margin_bottom" : 0
+				},
+				{
+					"name" : "layout5",
+					"style" : 0,
+					"weight" : 1.000000000000000,
+					"length" : 0,
+					"margin_left" : 0,
+					"margin_top" : 0,
+					"margin_right" : 0,
+					"margin_bottom" : 0
+				}
+			]
+		}
+	]
+}

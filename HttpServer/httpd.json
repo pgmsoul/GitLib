@@ -1,0 +1,24 @@
+{
+	"wwwroot" : "",
+	"default_page" : "index.html,index.htm,index.php",
+	"content_type" : {
+		"jps" : "image/jpeg",
+		"bmp" : "image/x-xbitmap",
+		"png" : "image/png",
+		"gif" : "image/gif",
+		"html" : "text/html",
+		"htm" : "text/html",
+		"txt" : "text/plain",
+		"h" : "text/plain",
+		"c" : "text/plain",
+		"cpp" : "text/plain",
+		"wav" : "audio/x-wav",
+		"m3u" : "audio/x-mpegurl",
+		"mp3" : "audio/mpeg",
+		"swf" : "application/x-shockwave-flash",
+		"php" : "text/html",
+		"css" : "text/css"
+	},
+	"port" : 800,
+	"debug_info" : false
+}

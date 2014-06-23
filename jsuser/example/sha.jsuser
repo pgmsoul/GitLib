@@ -1,0 +1,33 @@
+"use strict";
+
+require("base");
+require("wnd");
+
+load("crypto.jsuser");
+
+Class(function shaTest(){
+	Console.show();
+	Console.log("开始测试 sha512\r\n");
+	var data = "西汉元帝时（前48年―前33）史游所著《急就篇》以63字为一章。";
+	Console.log("数据（按ANSI编码）: "+data);
+	var digest = CSha(data,64);
+	Console.log("\r\n摘要长度: "+digest.length);
+	Console.log("base64: "+digest.toBase64());
+	Console.log("hex: "+digest.toHex());
+	Console.log("\r\n开始测试 sha_hmac512\r\n");
+	Console.log("数据（按ANSI编码）: "+data);
+	var key = "第一章列举了132个姓";
+	Console.log("key(按 ANSI 编码): "+key);
+	var digest = CShaHmac(data,key,64);
+	Console.log("\r\n摘要长度: "+digest.length);
+	Console.log("base64: "+digest.toBase64());
+	Console.log("\r\n开始比较文件的 sha384：\r\n");
+	var file1 = "crypt.jsuser";
+	var file2 = "crypto.jsuser";
+	Console.log("file1: "+file1);
+	Console.log("file2: "+file2);
+	Console.log("是否相同："+cmpFileSha(file1,file2,48));
+	Console.readln();
+},true);
+
+shaTest();

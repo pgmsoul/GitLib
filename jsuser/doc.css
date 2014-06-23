@@ -1,0 +1,85 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	margin: 0px;
+	padding: 0px;
+	font-size: 16px;
+	font-family: "宋体", Verdana, Geneva, sans-serif;
+	background-color:#FaFaFa;
+}
+img{
+	border:0;
+	max-width:100%;		/*确保最大尺寸等于容器宽度, 高度会按比例自动调节*/
+}
+table{
+	table-layout:fixed;
+}
+div#container{
+	width:90%
+}
+div#header {
+	height:50px;
+}
+div#title{
+	text-align:center;
+	font-size:24px;
+	font-weight:900;
+	color:#090;
+}
+.menu{
+	text-align:left;
+}
+.menu a{
+	text-decoration:none;
+}
+.info{
+	text-align:right;
+	font-style:italic;
+	color:#f09;
+}
+.comment {
+	width:200px;
+	text-align:left;
+	line-height:1.5em;
+	padding:15px;
+	vertical-align:top;
+	overflow:hidden;
+	word-break:keep-all;
+}
+.content {
+	padding-left:1em;
+	padding-right:1em;
+	text-indent:2em;
+	text-align:left;
+	line-height:1.6em;
+	vertical-align:top;
+}
+div#footer {
+	margin-top:1em;
+	background-color: #a6a6a6;
+	border-bottom:1px solid #e0e3e6;
+	border-top:1px solid #e0e3e6;
+	padding:5px;
+	clear:both;
+	text-align:center;
+	font-size:16px;
+	line-height:26px;
+}
+.classic{
+	color:#060;
+	font-weight:900;
+}
+.param{
+	padding-left:2em;
+	white-space:nowrap;
+}
+.type{
+	color:#099;
+	font-weight:900;
+}
+.param_name{
+	color:#F00;
+	font-style:italic;
+	font-weight:900;
+}
+

@@ -1,0 +1,170 @@
+function joinName(kws){
+	var str = "";
+	var count = kws.length;
+	for(var i=0;i<count;i++){
+		str += " " + kws[i].name;
+	}
+	return str;
+}
+function createColorKey(){
+	var juxml = readFile("E:\\SDK\\npp.6.3.3\\userDefineLang.bak.xml");
+	var xml = [];
+	
+	var flag = '<Keywords name="Keywords5">';
+	var pos = juxml.indexOf(flag);
+	if(pos==-1) throw "not find flag: " + flag;
+	pos += flag.length;
+	var str = juxml.substring(0,pos);
+	xml.push(str);
+
+	flag = '</Keywords>';
+	var pos2 = juxml.indexOf(flag,pos);
+	if(pos2==-1) throw "not find flag: " + flag;
+	str = juxml.substring(pos,pos2);
+	pos = pos2;
+	xml.push(str);
+	
+	str = joinName(kwProperty);
+	xml.push(str);
+	
+	flag = '<Keywords name="Keywords6">';
+	pos2 = juxml.indexOf(flag,pos);
+	if(pos2==-1) throw "not find flag: " + flag;
+	pos2 += flag.length;
+	str = juxml.substring(pos,pos2);
+	pos = pos2;
+	xml.push(str);
+	
+	str = joinName(kwConst);
+	xml.push(str);
+	
+	flag = '</Keywords>';
+	pos2 = juxml.indexOf(flag,pos);
+	if(pos2==-1) throw "not find flag: " + flag;
+	pos = pos2;
+	flag = '<Keywords name="Keywords7">';
+	pos2 = juxml.indexOf(flag,pos);
+	if(pos2==-1) throw "not find flag: " + flag;
+	pos2 += flag.length;
+	str = juxml.substring(pos,pos2);
+	pos = pos2;
+	xml.push(str);
+	
+	str = joinName(kwFunction);
+	xml.push(str);
+
+	flag = '</Keywords>';
+	pos2 = juxml.indexOf(flag,pos);
+	if(pos2==-1) throw "not find flag: " + flag;
+	pos = pos2;
+	flag = '<Keywords name="Keywords8">';
+	pos2 = juxml.indexOf(flag,pos);
+	if(pos2==-1) throw "not find flag: " + flag;
+	pos2 += flag.length;
+	str = juxml.substring(pos,pos2);
+	pos = pos2;
+	xml.push(str);
+
+	str = joinName(kwClass);
+	xml.push(str);
+
+	flag = '</Keywords>';
+	pos2 = juxml.indexOf(flag,pos);
+	if(pos2==-1) throw "not find flag: " + flag;
+	str = juxml.substring(pos2);
+	xml.push(str);
+	
+	str = xml.join("");
+	
+	saveString(str,"E:\\SDK\\npp.6.3.3\\userDefineLang.xml");
+}
+function loadJsIner(){
+	var str = readFile("E:\\SDK\\npp.6.3.3\\jsuser\\jskeywords.txt");
+	keywords[0] = str.split(" ");
+	var str = readFile("E:\\SDK\\npp.6.3.3\\jsuser\\jsfunction.txt");
+	keywords[1] = str.split("\r\n");
+}
+function getSameOut(kws){
+	kws.sort(ascSort);
+	var count = kws.length;
+	for(var j=count-1;j>0;j--){
+		if(kws[j].name===kws[j-1].name){
+			kws.splice(j,1);
+			//Console.log(j+',find same name: '+ kws[j].name + ',pre is: ' + kws[j-1].name + ',pre is: ' + kws[j-2].name);
+		}
+	}
+}
+//把每个元素（字串）换成对象格式。
+function formatKw(kws){
+	var count = kws.length;
+	for(var j=count-1;j>=0;j--){
+		var name = kws[j];
+		var pos = name.indexOf("(");
+		if(pos!=-1){//函数
+			var rpos = name.indexOf(" ");
+			if(rpos!=-1&&rpos<pos){
+				var ret = name.substr(0,rpos);
+			}else{
+				if(rpos>pos) rpos = -1;
+				var ret = "void";
+			}
+			var fname = name.substring(rpos+1,pos);
+			pos += 1;
+			var pos2 = name.indexOf(")",pos);
+			if(pos2==-1) throw "函数名称非法，括号不闭合: "+name;
+			var params = name.substring(pos,pos2);
+			params = params.split(",");
+			var obj = {"name":fname,"params":params,"return":ret};
+			kws[j] = obj;
+		}else{
+			kws[j] = {"name":name};
+		}
+	}
+}
+function createTip(){
+	//合并为一个数组，tips 是一个xml文档，统一处理。
+	var tips = keywords[0].concat(keywords[1],kwClass,kwFunction,kwConst,kwProperty);
+	//去除同名，保留最前面的。
+	var count = tips.length;
+	for(var j=count-1;j>0;j--){
+		if(tips[j].name===tips[j-1].name){
+			tips.splice(j,1);
+			//Console.log('tips find same name: '+ tips[j].name + ',pre is: ' + tips[j-1].name);
+		}
+	}
+	
+	var count = tips.length;
+	for(var j=0;j<count;j++){
+		if(tips[j].name==undefined) Console.log('tips: '+tips[j] + j);
+	}
+	tips.sort(ascSort);
+	//生成 xml 字串。
+	var str = '<?xml version="1.0" encoding="Windows-1252" ?>\r\n<NotepadPlus>\r\n\t<AutoComplete language="jsuser">\r\n';
+	count = tips.length;
+	for(var j=0;j<count;j++){
+		var tip = tips[j];
+		var ks;
+		if(tip.params){
+			ks = '\t\t<KeyWord name="' + tip.name + '" func="yes">\r\n' +
+			'\t\t\t<Overload retVal="' + tip["return"] + '">\r\n';
+			var n = tip.params.length;
+			for(var i=0;i<n;i++){
+				ks += '\t\t\t\t<Param name="' + tip.params[i] + '" />\r\n';
+			}
+			ks += '\t\t\t</Overload>\r\n\t\t</KeyWord>\r\n';
+		}else{
+			ks = '\t\t<KeyWord name="' + tip.name + '" />\r\n';
+		}
+		str += ks;
+	}
+	str += '\t</AutoComplete>\r\n</NotepadPlus>';
+	saveString(str,"E:\\SDK\\npp.6.3.3\\plugins\\APIs\\jsuser.xml");
+}
+function formatKws(){
+	var count = keywords.length;
+	for(var i = 0;i<count;i++){
+		var kws = keywords[i];
+		formatKw(kws);
+		getSameOut(kws);
+	}
+}

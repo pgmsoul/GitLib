@@ -1,0 +1,57 @@
+
+//file: wnd.jsuser
+"use strict"
+
+require("base");
+require("wnd");
+
+Class(function main(){
+	//生成一个 frame 对象（顶级窗口）。
+	var frame = new CFrame();
+	frame.text = "Jsuser ComboBox Example";
+	//设置窗口记住自己的位置和大小。
+	frame.setRemPos("main_wnd");
+	//生成一个编辑控件对象
+	var child = new CComboBox();
+	var button = new CButton();
+	button.text = "click";
+	button.onCommand = function(){
+		//child.setCurSelect(2);
+		child.showDropDown();
+		child.ensureVisible(70);
+	}
+	//设置主窗口创建时的回调函数。
+	frame.onCreate = function(){
+		//设置编辑控件的位置。
+		child.setPosition(10,10);
+		button.setPosition(10,100);
+		//生成编辑控件。
+		child.create(frame);
+		child.setFont(font);
+		button.create(frame.handle());
+		for(var i=0;i<20;i++){
+		child.addString("item1");
+		child.addString("itAcm2");
+		child.addString("item3");
+		child.addString("itabem4");
+		}
+		
+	}
+	//设置主窗口的尺寸变化回调函数
+	frame.onSize = function(cx,cy){
+		//设置编辑控件的大小随主窗口大小变化。
+		child.setSize(cx-20,30);
+	}
+	//生成一个字体对象
+	var font = new CFont();
+	//设置缺省字体的大小为 30 （字体高度像素数）。
+	font.size = 20;
+	//重新生成缺省字体，使上述设置生效。
+	font.create();
+	//生成主窗口，这个函数返回时，onCreate 也已经执行。缺省字体必须在控件生成之前设置，否则需要对每个控件重新调用 child.setFont(font)；
+	frame.create();
+	//开始消息循环，如果不调用这个函数，应用程序会自己退出。
+	startMsgLoop();
+},true);
+
+main();

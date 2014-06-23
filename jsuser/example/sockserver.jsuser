@@ -1,0 +1,20 @@
+//
+"use strict";
+
+require("base");
+
+Class(function main(){
+	Console.show();
+	var server = new CTcpServer();
+	server.onAccept = function(client){
+		Console.log("client connect: "+client.getRemoteIp()+":"+client.getLocalPort());
+		client.onRecv = function(len,error){
+			Console.log("recv: "+len+",error:"+error);
+			Console.log(client.recvData.getString(0,len,3));
+		}
+		client.recv();
+	}
+	server.startup(800);
+	startMsgLoop(1);
+},true);
+main();

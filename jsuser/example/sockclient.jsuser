@@ -1,0 +1,56 @@
+//
+"use strict";
+
+require("base");
+
+Class(function main(){
+	Console.show();
+	var host = "www.baidu.com";
+	var port = 80;
+	var socket = new CSocket();
+	socket.onConnect = function(cnt,code){
+		Console.log("连接地址 "+this.getRemoteIp()+":"+this.getRemotePort()+" 是否成功: "+cnt);
+		if(!cnt){
+			Console.log("按回车键退出");
+			Console.readln();
+			exitMsgLoop();
+		}
+		socket.recv(true);
+		var request = ["GET / HTTP/1.1",
+						"Host: www.baidu.com",
+						"Connection: keep-alive",
+						"Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+						"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36",
+						"DNT: 1",
+						"Referer: http://baidu.com/",
+						"Accept-Language: zh-CN,zh;q=0.8",
+						"Cookie: BDSFRCVID=Ck0sJeC67GJLc0r6J0tNbH00D2KLkpcTH6aP_jF0lv0bD5kVzhbbEG0PtOlQpYD-5mOPogKK0gOTH65P; H_BDCLCKID_SF=Jb4D_K_XtCvDDJj1hKIaj6JH-UnLqMJWtT7Z0l8KJh3k8b8xK6jkDb0N-4AjJU0HW2JWQnOmWIQHVM7FQ63S568VQaoWLJT3KDr4KKJxbp7SVtJXQKFhhf4rhUJiB5OMBan7_D5xfJOKHIC4D6La3j; BD_CK_SAM=1; BAIDUID=D2F5C97863E1F15ED3E60F1CB4515395:FG=1; IM_=1; NBID=CEEEF36B13FEEC810466011EF2F3CB70:FG=1; BAIDU_DUP_lcr=https://www.google.com.hk/; cflag=65535:1; BDUSS=ZXTXZ4VWNuSXBUQzJDcH5KSGdsSE5xSTBFNnNpOUVpWS1OTVo5Ym5EZkZzY1ZUQVFBQUFBJCQAAAAAAAAAAAEAAABvQl0KV0lTRDBNAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMUknlPFJJ5TbU; H_PS_PSSID=5607_6489_1437_5224_6995_6506_7057_4759_6018_7159_6699_7133_6375_6838_6984",
+						"\r\n"];
+		var len = socket.sendData.setString(request.join("\r\n"));
+		len = socket.send(len,true);
+	}
+	socket.onSend = function(len,error){
+		Console.log("send data len = "+len + ",error = " + error);
+	}
+	socket.connect(host,port);
+	var file = new CFile();
+	socket.onRecv = function(len,error){
+		Console.log("recv data len: "+len+ " bytes,error = "+error);
+		//保存返回的数据，包含返回头信息
+		file.create("baidu.html");
+		file.pointer = file.length;
+		file.write(socket.recvData,len);
+		file.close();
+		//
+		if(error>0)
+			Console.log(getSysMessage(error));
+		Console.log("connected: "+socket.isConnected());
+		if(!socket.isConnected()){
+			Console.log("按回车键退出");
+			Console.readln();
+			exitMsgLoop();
+		}
+	}
+	startMsgLoop(0);
+},true);
+main();
