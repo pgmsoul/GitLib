@@ -24,7 +24,7 @@ function showGif(bmps){
 	//生成主窗口
 	frame.create();
 	//设置一个 timer，每 200 毫秒调用一次。
-	setTimer(200,function(){
+	setTimer(20000,function(){
 		//索引 +1
 		imgIndex++;
 		if(imgIndex==bmps.length) imgIndex = 0;
@@ -40,7 +40,7 @@ function showGif(bmps){
 function saveGif(){
 	//生成一个图像加载对象，要加载多帧 gif 必须使用这个对象。
 	var gifloader = new CImageLoader();
-	var count = gifloader.load("image/image.gif");
+	var count = gifloader.load("image/scratch.gif");
 	if(!count) throw "can't load image.gif";
 	//生成一个文件夹用于保存分解后的每帧图像
 	FileSystem.createFolder("gif");

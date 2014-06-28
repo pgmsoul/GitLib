@@ -4,7 +4,6 @@
 #include <commctrl.h>
 #pragma comment(lib,"comctl32.lib")
 
-
 namespace cs{
 	bool Init_Ctrl60(DWORD icc)
 	{

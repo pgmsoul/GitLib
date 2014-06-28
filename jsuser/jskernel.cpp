@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "v8base.h"
+#include "resource.h"
+
 namespace v8{
 	//*{
 	//	"type":"group",
@@ -985,7 +987,8 @@ namespace v8{
 	//		"text":"失败返回 undefined，成功返回一个标识这个计时器的整数id，每个计时器都有自己独立的id，这个id可以用于删除定时器的参数。"
 	//	},
 	//	"remark":[
-	//		"如果需要周期性调用的函数有参数，可以定义一个新函数，设置为 callback，然后在新函数里调用具有参数的函数。"
+	//		"如果需要周期性调用的函数有参数，可以定义一个新函数，设置为 callback，然后在新函数里调用具有参数的函数。",
+	//		"这个函数只能用于窗口消息循环程序，即 startMsgLoop(false) 的情况，如果使用了 startMsgLoop(true)，计时器无法正常工作。"
 	//	]
 	//}//*
 
@@ -1063,6 +1066,7 @@ namespace v8{
 	}
 	void LoadKernel(Handle<Object>& glb){
 		JSMemory::Load(glb,L"CMemory",TEMPLATE_ID_MEMORY);
+		LoadJsRes(IDR_JS_MEMORY_AFTER,L"memory_after.js");
 		SET_OBJ_FUNC_RO(glb,setTimer,setTimer);
 		SET_OBJ_FUNC_RO(glb,killTimer,killTimer);
 	}

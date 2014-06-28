@@ -211,8 +211,7 @@ namespace cs{
 			uint dsp = GetAlignment<T1>();
 			_StdClassProc::Bind<PROC>(0,0,dsp);
 		}
-		template<typename C,typename P> void Bind(C* obj,P func)
-		{
+		template<typename C,typename P> void Bind(C* obj,P func){
 			typedef R (C::*CP)(T1);
 			_StdClassProc::Bind<CP>(obj,func);
 		}
@@ -228,16 +227,13 @@ namespace cs{
 		template<typename P> void BindStdAny(P func){
 			_StdClassProc::BindStd<P>(func);
 		}
-		void operator = (Function<R,T1>& func)
-		{
+		void operator = (Function<R,T1>& func){
 			_StdClassProc::operator = (func);
 		}
-		inline PROC Procedure()
-		{
+		inline PROC Procedure(){
 			return _StdClassProc::Procedure<PROC>();
 		}
-		operator PROC ()
-		{
+		operator PROC (){
 			return _StdClassProc::Procedure<PROC>();
 		}
 	};

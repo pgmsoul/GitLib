@@ -54,11 +54,11 @@
 #include "concise/list.h"
 #include "concise/function.h"
 #include "concise/text.h"
-#include "concise/json.h"
 #include "concise/console.h"
 #include "concise/sys.h"
 #include "concise/debugoutput.h"
 #include "concise/kernel.h"
+#include "concise/json.h"
 #include "concise/io.h"
 #include "concise/filemanage.h"
 

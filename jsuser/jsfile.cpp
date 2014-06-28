@@ -135,7 +135,7 @@ namespace v8{
 		//		"text":"成功时返回读取的字节数, 即使此值为 0，可能说明没有数据可读，但是函数不会认为操作失败，失败返回 undefined。"
 		//	},
 		//	"remark":[
-		//		""
+		//		"当需要扩大内存来保存数据的时候，如果数据大于64K，内存对象会被自动转换为使用系统内存。"
 		//	]
 		//}//*
 		static Handle<Value> read(const Arguments& args){
@@ -147,7 +147,7 @@ namespace v8{
 				cs::File* f;
 				if(!GetCHandle(f,args.This())) break;
 				uint readLen,memPos;
-				readLen = GET_ARGS_INT(1,0);
+				readLen = GET_ARGS_INT(1,0x1000000);
 				uint64 pos = f->GetPointer();
 				uint64 len = f->GetLength();
 				if(len-pos<readLen){
@@ -157,7 +157,7 @@ namespace v8{
 
 				uint requireLen = memPos + readLen;
 				if(requireLen>m->Length()){
-					if(!m->GetUseSysMemory()&&m->IsNull()){
+					if(!m->GetUseSysMemory()&&requireLen>0x10000){
 						m->Free();
 						m->SetUseSysMemory(1);
 					}
@@ -255,9 +255,9 @@ namespace v8{
 				m.SetUseSysMemory(true);
 				f->SetPointer(0);
 				readLen = f->Read<char>(&m);
-				if(readLen<=0) break;
+				if(readLen<=0) return store.Close(String::New(""));
 
-				DWORD cp = 3;
+				DWORD cp = -1;
 				if(args.Length()>0&&!args[0]->IsUndefined()){
 					if(args[0]->IsInt32())
 						cp = args[0]->Int32Value();
@@ -266,8 +266,10 @@ namespace v8{
 						GetString(args[0],code);
 						cp = cs::GetCodePage(code);
 					}
-				}else{
+				}
+				if(cp==-1){
 					if(cs::MbsIsUtf8(m.Handle(),readLen)) cp = 65001;
+					else cp = 3;
 				}
 				cs::String str;
 				str.FromMultiByte((LPCSTR)m.Handle(),readLen,cp);

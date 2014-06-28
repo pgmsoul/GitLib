@@ -171,9 +171,9 @@ extern "C"{
 		aes->SetDecKey(key,keylen,keytype);
 		return 1;
 	}
-	__declspec(dllexport) int __stdcall aes_set_iv(cs::Aes* aes,const void* iv){
-		if(aes==NULL||iv==NULL) return 0;
-		aes->SetIV(iv);
+	__declspec(dllexport) int __stdcall aes_set_iv(cs::Aes* aes,const void* iv,int len){
+		if(aes==NULL||iv==NULL||len<0) return 0;
+		aes->SetIV(iv,len);
 		return 1;
 	}
 	//函数支持流式加密，可以以 16 字节一组，任意组进行连续调用。如果要使用不同的向量，设置 setiv函数。

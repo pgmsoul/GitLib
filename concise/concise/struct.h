@@ -101,8 +101,10 @@ namespace cs{
 		//判断一个点是否在矩形内部.
 		bool PtInRect(LPPOINT pt);
 		bool PtInRect(int x,int y);
-		//这个函数在内部调用API函数IntersectRect
-		bool Intersect(LPRECT r,bool modify = 0);
+		//当前矩形和 r 相交，结果存储在当前矩形，这个函数在内部调用API函数IntersectRect
+		bool Intersect(LPRECT r);
+		//当前矩形和指定矩形是否相交，当前矩形不会改变。
+		bool IsIntersect(LPRECT r);
 	}Rect;
 #pragma pack(pop)
 }

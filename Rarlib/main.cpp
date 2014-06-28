@@ -3,41 +3,35 @@
 #include "unrar.h"
 #pragma comment(lib,"unrar.lib")
 
+int RarCompress(LPCWSTR rar,LPCWSTR src){
+	return 0;
+}
+int RarDecompress(LPCWSTR src,LPCWSTR dst){
+	RARHeaderDataEx			hd; 
+
+	cs::Memory<char> buf(true);
+	buf.SetLength(0x100000);
+	AutoStruct(RAROpenArchiveDataEx,oad);
+	oad.ArcNameW = (LPWSTR)src;
+	oad.CmtBufSize = buf.Length();
+	oad.CmtBuf = buf.Handle();
+	oad.OpenMode = RAR_OM_EXTRACT;
+
+	HANDLE hRar = RAROpenArchiveEx(&oad);
+	if(!hRar) return -1;
+	hd.CmtBuf = 0;
+
+	int rst;
+	while(true){
+		rst = RARReadHeaderEx(hRar,&hd);
+		if(rst) break;
+		int code = RARProcessFileW(hRar,2,(LPWSTR)dst,NULL); 
+	}
+	RARCloseArchive(hRar);
+	return rst;
+}
 WINMAIN
 {
-	HANDLE   hArcData; 
-	int   RHCode,PFCode; 
-	char   CmtBuf[262144]; 
-	RARHeaderData   HeaderData; 
-	RAROpenArchiveData   OpenArchiveData; 
-	char   *p; 
-	char   FileName[256]; 
-	char   ExtraPath[256]; 
-
-	char* RarFileName = "abc.rar";
-	char* ExtractPath = ".";
-	strcpy(FileName,RarFileName); 
-	if(ExtractPath) 
-		strcpy(ExtraPath,ExtractPath); 
-	else 
-	{ 
-		strcpy(ExtraPath,RarFileName); 
-		p=ExtraPath; 
-		while(*(++p)!=0); 
-		while(*(--p)!=92); 
-		*p=0; 
-	} 
-
-	OpenArchiveData.ArcName=FileName; 
-	OpenArchiveData.CmtBuf=CmtBuf; 
-	OpenArchiveData.CmtBufSize=sizeof(CmtBuf); 
-	OpenArchiveData.OpenMode=RAR_OM_EXTRACT; 
-
-	hArcData=RAROpenArchive(&OpenArchiveData); 
-	HeaderData.CmtBuf=NULL; 
-	while   ((RHCode=RARReadHeader(hArcData,&HeaderData))==0) 
-	{ 
-		PFCode=RARProcessFile(hArcData,2,ExtraPath,NULL); 
-	} 
-	RARCloseArchive(hArcData); 	return 0;
+	RarDecompress(L"abc.rar",L".");
+	return 0;
 };

@@ -28,12 +28,12 @@ namespace cs{
 			if(!cs->IsShowed()) cs->Show();
 			cs->Write(buf);
 		}else if(IsWindow((HWND)(UINT_PTR)_output_device)){
-			COPYDATASTRUCT cds;
+			/*COPYDATASTRUCT cds;
 			cds.dwData = 0;
 			cds.lpData = buf.Handle();
-			cds.cbData = buf.Length()*2 + 2;
-			SendMessage((HWND)(UINT_PTR)_output_device,WM_COPYDATA,(WPARAM)0,(LPARAM)&cds);
-			//SendMessage((HWND)(UINT_PTR)_output_device,(WM_USER+0x137),0,(LPARAM)buf.Handle());
+			cds.cbData = buf.Length()*2 + 2;*/
+			//SendMessage((HWND)(UINT_PTR)_output_device,WM_COPYDATA,(WPARAM)0,(LPARAM)&cds);
+			SendMessage((HWND)(UINT_PTR)_output_device,WM_LOGPRINTTEXT,0,(LPARAM)buf.Handle());
 		}else{
 			::OutputDebugString(buf);
 		}
@@ -58,12 +58,13 @@ namespace cs{
 			if(!cs->IsShowed()) cs->Show();
 			cs->Write(buf);
 		}else if(IsWindow((HWND)(UINT_PTR)_output_device)){
-			COPYDATASTRUCT cds;
+			/*COPYDATASTRUCT cds;
 			cds.dwData = 0;
 			cds.lpData = buf.Handle();
-			cds.cbData = buf.Length() + 1;
-			SendMessage((HWND)(UINT_PTR)_output_device,WM_COPYDATA,(WPARAM)0,(LPARAM)&cds);
-			//SendMessage((HWND)(UINT_PTR)_output_device,(WM_USER+0x137),0,(LPARAM)buf.Handle());
+			cds.cbData = buf.Length() + 1;*/
+			//SendMessage((HWND)(UINT_PTR)_output_device,WM_COPYDATA,(WPARAM)0,(LPARAM)&cds);
+			cs::String str = buf.Handle();
+			SendMessage((HWND)(UINT_PTR)_output_device,WM_LOGPRINTTEXT,0,(LPARAM)str.Handle());
 		}else{
 			::OutputDebugStringA(buf);
 		}

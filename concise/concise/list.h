@@ -397,6 +397,7 @@ namespace cs{
 			return false;
 		}
 		//删除一个节点，0：删除第一个元素；1：删除当前位置元素；2：删除末尾元素。delObj指示是否删除绑定对象。
+		//如果删除的元素是当前元素，当前元素自动指向下一个元素，如果没有下一个元素，链表溢出，即当前元素为 0 。
 		bool Delete(int link_ = LINK_CURRENT,bool delObj = 1){
 			if((link_<0)||(link_>2)) return 0;
 			if(_first==0) return 0;
@@ -407,7 +408,7 @@ namespace cs{
 				link = _first->next;
 				if(link) link->previous = 0;
 				if(_current==_first){
-					_current = _first->next;
+					_current = link;
 				}
 				if(_last==_first) _last = 0;
 				if(delObj) delete _first->handle;
@@ -419,14 +420,12 @@ namespace cs{
 				if(_current==0){
 					return 0;
 				}
+				link = _current->next;
 				if(_current->previous){
 					_current->previous->next = _current->next;
-					link = _current->previous;
 				}
-				else link = 0;
 				if(_current->next){
 					_current->next->previous = _current->previous;
-					link = _current->next;
 				}
 				if(delObj) delete _current->handle;
 				delete _current;
@@ -440,14 +439,12 @@ namespace cs{
 				break;
 			case LINK_LAST:
 				link = _last->previous;
-				if(link) link->next = _last->next;
-				if(_last->next) _last->next->previous = _last->previous;
-				if(_current==_last){
-					_current = _last->previous;
-				}
-				if(_first==_last) _first = 0;
+				if(link) link->next = 0;//_last->next;
 				if(delObj) delete _last->handle;
 				delete _last;
+				//if(_last->next) _last->next->previous = _last->previous;
+				if(_current==_last) _current = 0;
+				if(_first==_last) _first = 0;
 				_last = link;
 				break;
 			}

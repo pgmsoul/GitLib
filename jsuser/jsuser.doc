@@ -20,6 +20,15 @@
 	//		"example":[
 	//			"require(\"wnd\");//加载所有组件"
 	//		]
+	//	},
+	//	{
+	//		"type":"library",
+	//		"name":"crypt",
+	//		"text":"crypt 库提供 md5、sha、aes 加密和 ecc（椭圆加密）功能。使用 crypt 需要加载 jscrypt.dll。",
+	//		"example":[
+	//			"var jscrypt = Api.loadModule(\"jscrypt.dll\");",
+	//			"if(!jscrypt) throw \"load jscrypto.dll error\";"
+	//		]
 	//	}
 	//	]
 	//}//*

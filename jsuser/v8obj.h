@@ -11,6 +11,32 @@ C++µÄºËĞÄË¼ÏëÊÇ¶ÔÏó£¬·½·¨ÊÇ°ó¶¨µ½¶ÔÏóÉÏµÄ£¬¶Ô¶ÔÏóµÄ²Ù×÷¾ÍÊÇ¶Ô³ÉÔ±º¯ÊıµÄµ÷ÓÃ¡£²Ù×
 ÎªÁËÃÖ²¹ JavaScript Óï·¨²ãÃæµÄÕâ¸öÈ±Ïİ£¬ÎÒÃÇÉè¼ÆÁË Class º¯Êı£¬
 **/
 namespace v8{
+	template<typename R> class JsConst{
+	public:
+		static void _set(Local<String> property, Local<Value> value,const AccessorInfo& info){
+			HandleScope store;
+			Local<Object> self = info.This();
+			cs::String name;
+			GetString(property,name);
+			R::set(name,value,self);
+		}
+		static Handle<Value> _get(Local<String> property,const AccessorInfo& info){
+			HandleScope store;
+			Local<Object> self = info.This();
+			cs::String name;
+			GetString(property,name);
+			return store.Close(R::get(name,self));
+		}
+		static inline void set(cs::String& name,Local<Value>& value,Local<Object>& self){}
+		static inline Handle<Value> get(cs::String& name,Local<Object>& self){}
+		static inline void init(Handle<Object>& obj){}
+		static void Load(Handle<Object>& glb,LPCWSTR name){
+			HandleScope store;
+			Handle<Object> obj = Object::New();
+			R::init(obj);
+			glb->Set(String::New((uint16_t*)name),obj,ReadOnly);
+		}
+	};
 	template<typename R> class JsObject{
 	public:
 		static Handle<Value> Create(const Arguments& args){

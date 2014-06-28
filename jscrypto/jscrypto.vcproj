@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\lib\$(ProjectName).dll"
+				OutputFile="$(OutDir)\..\..\jsuser\example\$(ProjectName).dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="jscrypto.def"
 				GenerateDebugInformation="true"
@@ -134,7 +134,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\lib\$(ProjectName).dll"
+				OutputFile="$(OutDir)\..\..\jsuser\example\$(ProjectName).dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="jscrypto.def"
 				GenerateDebugInformation="true"
@@ -231,6 +231,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>
@@ -240,6 +244,10 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\jscrypt.rc"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\jscrypto.def"

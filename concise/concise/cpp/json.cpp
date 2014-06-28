@@ -365,7 +365,7 @@ namespace cs{
 			str.Insert('"');
 		}else if(jsn->_type==json_array){
 			if(readStyle)
-				str = L"[\n";
+				str = L"[\r\n";
 			else
 				str = L"[";
 			String sub;
@@ -384,7 +384,7 @@ namespace cs{
 					if(!sjsn) break;
 					_toString(sjsn,sub,tab,readStyle);
 					if(readStyle)
-						str += L",\n";
+						str += L",\r\n";
 					else
 						str += L",";
 					str += tab;
@@ -392,13 +392,13 @@ namespace cs{
 				}
 				tab.Head(-1);
 				if(readStyle)
-					str += L"\n";
+					str += L"\r\n";
 			}
 			str += tab;
 			str += L"]";
 		}else if(jsn->_type==json_object){
 			if(readStyle)
-				str = L"{\n";
+				str = L"{\r\n";
 			else
 				str = L"{";
 			String sub;
@@ -425,7 +425,7 @@ namespace cs{
 					dic = obj.Element();
 					if(!dic) break;
 					if(readStyle){
-						str += L",\n";
+						str += L",\r\n";
 						str += tab;
 					}else{
 						str += L",";
@@ -443,7 +443,7 @@ namespace cs{
 				}
 				tab.Head(-1);
 				if(readStyle)
-					str += L"\n";
+					str += L"\r\n";
 			}
 			str += tab;
 			str += L"}";
@@ -602,7 +602,13 @@ namespace cs{
 			dic->key = prop;
 			return dic->val;
 		}
-		if(json_object!=_type) return 0;
+		if(json_object!=_type){
+			if(createIfNotExist){
+				SetToObject();
+			}else{
+				return 0;
+			}
+		}
 		for(_objectValue->First();;_objectValue->Move(1)){
 			Json::DICTION* dic = _objectValue->Element();
 			if(!dic) break;
@@ -701,6 +707,7 @@ namespace cs{
 		CriticalSection Lock;
 		int icount;
 	};
+	static __declspec(thread) bool _cfglock = false;
 	//打开一个Json对象，在同一进程内相同的 fn 返回相同的对象.
 	//这些内存直到程序结束才会释放
 	config_struct* getConfigObject(LPCWSTR name,config_struct* obj = 0){
@@ -752,42 +759,48 @@ namespace cs{
 		if(_innerobj==NULL) Print(L"Config Error: _innerobj is NULL");
 	}
 
-	bool Config::Lock(){
-		if(!_innerobj) return 0;
-		((config_struct*)_innerobj)->Lock.Lock();
-		return true;
+	Json* Config::Lock(bool wait){
+		if(!_innerobj||_cfglock) return 0;
+		config_struct* cfg = (config_struct*)_innerobj;
+		if(!wait){
+			if(!cfg->Lock.TryLock()) return 0;
+		}else
+			cfg->Lock.Lock();
+		_cfglock = true;
+		return &cfg->Tree;
 	}
 	void Config::Unlock(){
 		if(_innerobj==0) return;
-		Flush();
+		config_struct* cfg = (config_struct*)_innerobj;
+		cfg->Tree.SaveToFile(cfg->FileName);
 		((config_struct*)_innerobj)->Lock.Unlock();
+		_cfglock = false;
 	}
 	void Config::Close(){
 		if(_innerobj==0) return;
-		Flush();
-		config_struct* rs = (config_struct*)_innerobj;
+		config_struct* cfg = (config_struct*)_innerobj;
 		_innerobj = 0;
-		rs->Lock.Unlock();
-		getConfigObject(0,rs);
+		if(_cfglock){
+			cfg->Tree.SaveToFile(cfg->FileName);
+			cfg->Lock.Unlock();
+			_cfglock = false;
+		}
+		getConfigObject(0,cfg);
 	}
 	bool Config::Create(LPCWSTR fname){
 		if(_innerobj) return 1;
 		_innerobj = getConfigObject(fname);
 		return _innerobj!=NULL;
 	}
-	Json* Config::GetJson(){
+	/*Json* Config::GetJson(){
 		if(_innerobj==0) return 0;
 		return &((config_struct*)_innerobj)->Tree;
-	}
+	}*/
 	Config::~Config(){
-		if(_innerobj==0) return;
-		config_struct* rs = (config_struct*)_innerobj;
-		rs->Tree.SaveToFile(rs->FileName);
-		rs->Lock.Unlock();
-		getConfigObject(0,rs);
+		Close();
 	}
-	void Config::Flush(){
+	/*void Config::Flush(){
 		if(_innerobj==0) return;
 		((config_struct*)_innerobj)->Tree.SaveToFile(((config_struct*)_innerobj)->FileName);
-	}
+	}*/
 }

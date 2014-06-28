@@ -1095,10 +1095,71 @@ namespace v8{
 		//}//*
 		//*,{
 		//	"type":"property",
-		//	"name":"onCreate",
+		//	"name":"onCreate()",
 		//	"objtype":"function",
 		//	"text":"回调函数，响应创建窗口时的 WM_CREATE 消息的回调函数。",
 		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"void",
+		//		"text":"函数没有返回值。"
+		//	}
+		//}//*
+		//*,{
+		//	"type":"property",
+		//	"name":"onSize(cx,cy)",
+		//	"objtype":"function",
+		//	"text":"回调函数，响应创建窗口调整尺寸的 WM_SIZE 消息。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"cx",
+		//			"text":"客户区宽度。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"cy",
+		//			"text":"客户区高度。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"void",
+		//		"text":"函数没有返回值。"
+		//	}
+		//}//*
+		//*,{
+		//	"type":"property",
+		//	"name":"onCommand(id,type)",
+		//	"objtype":"function",
+		//	"text":"回调函数，响应创建窗口调整尺寸的 WM_SIZE 消息。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"cx",
+		//			"text":"客户区宽度。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"cy",
+		//			"text":"客户区高度。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"void",
+		//		"text":"函数没有返回值。"
+		//	}
+		//}//*
+		//*,{
+		//	"type":"property",
+		//	"name":"onMouse(mouse)",
+		//	"objtype":"function",
+		//	"text":"回调函数，响应鼠标消息。",
+		//	"param":[
+		//		{
+		//			"type":"Mouse",
+		//			"name":"mouse",
+		//			"text":"鼠标对象，参加 Mouse 条目。"
+		//		}
 		//	],
 		//	"return":{
 		//		"type":"void",
@@ -1763,6 +1824,23 @@ namespace v8{
 	//	"member":[//*
 	class JsEdit : public JsWndObject<BEdit,JsEdit>{
 	public:
+		//*{
+		//	"type":"property",
+		//	"name":"setMultiLine([multiline])",
+		//	"objtype":"function",
+		//	"text":"设置编辑控件的多行或者单行属性。",
+		//	"param":[
+		//		{
+		//			"type":"boolean",
+		//			"name":"[multiline]",
+		//			"text":"多行还是单行，缺省是多行 true。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"undefined",
+		//		"text":"成功返回 true，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> setMultiLine(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -1790,7 +1868,7 @@ namespace v8{
 			}
 			return Undefined();
 		}
-		//*{
+		//*,{
 		//	"type":"property",
 		//	"name":"onTextChange()",
 		//	"objtype":"function",
@@ -3437,7 +3515,26 @@ namespace v8{
 	//		}
 	//	}
 	//]}//*
-
+	class JsMenu : public JsHandleObject<cs::UserMenu,HMENU,JsMenu>{
+		static Handle<Value> create(const Arguments& args){
+			HandleScope stack;
+			while(true){
+				Handle<Object> self = args.This();
+				cs::UserMenu* cobj;
+				if(!GetCHandle(cobj,self)) break;
+			}
+			return Undefined();
+		}
+		static void set(cs::String& name,cs::UserMenu* cobj,Local<Value>& value,Local<Object>& self){
+		}
+		static Handle<Value> get(cs::String& name,cs::UserMenu* cobj,Local<Object>& self){
+			;
+		}
+	public:
+		static void init(Handle<FunctionTemplate>& ft){
+			;
+		}
+	};
 	void LoadLayout(Handle<Object>& glb);
 	void LoadWnd(Handle<Object>& glb){
 		HandleScope store;

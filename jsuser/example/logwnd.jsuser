@@ -1,0 +1,51 @@
+//file: logwnd.juser
+
+"use strict";
+require("base");
+require("wnd");
+
+Class(function main(){
+	var frame = new CFrame();
+	frame.setRemPos("main_wnd");
+	var buts = [];
+	frame.onCreate = function(){
+		for(var i=0;i<6;i++){
+			var y = 20 + (i%2)*50;
+			var but = new CButton();
+			buts.push(but);
+			but.setPosition(20+Math.floor(i/2)*100,y);
+			but.setSize(80,30);
+			but.create(frame);
+		}
+		buts[0].text = "显示";
+		buts[0].onCommand = function(){
+			log.show(false);
+		}
+		buts[1].text = "隐藏";
+		buts[1].onCommand = function(){
+			log.close();
+		}
+		buts[2].text = "输出";
+		buts[2].onCommand = function(){
+			var color = Math.random();
+			color *= 0xffffff;
+			log("地球磁场是地球避开宇宙射线的防护屏",color);
+		}
+		buts[3].text = "清除";
+		buts[3].onCommand = function(){
+			log.clear();
+		}
+		buts[4].text = "字体";
+		buts[4].onCommand = function(){
+			log.setFontSize(Math.random()*100+10);
+		}
+		buts[5].text = "背景";
+		buts[5].onCommand = function(){
+			log.setBkColor(Math.random()*0xffffff);
+		}
+	}
+	frame.create();
+	startMsgLoop();
+},true);
+
+main();

@@ -60,6 +60,8 @@ build/
 *.meta
 *.obj
 *.exe
+*.dll
+*.lib
 *.pch
 *.pdb
 *.pgc

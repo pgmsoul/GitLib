@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\jsapicb.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\jsbase.cpp"
 				>
 			</File>
@@ -348,6 +352,10 @@
 			</File>
 			<File
 				RelativePath=".\jsres\layout.js"
+				>
+			</File>
+			<File
+				RelativePath=".\jsres\memory_after.js"
 				>
 			</File>
 			<File

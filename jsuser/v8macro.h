@@ -10,6 +10,7 @@
 //设置类的访问器, 如果不需要get或set , 设置为 0 即可.
 #define SET_CLA_ACCESSOR(name) func->SetAccessor(String::New(#name),_get,_set)
 #define SET_CLA_SET_ACCESSOR(name,set) func->SetAccessor(String::New(#name),0,set)
+#define SET_OBJ_ACCESSOR(obj,name) obj->SetAccessor(String::New(#name),_get,_set)
 //
 #define SET_PROP(obj,name,val) obj->Set(String::New(#name),val)
 #define SET_PROP_RO(obj,name,val) obj->Set(String::New(#name),val,ReadOnly)

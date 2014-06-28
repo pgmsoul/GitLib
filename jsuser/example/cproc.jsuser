@@ -1,0 +1,30 @@
+//file: cproc.juser
+
+"use strict";
+require("base");
+require("wnd");
+
+Class(function main(){
+	var frame = new CFrame();
+	var SetTimer = new Api();
+	//SetTimer 函数在 user32.dll 里，C 函数原型如下：
+	//UINT_PTR WINAPI SetTimer(HWND,UINT_PTR,UINT,TIMERPROC);
+	//4 个参数和返回值都是 32 位。TIMERPROC 格式如下：
+	//VOID CALLBACK TIMERPROC(HWND, UINT, UINT_PTR, DWORD);
+	//除了返回值，每个参数也是 32 位，void 返回值也可以看成 32 位（忽略 eax）。
+	var u32 = Api.loadModule("user32.dll");
+	if(!SetTimer.create(u32,"SetTimer")){
+		throw "无法加载 SetTimer 函数";
+		return;
+	}
+	var timerproc = new CProc();
+	//生成 4 个参数的回调函数，返回值就是 proc 的 C 指针。
+	var proc = timerproc.create(4,function(arg1,arg2,arg3,arg4){
+		frame.text = "hwnd:"+arg1+ ", msg:"+arg2+ ", id:"+arg3+ ", time:"+arg4;
+	});
+	//设置 timer 间隔 1000毫秒（1秒）。
+	var id = SetTimer(0,0,1000,proc);
+	frame.create();
+	startMsgLoop();
+},true);
+main();

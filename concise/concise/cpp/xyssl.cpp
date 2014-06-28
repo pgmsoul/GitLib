@@ -252,17 +252,8 @@ namespace cs{
 	Aes::~Aes(){
 		delete aes_ctx;
 	}
-	void Aes::SetEncKey(const void* userkey,int len,AES_BITS key_type){
-		if(len<=0){
-			len = strlen((const char*)userkey);
-		}
-		if(len>32) len = 32;
-
-		uchar key[32];
-		::ZeroMemory(key,32);
-		memcpy(key,userkey,len);
-
-		int keysize;
+	void _setAesKey(aes_context* ctx,const void* userkey,int len,AES_BITS key_type,bool encrypt){
+		int keysize,bytes;
 		if(key_type==aes_128){
 			keysize = 128;
 		}else if(key_type==aes_192){
@@ -272,38 +263,31 @@ namespace cs{
 		}else{
 			return;
 		}
+		bytes = keysize/8;
+		if(len<=0){
+			len = strlen((const char*)userkey);
+		}
+		if(len>bytes) len = bytes;
+		uchar key[32];
+		memcpy(key,userkey,len);
+		memset(key+len,0,bytes-len);
 
-		aes_setkey_enc(aes_ctx,key,keysize);//16,24,32
+		if(encrypt)
+			aes_setkey_enc(ctx,key,keysize);//16,24,32
+		else
+			aes_setkey_dec(ctx,key,keysize);//16,24,32
+	}
+	void Aes::SetEncKey(const void* userkey,int len,AES_BITS key_type){
+		_setAesKey(aes_ctx,userkey,len,key_type,true);
 	}
 	void Aes::SetDecKey(const void* userkey,int len,AES_BITS key_type){
-		if(len<=0){
-			len = strlen((const char*)userkey);
-		}
-		if(len>32) len = 32;
-
-		uchar key[32];
-		::ZeroMemory(key,32);
-		memcpy(key,userkey,len);
-
-		int keysize;
-		if(key_type==aes_128){
-			keysize = 128;
-		}else if(key_type==aes_192){
-			keysize = 192;
-		}else if(key_type==aes_256){
-			keysize = 256;
-		}else{
-			return;
-		}
-
-		aes_setkey_dec(aes_ctx,key,keysize);
+		_setAesKey(aes_ctx,userkey,len,key_type,false);
 	}
-	void Aes::SetIV(const void* iv16){
-		if(iv16==0){
-			memset(_iv,0,16);
-		}else{
-			memcpy(_iv,iv16,16);
-		}
+	void Aes::SetIV(const void* iv16,int len){
+		if(iv16==NULL) len = 0;
+		if((uint)len>16) len = 16;
+		memcpy(_iv,iv16,len);
+		memset(_iv+len,0,16-len);
 	}
 
 	//加密数据，加密是以16字节为单位的，输入和输出缓存都不能小于16字节，输入和输出字节数是相同的。
@@ -334,6 +318,7 @@ namespace cs{
 		if(lastn){
 			uchar buf[16];
 			memcpy(buf,in16,lastn);
+			memset(buf+lastn,0,16-lastn);
 			aes_crypt_ecb(aes_ctx,AES_ENCRYPT,buf,out16);
 		}
 		return len0 + 16;
@@ -384,7 +369,15 @@ namespace cs{
 		return EncryptEcb(outbuf.Handle(),outLen,input,len);
 	}
 	void Aes::EncryptCbc(void *output,const void *input,int len){
+		int lastn = len & 0x0F;
+		len -= lastn;
 		aes_crypt_cbc(aes_ctx,AES_ENCRYPT,len,(byte*)_iv,(byte*)input,(byte*)output);
+		if(lastn){
+			uchar buf[16];
+			memcpy(buf,(byte*)input+len,lastn);
+			memset(buf+lastn,0,16-lastn);
+			aes_crypt_cbc(aes_ctx,AES_ENCRYPT,16,(byte*)_iv,buf,(byte*)output+len);
+		}
 	}
 	void Aes::DecryptCbc(void* output,const void* input,int len){
 		aes_crypt_cbc(aes_ctx,AES_DECRYPT,len,(byte*)_iv,(byte*)input,(byte*)output);

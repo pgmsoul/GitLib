@@ -58,6 +58,7 @@ IDR_JS_GDI_BEFORE       RT_JS                   "jsres\\gdi_before.js"
 IDR_JS_GDI_AFTER        RT_JS                   "jsres\\gdi_after.js"
 IDR_JS_FILE             RT_JS                   "jsres\\file.js"
 IDR_JS_WND_BEFORE       RT_JS                   "jsres\\jswnd_before.js"
+IDR_JS_MEMORY_AFTER     RT_JS                   "jsres\\memory_after.js"
 
 /////////////////////////////////////////////////////////////////////////////
 //

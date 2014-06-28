@@ -21,6 +21,7 @@
 #include <concise/concise.h>
 
 #include "conciseui/window.h"
+#include "conciseui/logwnd.h"
 #include "conciseui/usermenu.h"
 #include "conciseui/comdlg.h"
 #include "conciseui/dlg.h"

@@ -40,13 +40,12 @@ namespace cs{
 			Memory<char>*	_binaryValue;
 		};
 		JSON_TYPE _type;
-
 		~Json(){
 			SetToNull();
 		}
-		Json():_type(json_null),_intValue(0){
+		Json():_type(json_null),_doubleValue(0){
 		}
-		Json(bool val){
+		Json(bool val):_type(json_null){
 			*this = val;
 		}
 		void operator = (bool val){
@@ -54,22 +53,22 @@ namespace cs{
 			_boolValue = val;
 			_type = json_boolean;
 		}
-		Json(const wchar_t* str){
+		Json(const wchar_t* str):_type(json_null){
 			*this = str;
 		}
 		void operator = (const wchar_t* str){
 			SetString(str);
 		}
-		Json(const char* str){
+		Json(const char* str):_type(json_null){
 			*this = str;
 		}
 		void operator = (const char* mbs){
 			SetMbStr(mbs);
 		}
-		Json(int64 val){
+		Json(int64 val):_type(json_null){
 			*this = val;
 		}
-		Json(int val){
+		Json(int val):_type(json_null){
 			*this = val;
 		}
 		void operator = (int64 val){
@@ -82,7 +81,7 @@ namespace cs{
 			_intValue = val;
 			_type = json_integer;
 		}
-		Json(double val){
+		Json(double val):_type(json_null){
 			*this = val;
 		}
 		void operator = (double val){
@@ -90,7 +89,7 @@ namespace cs{
 			_doubleValue = val;
 			_type = json_double;
 		}
-		Json(Json& val){
+		Json(Json& val):_type(json_null){
 			*this = val;
 		}
 		void operator = (Json& val);
@@ -204,7 +203,7 @@ namespace cs{
 		void SetToNull();
 		//不改变对象的类型，但是值设置为对应类型的缺省值。
 		void Empty();
-		//Property函数针对当前对象为object类型时的情况，如果当前类型不是object，所有操作会失败。
+		//Property函数针对当前对象为object类型时的情况，如果当前类型不是 object 或者 null，createIfNotExist = false,所有操作会失败。如果 createIfNotExist = true，对象会被强制转换为 object 类型。
 		Json* GetProperty(LPCWSTR prop,bool createIfNotExist = false);
 		//获取属性的字串值，如果属性不存在或者属性不是字串类型，返回false。
 		bool GetPropertyStr(LPCWSTR prop,LPCWSTR& val){
@@ -365,10 +364,14 @@ namespace cs{
 			if(_type!=json_array) return 0;
 			return _arrayValue->Add(pos);
 		}
-		//移除当前数组元素，当前指针指向后一个元素，如果没有后一个元素，指向前一个元素。
+		//移除当前数组元素，当前指针指向后一个元素，如果没有后一个元素，链表溢出。
 		void RemoveArrayElm(){
 			if(_type!=json_array) return;
 			_arrayValue->Delete();
+		}
+		//链表是否处于溢出状态
+		bool ArrayOverFlow(){
+			return _arrayValue->OverFlow();
 		}
 		bool GetArrayStr(LPCWSTR& val){
 			Json* js = GetArrayElm();
@@ -452,7 +455,8 @@ namespace cs{
 					return *a;
 				}
 			}else if(_type!=json_null){
-				SetToNull();
+				_ASSERT(0);
+				return *(Json*)0;
 			}
 			_arrayValue = new ObjectLink<Json>;
 			_type = json_array;
@@ -463,32 +467,43 @@ namespace cs{
 		}
 		Json& operator [] (LPCWSTR key){
 			if(_type!=json_object){
-				SetToObject();
+				return *(Json*)0;
 			}
 			return *GetProperty(key,true);
 		}
 	};
+	/*使用方法，可以使用局部变量的方式 Config cfg(0); 0 表示默认配置文件，然后用 Lock 函数获取
+	Json 对象。无需调用 Close 和 Unlock 函数，因为它们在析构的时候会自动调用。
+	如果不是局部变量，同一线程多次调用 Lock 函数，第二次会失败，也就是 Lock 和 Unlock 必须
+	严格成对调用，Unlock 调用之前无论是其它线程，还是当前线程，都无法再次成功调用 Lock 函数
+	这就保证，任何时候，打开读取和关闭写入中间不会有同时一个以上的操作，保持了文件和数据的一致。
+	*/
 	class CONCISE_API Config : public _class{
 	protected:
 		void* _innerobj; //it's a register_struct pointer.
 	public:
 		//此时并不实例化内部的 Xml 对象
 		Config();
-		//实例化一个 Xml 对象，绑定file文件，并且阻塞这个进程其它RegisterTree对象对file的使用。
+		//实例化一个 Json 对象le的使用。
 		Config(LPCWSTR file);
 		//打开指定文件读写, 内部会创建一个对象, 并且读取file文件的内容来初始化这个对象.
 		bool Create(LPCWSTR file);
 		//写操作前, 应该调用Lock, 独占内部对象, 后续的Lock将会被挂起, 直到调用Unlock函数.
-		bool Lock();
+		//锁定对单线程无效（无法锁定），因为同文件名只有一个内部对象，同线程操作同一个对象，一般不会引起冲突，除非恰好操作了Json对象的同一个
+		//位置，但是这种冲突是可控的，和多线程的访问完全不可预知是不同的。
+		//尽管可以同时在不冲突的情况下操作配置文件，但是应该保证打开和写入中间只有一个操作者，因为如果有
+		//其它程序打开文件，自己读取和写入，而没有使用Config对象，就会引发混乱。
+		//如果wait = true，会等待其它打开操作关闭，如果wait = false，有其它线程操作的话，会失败。
+		Json* Lock(bool wait = true);
 		//解除Lock, 因为为了保持文件内容的一致, 同一时间只能有一个打开操作, Unlock会自动调用Flush。
 		void Unlock();
 		//彻底释放Create操作打开的对象, 当外部程序改变了文件的内容时.
 		//需要Close后, 重新用Create打开, 内容才会刷新, 因为内部对象一旦生成就不会再从文件读取内容.
 		void Close();
 		//写入文件, Unlock也会执行这个操作, 所以除非在还没调用Unlock函数但是需要把信息写入文件时, 才需要调用这个函数。
-		void Flush();
+		//void Flush();
 		//返回内部的Xml对象, 进行读写操作.
-		Json* GetJson();
+		//Json* GetJson();
 		//析构
 		~Config();
 	};

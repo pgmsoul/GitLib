@@ -250,11 +250,11 @@ namespace cs{
 		b = max(top,bottom);
 		SetValue(l,t,r,b);
 	}
-	bool Rect32::Intersect(LPRECT r,bool modify){
+	bool Rect32::Intersect(LPRECT r){
+		return ::IntersectRect((LPRECT)this,(LPRECT)this,r)!=0;
+	}
+	bool Rect32::IsIntersect(LPRECT r){
 		Rect32 rc;
-		if(modify)
-			return ::IntersectRect((LPRECT)this,(LPRECT)this,r)!=0;
-		else
-			return ::IntersectRect(rc,(LPRECT)this,r)!=0;
+		return ::IntersectRect(rc,(LPRECT)this,r)!=0;
 	}
 }

@@ -71,17 +71,16 @@ namespace cs{
 	public:
 		Aes();
 		~Aes();
-		//设置向量，iv16 是一个16字节的数据，如果 iv16 为 0 ，向量的16字节都被设为 0 。
-		void SetIV(const void* iv16 = 0);
+		//设置向量，向量是一个 16 字节的数据，如果 len 不足16 字节，会用 0 补足，如果
+		//多于16 字节，会被舍弃。
+		void SetIV(const void* iv16 = 0,int len = 16);
 		inline char* GetIV(){return _iv;}
-		/*@function bool SetKey(const void* userkey,int len,const void* disturb = 0,int len2 = 0)
-		@param userkey -- const void*
-		@text 加解密密码，Aes是对称加密，加密解密是同一个密码。
-		@param len -- int
-		@text 密码长度，如果这个值为 0 ，则密码会被看成一个 0 结尾的字符串。
-		@param keytype -- KEY_TYPE
-		@text 密码类型，Aes支持 3 种长度的密码：128位、192位、256位，如果userkey的长度不足对应类型密码的长度，会用 0 在末尾补足，如果大于指定的长度，多余的字节会被舍弃。
-		@return void
+		/*function bool SetEncKey(const void* userkey,int len,AES_BITS keytype)
+		设置当前对象为加密状态，并且设置密码。
+		userkey：密码，真正有效位依赖于 keytype，Aes支持 3 种长度的密码：128位、192位、256位，
+		对应的密码有效字节是 16,24,32 三种情况，多余的数据被抛弃。如果 userkey 的长度
+		不足对应类型密码的长度，会用 0 在末尾补足，如果大于指定的长度，多余的字节会被舍弃。
+		当 keylen 小于等于 0 时，userkey 被看成字串，可用长度就是字串的长度。
 		@text 函数没有返回值。*/
 		void SetEncKey(const void* userkey,int keylen = 0,AES_BITS keytype = aes_128);
 		void SetDecKey(const void* userkey,int keylen = 0,AES_BITS keytype = aes_128);
@@ -174,6 +173,11 @@ namespace cs{
 		@return int
 		@text 返回输出的长度，即输入的 len 参数，如果失败，返回 0 .*/
 		int DecryptEcb(Memory<char>& outbuf,const void* input,int len);
+		uint GetOutputLen(uint srclen){
+			int res = srclen%16;
+			if(res) return srclen - res + 16;
+			else return srclen;
+		}
 	};
 	class CONCISE_API Base64{
 	public:

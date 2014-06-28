@@ -362,6 +362,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\logwnd.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\notifyicon.cpp"
 				>
 			</File>
@@ -441,6 +445,10 @@
 			</File>
 			<File
 				RelativePath=".\layout.h"
+				>
+			</File>
+			<File
+				RelativePath=".\logwnd.h"
 				>
 			</File>
 			<File

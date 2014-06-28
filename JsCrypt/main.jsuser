@@ -1,0 +1,99 @@
+
+"use strict";
+require("base");
+require("wnd");
+load("crypt.jsuser");
+
+Class(function main(){
+	var openBut = new CButton();
+	openBut.setPosition(10,2);
+	openBut.setSize(80,25);
+	openBut.text = "打开";
+	openBut.onCommand = function(){
+	}
+	var saveBut = new CButton();
+	saveBut.setPosition(110,2);
+	saveBut.setSize(80,25);
+	saveBut.text = "保存";
+	saveBut.disabled = true;
+	saveBut.onCommand = function(){
+		saveTextAndEnc(edit.text);
+		saveBut.disabled = true;
+	}
+	var edit = new CEdit();
+	edit.onTextChange = function(){
+		saveBut.disabled = false;
+	}
+	var frame = new CFrame();
+	frame.text = "密码管理";
+	setConfig(function(cfg){
+		cfg.name = "test";
+	});
+	frame.onCreate = function(){
+		saveBut.create(frame);
+		openBut.create(frame);
+		
+		edit.setPosition(0,30);
+		edit.setMultiLine(true);
+		edit.create(frame);
+		edit.setFont(font);
+		
+		var text = readEncData();
+		if(text) edit.text = text;
+	}
+	frame.onSize = function(cx,cy){
+		edit.setSize(cx,cy-30);
+	}
+	frame.setRemPos("main_wnd");
+	var font = new CFont();
+	font.size = 36;
+	font.create();
+	frame.create();
+	startMsgLoop();
+},true);
+Class(function readEncData(){
+	var file = new CFile();
+	var src = "F:\\user\\Dropbox\\Dropbox\\Private\\pw.enc";
+	if(!file.create(src,true,true)){
+		alert("无法读取加密文件"+src);
+		return;
+	}
+	var encData = new CMemory();
+	if(!file.read(encData)){
+		alert("读取文件错误");
+		return;
+	}
+	var aes = new CAes(32);
+	aes.setDecKey("昨天下夜雨走起路来脚挂泥");
+	var iv = "天上有几丝云彩依然是好天气";
+	aes.setIv(iv);
+	var decData = aes.decCbc(encData);
+	if(!decData){
+		alert("解密出现错误");
+		return;
+	}
+	return decData.getString();
+},true);
+Class(function saveTextAndEnc(str){
+	var aes = new CAes(32);
+	aes.setEncKey("昨天下夜雨走起路来脚挂泥");
+	var iv = "天上有几丝云彩依然是好天气";
+	aes.setIv(iv);
+	var encData = aes.encCbc(str);
+	if(!encData){
+		alert("加密出现错误");
+		return;
+	}
+	var file = new CFile();
+	var src = "F:\\user\\Dropbox\\Dropbox\\Private\\pw.enc";
+	if(!file.create(src)){
+		alert("无法生成加密文件"+src);
+		return;
+	}
+	file.length = 0;
+	if(!file.write(encData)){
+		alert("写入文件错误");
+		return;
+	}
+},true);
+main();

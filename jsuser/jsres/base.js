@@ -169,27 +169,3 @@ Rect.prototype.width = function () {
 Rect.prototype.height = function () {
 	return this.bottom - this.top;
 }
-//data 如果是一个内存对象，len 表示传入的长度，如果len缺省，使用data的总长
-//data 如果是一个指针，必须传 len。
-//其它情况，data 被看成 字串，此时len 被忽略。
-function parseMemParam(data,len,name){
-	var mem;
-	if(data instanceof CMemory){
-		if(len===undefined||len<=0) len = data.length;
-		data = data.handle();
-		if(len>data.length){
-			throw name+",len exceed data.length:"+len + ">"+data.length;
-			return false;
-		}
-	}else if(data&0xffff0000){
-	}else{
-		mem = new CMemory();
-		len = mem.setString(data);
-		data = mem.handle();
-	}
-	if((len&0xffffffff)==0){
-		throw name+",len not a available number:"+len;
-		return false;
-	}
-	return {"data":data,"len":len,"mem":mem};
-}

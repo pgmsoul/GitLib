@@ -405,6 +405,105 @@ namespace v8{
 	//		"require('base');//base 库的全部组件都会被加载。"
 	//	]
 	//}//*
+	//*,{
+	//	"type":"const",
+	//	"name":"FileSystem",
+	//	"text":"此常数对象提供文件系统的相关操作，如粘贴、复制、删除等。",
+	//	"member":[//*
+	class JsApp : public JsConst<JsApp>{
+	public:
+		//*{
+		//	"type":"property",
+		//	"name":"name",
+		//	"objtype":"string",
+		//	"text":"应用程序的名称，默认是脚本文件名，不包括后缀。这个名称会被很多内部函数使用，所以谨慎修改它。比如配置文件的默认文件名称，而很多函数使用了配置文件，如果动态的改变了这个名称，可能造成加载不同的配置文件。"
+		//}//*
+		//*,{
+		//	"type":"property",
+		//	"name":"folder",
+		//	"objtype":"string",
+		//	"text":"应用程序的默认目录，它初始被设置为脚本所在的目录，谨慎改变它的值。"
+		//}//*
+		static inline void set(cs::String& name,Local<Value>& value,Local<Object>& self){
+			if(name==L"name"){
+				cs::String str;
+				GetString(value,str);
+				cs::App::SetAppName(str);
+			}else if(name==L"folder"){
+				cs::String str;
+				GetString(value,str);
+				if(SetCurrentDirectory(str)){
+					cs::App::SetAppDirectory(str);
+				}
+			}
+		}
+		static inline Handle<Value> get(cs::String& name,Local<Object>& self){
+			if(name==L"name"){
+				return NEW_WSTR(cs::App::GetAppName());
+			}else if(name==L"folder"){
+				return NEW_WSTR(cs::App::GetAppDirectory());
+			}
+			return Undefined();
+		}
+		static inline void init(Handle<Object>& obj){
+			SET_OBJ_ACCESSOR(obj,name);
+			SET_OBJ_ACCESSOR(obj,folder);
+		}
+	};
+	//*]}//*
+
+	//*,{
+	//	"type":"function",
+	//	"name":"setConfig(callback,[filename])",
+	//	"text":"读取或设置配置文件，配置文件是一个 Json 格式的文本文件，可以是 utf-8 获取 ansi 编码。",
+	//	"param":[
+	//		{
+	//			"type":"function",
+	//			"name":"callback(cfg)",
+	//			"text":"setConfig 函数如果成功，会触发这个回调函数，cfg 是一个对象，它的属性就是配置内容，对这个对象的任何更改最后都会作为 Json 格式保存到配置文件。"
+	//		},
+	//		{
+	//			"type":"string",
+	//			"name":"[filename]",
+	//			"text":"配置文件名，缺省是和脚本同路径同名的一个后缀为“.json”的文本文件，如果指定了文件名，则读取和保存对应的文件。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"boolean",
+	//		"text":"如果成功打开了配置文件，函数返回 true，否则返回 undefined。"
+	//	}
+	//}//*
+	Handle<Value> setConfig(const Arguments& args){
+		HandleScope stack;
+		while(true){
+			if(args.Length()<1) break;
+			if(!args[0]->IsFunction()) break;
+			cs::String file;
+			if(args.Length()>1)
+				GetString(args[1],file);
+			cs::Config cfg(file);
+			cs::Json* json = cfg.Lock();
+			if(!json) break;
+
+			json->ToString(file,false);
+			Handle<Object> glb = GetGlobal();
+			Handle<Object> JSON = glb->Get(NEW_STR(JSON))->ToObject();
+			Handle<Function> parse = Handle<Function>::Cast(JSON->Get(NEW_STR(parse)));
+			Handle<Function> stringify = Handle<Function>::Cast(JSON->Get(NEW_STR(stringify)));
+			Handle<Function> callback = Handle<Function>::Cast(args[0]);
+			Handle<Value> argv[3];
+			argv[0] = NEW_WSTR(file.Handle());
+			Handle<Value> v = parse->Call(JSON,1,argv);
+			if(v.IsEmpty()||!v->IsObject()) v = Object::New();
+			argv[0] = v;
+			CallFunc(glb,callback,1,argv);
+			v = stringify->Call(JSON,1,argv);
+			GetString(v,file);
+			json->Parse(file);
+			return True();
+		}
+		return Undefined();
+	}
 	void LoadBase(){
 		HandleScope store;
 
@@ -415,9 +514,12 @@ namespace v8{
 		SET_OBJ_FUNC_RO(obj,run,loadJsCode);
 		SET_OBJ_FUNC_RO(obj,load,loadJsFile);
 		SET_OBJ_FUNC_RO(obj,format,format);
-		SET_OBJ_FUNC_RO(obj,log,debug);
+		//SET_OBJ_FUNC_RO(obj,log,debug);
 		SET_OBJ_FUNC_RO(obj,startMsgLoop,startMsgLoop);
 		SET_OBJ_FUNC_RO(obj,exitMsgLoop,exitMsgLoop);
+		SET_OBJ_FUNC_RO(obj,setConfig,setConfig);
+
+		JsApp::Load(obj,L"App");
 
 		obj->Set(String::New("Global"),obj,ReadOnly);
 	}
@@ -609,6 +711,113 @@ namespace v8{
 	//}
 	//],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\console.jsuser"}//*
 
+	//*,{
+	//	"type":"function",
+	//	"name":"log([text],[color])",
+	//	"text":"把文本输出到日志窗口。",
+	//	"param":[
+	//		{
+	//			"type":"string",
+	//			"name":"[text]",
+	//			"text":"要输出的文本，如果此参数缺省，输出一个空行。"
+	//		},
+	//		{
+	//			"type":"integer",
+	//			"name":"[color]",
+	//			"text":"文本的颜色，缺省是白色。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"void",
+	//		"text":"函数没有返回值。"
+	//	},
+	//	"remark":[
+	//		"输出窗口是一个用于显示日志消息的窗口，不能响应用户的输入，但是可以控制字体大小、字体颜色、背景颜色。日志窗口有自己的消息循环，与主城市是否是窗口程序无关。"
+	//	],
+	//	"member":[
+	//{
+	//	"type":"function",
+	//	"name":"show([exit])",
+	//	"text":"显示日志窗口。",
+	//	"param":[
+	//		{
+	//			"type":"boolean",
+	//			"name":"exit",
+	//			"text":"当用户关闭日志窗口时，是否退出程序，缺省是 true。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"void",
+	//		"text":"没有返回值。"
+	//	}
+	//}
+	//,{
+	//	"type":"function",
+	//	"name":"close()",
+	//	"text":"隐藏日志窗口，但是日志不会被清空。",
+	//	"return":{
+	//		"type":"void",
+	//		"text":"这个函数没有返回值。"
+	//	}
+	//}
+	//,{
+	//	"type":"function",
+	//	"name":"setMaxLine([count])",
+	//	"text":"设置日志窗口最大的文本行数，如果日志达到这个行数，前面的日志会被舍弃。",
+	//	"param":[
+	//		{
+	//			"type":"integer",
+	//			"name":"[count]",
+	//			"text":"可能的最大行数，缺省是 1000"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"void",
+	//		"text":"这个函数没有返回值。"
+	//	}
+	//}
+	//,{
+	//	"type":"function",
+	//	"name":"setFontSize(size)",
+	//	"text":"设置输出文本的字体大小，这个设置是会影响所有文本。",
+	//	"param":[
+	//		{
+	//			"type":"integer",
+	//			"name":"size",
+	//			"text":"字体的尺寸，缺省是 16."
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"void",
+	//		"text":"这个函数没有返回值。"
+	//	}
+	//},
+	//{
+	//	"type":"function",
+	//	"name":"setBkColor(color)",
+	//	"text":"设置输出窗口的背景色，缺省是黑色。",
+	//	"param":[
+	//		{
+	//			"type":"integer",
+	//			"name":"color",
+	//			"text":"颜色值。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"void",
+	//		"text":"这个函数没有返回值。"
+	//	}
+	//},
+	//{
+	//	"type":"function",
+	//	"name":"clear()",
+	//	"text":"清空所有日志。",
+	//	"return":{
+	//		"type":"void",
+	//		"text":"这个函数没有返回值。"
+	//	}
+	//}
+	//],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\logwnd.jsuser"}//*
 	void RectJsFromC(v8::Handle<Value> value,cs::Rect* r){
 		HandleScope store;
 		if(!value->IsObject()) return;

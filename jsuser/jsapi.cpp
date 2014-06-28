@@ -370,7 +370,9 @@ namespace v8{
 		}
 	};
 	/*@range_end*/
+	void LoadAPICallback(Handle<Object>& glb);
 	void LoadAPICall(Handle<Object>& glb){
 		API::Load(glb,L"Api",TEMPLATE_ID_API);
+		LoadAPICallback(glb);
 	}
 }

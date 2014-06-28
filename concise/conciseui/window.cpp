@@ -341,7 +341,7 @@ return_code:
 		}
 		View** pv = GetAfxWindow();
 		*pv = this;
-		::CreateWindowEx(Param->ExStyle,Param->ClassName,Param->Text,Param->Style,Param->Location.x,Param->Location.y,Param->Size.x,Param->Size.y,hParent,Param->Menu,::GetModuleHandle(0),this/*Param->lParam*/);
+		_Handle = ::CreateWindowEx(Param->ExStyle,Param->ClassName,Param->Text,Param->Style,Param->Location.x,Param->Location.y,Param->Size.x,Param->Size.y,hParent,Param->Menu,::GetModuleHandle(0),this/*Param->lParam*/);
 		if(_Handle==0){
 			Warning(L"View.Create");
 			return 0;
@@ -387,7 +387,7 @@ return_code:
 		bmp.Select(dc);
 		if((BkColor&0xff000000)==0){
 			HBRUSH bk = (HBRUSH)GetStockObject(DC_BRUSH);
-			::SetDCBrushColor(*hdc,BkColor);
+			::SetDCBrushColor(dc,BkColor);
 			::FillRect(dc,rect,bk);
 		}
 		/*if(BkImage&&(BK_IMAGE&BkMode)){
@@ -424,7 +424,8 @@ return_code:
 		msg->Result = 0;
 	}
 	void View::_EraseBkgndProc(Message* msg,IWnd*){
-		if(OnDoubleDraw.Count()){
+		if(OnDoubleDraw.Count()) return;
+		if(OnEraseBkgnd.Count()){
 			OnEraseBkgnd.Call((HDC)msg->wParam,this);
 		}else{
 			Rect rect;
@@ -807,8 +808,10 @@ return_code:
 		if((cx==_MinSize.x)&&(cy==_MinSize.y)) return;
 		_MinSize.x = cx;
 		_MinSize.y = cy;
-		_SizeProc(0,this);
-		_SizeProc(0,this);
+		if(_Handle){
+			_SizeProc(0,this);
+			_SizeProc(0,this);
+		}
 	}
 	void ScrollView::SetMinSize(Twin size)
 	{

@@ -2,9 +2,10 @@
 /* 在窗口中输出信息会自动同步，所以也就可能存在死锁问题。
 */
 namespace cs{
+#define WM_LOGPRINTTEXT	(WM_USER+0x137)
 	enum{OUTPUT_DEVICE_CONSOLE,OUTPUT_DEVICE_OUTPUT};
 	CONCISE_API void SetOutputDevice(int device = OUTPUT_DEVICE_OUTPUT);
-	//设置输出窗口的句柄，这个窗口将会接收到 WM_ADDTEXT（WM_USER + 0x137）消息。
+	//设置输出窗口的句柄，这个窗口将会接收到 WM_COPYDATA/WM_LOGPRINTTEXT 消息。
 	CONCISE_API inline void SetOutputDevice(HWND wnd){SetOutputDevice((int)(UINT_PTR)wnd);}
 	//打印格式化信息与consol的print相同
 	CONCISE_API void Print(LPCWSTR inf,...);

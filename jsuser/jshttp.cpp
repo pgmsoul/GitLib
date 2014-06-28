@@ -286,7 +286,11 @@ namespace v8{
 		//	"type":"property",
 		//	"name":"header",
 		//	"objtype":"array",
-		//	"text":"设置请求头，每个元素被作为头的一行发送。"
+		//	"text":"设置请求头，每个元素被作为头的一行发送。",
+		//	"remark":[
+		//		"如果要上传二进制数据，必须添加头 \"Content-Type\\: text/xml\"",
+		//		"如果要使用 ?param1=value1&param2=value2 这种方式上传数据，必须添加头 \"Content-Type\\: application/x-www-form-urlencoded\""
+		//	]
 		//}//*
 		//*,{
 		//	"type":"function",
@@ -415,7 +419,26 @@ namespace v8{
 			connected = 0;
 		}
 	};
+	//*,{
+	//	"type":"class",
+	//	"name":"CSocket",
+	//	"text":"Socket 对象。",
+	//	"remark":[
+	//		"提供 socket 的相关功能。"
+	//	],
+	//	"member":[//*
 	class JsSocket : public JsWrapObject<AsynSocket,JsSocket>{
+		//*{
+		//	"type":"function",
+		//	"name":"getRemoteIp()",
+		//	"text":"获取一个已连接的 socket 的远端 ip 地址，socket 必须处于连接状态。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"string",
+		//		"text":"成功返回一个 ip 地址字串，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> getRemoteIp(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -428,6 +451,17 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"getRemotePort()",
+		//	"text":"返回一个已连接的 socket 的远程端口。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"integer",
+		//		"text":"成功返回一个端口值，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> getRemotePort(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -440,6 +474,17 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"getLocalIp()",
+		//	"text":"返回一个已连接 socket 的本地 ip 地址，如果在一个局域网内，这个地址是内网地址。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"string",
+		//		"text":"成功返回一个 ip 地址字串，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> getLocalIp(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -452,6 +497,17 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"getLocalPort()",
+		//	"text":"返回一个已连接 socket 的本地端口。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"integer",
+		//		"text":"成功返回一个端口值，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> getLocalPort(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -464,6 +520,22 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"connect(ip|host)",
+		//	"text":"建立连接，这个函数是一个异步函数，因为连接是一个耗时操作，连接成功与否需要在 onConnect 回调函数里获取。",
+		//	"param":[
+		//		{
+		//			"type":"string",
+		//			"name":"ip|host",
+		//			"text":"要连接的 ip 地址或者域名。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"函数成功的启动了连接返回 true，但是这不代表成功连接到服务器，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> connect(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -482,6 +554,31 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"send(len,[nohead])",
+		//	"text":"发送数据，有两种发送方式，一种是含特殊头信息的方式，这是缺省方式，但是只适用于 CTcpServer 服务器。如果要连接通常的服务器，nohead 设为 true。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"len",
+		//			"text":"要发送的数据长度，要发送的数据需要通过 socket 对象的 sendData 设置，它是一个 CMemory 对象，这个对象最大值是 1M 字节，一次发送超过 1M 字节的数据会失败。"
+		//		},
+		//		{
+		//			"type":"boolean",
+		//			"name":"[nohead]",
+		//			"text":"使用含特殊信息头的方式还是普通方式发送，缺省是含特殊头方式。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，失败返回 undefined。"
+		//	},
+		//	"remark":[
+		//		"send 函数是异步函数，查看发送数据的结果，需要设置 onSend 回调函数。",
+		//		"与通常的流式传输不同，如果使用含特殊头的方式，数据可以一次接收，也就是 onRecv 只要被回调，就是和发送端 send 函数长度相同的完整数据，无需自己连接数据，大大简化了编程。"
+		//	]
+		//}//*
 		static Handle<Value> send(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -497,6 +594,17 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"isConnected()",
+		//	"text":"返回当前 socket 是否处于连接状态。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"连接返回 true，未连接返回 false。"
+		//	}
+		//}//*
 		static Handle<Value> isConnected(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -508,6 +616,17 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"recv()",
+		//	"text":"启动接收线程，如果不调用这个函数，socket 是无法接收数据的，如果一个 socket 不需要接收数据，那么就不需要调用 recv 函数。在 socket 对象的 onRecv 回调函数里获取接收的数据。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"接收线程启动成功返回 true，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> recv(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -521,6 +640,17 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"close()",
+		//	"text":"关闭连接，释放 socket 资源。如果接收和发送线程仍然在运行，它们会结束线程，但是具体结束时间是有延迟的。onRecv 和 onSend 函数会返回非零错误码。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> close(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -534,6 +664,87 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"property",
+		//	"name":"sendData",
+		//	"objtype":"CMemory",
+		//	"text":"用来保存要发送的数据，直到 onSend 函数返回，这些数据才会真正被发送出去，sendData 的长度不能被设置为大于 1M，否则 send 函数会失败。"
+		//}//*
+		//*,{
+		//	"type":"function",
+		//	"name":"onSend(len,error)",
+		//	"text":"这是一个回调函数，设置 CSocket 对象的 onSend 属性为此类型的函数。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"len",
+		//			"text":"已经发送的数据的长度。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"error",
+		//			"text":"错误码，如果函数没有错误，error = 0，负数代表一个外部错误，正数代表一个内部系统错误。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"void",
+		//		"text":"此函数无需返回值。"
+		//	},
+		//	"remark":[
+		//		"sendData 属性里设置要发送的数据，它是一个 CMemory 对象，每次发送的数据不能大于 1M 字节。"
+		//	]
+		//}//*
+		//*,{
+		//	"type":"property",
+		//	"name":"recvData",
+		//	"objtype":"CMemory",
+		//	"text":"用来保存接收的数据，在 onSend 函数里获取接收数据的长度。"
+		//}//*
+		//*,{
+		//	"type":"function",
+		//	"name":"onRecv(len,error)",
+		//	"text":"这是一个回调函数，设置 CSocket 对象的 onRecv 属性为此类型的函数。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"len",
+		//			"text":"接收数据的长度。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"error",
+		//			"text":"错误码，如果函数没有错误，error = 0，负数代表一个外部错误，正数代表一个内部系统错误。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"void",
+		//		"text":"此函数无需返回值。"
+		//	},
+		//	"remark":[
+		//		"如果使用了特殊头的传输方式，这函数总是返回 send 函数发送的数据长度。如果使用通常的方式，则接收长度是不确定的。"
+		//	]
+		//}//*
+		//*,{
+		//	"type":"function",
+		//	"name":"onConnect(connected,error)",
+		//	"text":"这是一个回调函数，设置 CSocket 对象的 onConnect 属性为此类型的函数。",
+		//	"param":[
+		//		{
+		//			"type":"boolean",
+		//			"name":"connected",
+		//			"text":"本次连接是否成功。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"error",
+		//			"text":"错误码，如果函数没有错误，error = 0，负数代表一个外部错误，正数代表一个内部系统错误。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"void",
+		//		"text":"此函数无需返回值，一个断开的 socket 可以被重新使用。"
+		//	}
+		//}//*
 	public:
 		class CBObject : public WrapObject{
 			typedef struct ONCONNECT : public cs::_struct{
@@ -831,7 +1042,30 @@ namespace v8{
 			SET_CLA_FUNC(getLocalPort);
 		}
 	};
+	//*]}//*
+
+	//*,{
+	//	"type":"class",
+	//	"name":"CTcpServer",
+	//	"text":"提供 TCP 服务器功能。",
+	//	"member":[//*
 	class JsTcpServer : public JsWrapObject<cs::TCPServer,JsTcpServer>{
+		//*{
+		//	"type":"function",
+		//	"name":"startup(port)",
+		//	"text":"启动 tcp 服务器，port 指定端口。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"port",
+		//			"text":"port 是一个16位整数。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，失败返回 undefined。同一端口，只能启动一个监听服务器。"
+		//	}
+		//}//*
 		static Handle<Value> startup(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -855,6 +1089,17 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"shutdown()",
+		//	"text":"关闭这个服务器的监听，但是这个操作不会影响已有的连接，它只是关闭新的连接建立，而不会关闭已有的连接。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，失败返回 undefined。"
+		//	}
+		//}//*
 		static Handle<Value> shutdown(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -867,6 +1112,31 @@ namespace v8{
 			}
 			return Undefined();
 		}
+		//*,{
+		//	"type":"function",
+		//	"name":"onAccept(client)",
+		//	"text":"这是一个回调函数，当有客户端连接时，onAccept 被回调。",
+		//	"param":[
+		//		{
+		//			"type":"CSocket",
+		//			"name":"client",
+		//			"text":"和客户端连接的 socket。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"void",
+		//		"text":"函数没有返回值。"
+		//	},
+		//	"remark":[
+		//		"如果没有设置 onAccept 回调函数，所有客户端连接请求会被立即关闭。当有效连接数达到上限时，新连接也会被关闭。"
+		//	]
+		//}//*
+		//*,{
+		//	"type":"property",
+		//	"name":"maxClients",
+		//	"objtype":"integer",
+		//	"text":"获取和设置最大的连接数，缺省是 100，如果设置了一个错误的数值，按缺省值对待。设置这个值，不会断开已有的连接，即使实际连接数已经超过设定值，但是新建连接会被关闭，直到实际连接数小于设定的值。"
+		//}//*
 	public:
 		static void __stdcall clientChanged(){
 			;
@@ -895,12 +1165,12 @@ namespace v8{
 					delete oa;
 					return;
 				}
-				Handle<Object> jssock = GetEnv()->GetTemplate(TEMPLATE_ID_SOCKET)->GetFunction()->NewInstance();
-				JsSocket::CBObject* asynSock;
-				GetCHandle(asynSock,jssock);
 				
 				Handle<Array> clients = Handle<Array>::Cast(oa->cobj->self->GetHiddenValue(NEW_STR(clients)));
 				uint index = 0;
+				int max_count = oa->cobj->self->Get(NEW_STR(maxClients))->Int32Value();
+				if(max_count<=0) max_count = 100;
+				bool canreserv = false;
 				while(true){
 					Handle<Value> elm = clients->Get(index);
 					bool canUse = false;
@@ -915,11 +1185,25 @@ namespace v8{
 						}else canUse = true;
 					}
 					if(canUse){
-						clients->Set(index,jssock);
+						canreserv = true;
 						break;
 					}
 					index++;
+					if((int)index>=max_count){
+						break;
+					}
 				}
+				if(!canreserv){
+					::shutdown(oa->sock,2);
+					closesocket(oa->sock);
+					delete oa;
+					return;
+				}
+				Handle<Object> jssock = GetEnv()->GetTemplate(TEMPLATE_ID_SOCKET)->GetFunction()->NewInstance();
+				JsSocket::CBObject* asynSock;
+				GetCHandle(asynSock,jssock);
+				clients->Set(index,jssock);
+
 				asynSock->Attach(oa->sock);
 				asynSock->connected = true;
 
@@ -947,6 +1231,7 @@ namespace v8{
 			SET_CLA_FUNC(shutdown);
 		}
 	};
+	//*]}//*
 	typedef struct PORTMAPPING : public cs::_struct{
 		char ip[40];
 		char port[6];
@@ -1092,8 +1377,13 @@ namespace v8{
 		SET_PROP(obj,udp,Boolean::New(udpOrTcp));
 		return obj;
 	}
+	//*,{
+	//	"type":"class",
+	//	"name":"CUpnp",
+	//	"text":"提供路由器的端口映射操作。",
+	//	"member":[//*
 	class JsUpnp : public JsWrapObject<Upnp,JsUpnp>{
-		//*,{
+		//*{
 		//	"type":"function",
 		//	"name":"set(port,[udpOrTcp],[disabled],[innerPort],[name],[localIp])",
 		//	"text":"设置一个端口映射，如果外部端口为 port，类型为 udpOrTcp 的映射已经存，则重新设置它的参数，否则添加一个端口映射。",
@@ -1358,6 +1648,7 @@ namespace v8{
 			SET_CLA_FUNC(create);
 		}
 	};
+	//*]}//*
 	void LoadNet(Handle<Object>& glb){
 		JsHttp::Load(glb,L"CHttpRequest",TEMPLATE_ID_HTTP);
 		JsSocket::Load(glb,L"CSocket",TEMPLATE_ID_SOCKET);

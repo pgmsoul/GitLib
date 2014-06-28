@@ -15,10 +15,9 @@ namespace cs{
 		}
 		if(index==-1) return;
 		Config rt(0);
-		if(!rt.Lock()){
-			return;
-		}
-		Json* pst = rt.GetJson()->GetProperty(L"wndpos");
+		Json* root = rt.Lock();
+		if(!root) return;
+		Json* pst = root->GetProperty(L"wndpos");
 		if(pst==0) return;
 		pst = pst->GetProperty(_wndName[index]);
 		if(pst==0) return;
@@ -56,10 +55,9 @@ namespace cs{
 		AutoStruct(WINDOWPLACEMENT,wp);
 		GetWindowPlacement(msg->hWnd,&wp);
 		Config rt(0);
-		if(!rt.Lock()){
-			return;
-		}
-		Json* pst = rt.GetJson()->GetProperty(L"wndpos",true);
+		Json* root = rt.Lock();
+		if(!root) return;
+		Json* pst = root->GetProperty(L"wndpos",true);
 		if(pst==0) return;
 		pst = pst->GetProperty(_wndName[index],true);
 		if(pst==0) return;

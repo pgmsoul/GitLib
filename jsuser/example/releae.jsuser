@@ -1,0 +1,18 @@
+"use strict";
+
+require("base");
+
+Class(function main(){
+	Console.show();
+	var fl = new CFileList();
+	fl.addFilter("php");
+	fl.onList = function(inf){
+		var fn = fl.path + "\\" + inf.name;
+		//var rst = FileSystem.delete(fn);
+		Console.log(rst+" - "+fn);
+	}
+	//fl.search("D:\\wamp\\www\\jsuser\\3\\document");
+	Console.readln();
+},true);
+
+main();

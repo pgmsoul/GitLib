@@ -115,9 +115,9 @@ namespace cs{
 		//删除一个timer。id是设置时返回的id。
 		inline bool KillTimer(UINT_PTR id){return ::KillTimer(_Handle,id)!=0;}
 		//要求窗口重绘指定的区域,erase是否重绘背景,也就是是否引发WM_ERASEBKGND消息.
-		inline bool Invalidate(const RECT* clip = 0,bool erase = 1){return ::InvalidateRect(_Handle,clip,erase)!=0;}
+		inline bool Invalidate(const RECT* clip = 0,bool erase = 1){if(_Handle==0) return 0;return ::InvalidateRect(_Handle,clip,erase)!=0;}
 		//要求窗口重绘指定的区域,erase是否重绘背景,也就是是否引发WM_ERASEBKGND消息.
-		inline bool Invalidate(const HRGN hRgn,bool erase = 1){return ::InvalidateRgn(_Handle,hRgn,erase)!=0;}
+		inline bool Invalidate(const HRGN hRgn,bool erase = 1){if(_Handle==0) return 0;return ::InvalidateRgn(_Handle,hRgn,erase)!=0;}
 		//返回窗口参数。
 		inline LONG_PTR GetWindowParam(int gwl){return ::GetWindowLongPtr(_Handle,gwl);}
 		//设置窗口相关参数.
@@ -235,7 +235,7 @@ namespace cs{
 
 		Delegate<DC*,View*>	OnDoubleDraw;//一旦在这个调用中加入函数，OnDraw就不会被呼叫。这个函数会自动滚动窗口，也就是说绘图不必自己考虑窗口的滚动问题。
 		Delegate<DC*,View*>	OnDraw;//绘图消息在程序中实际上是异步于应用程序线程的.		
-		Delegate<HDC,View*>	OnEraseBkgnd;	//也可以在这里面作图,它在OnDraw之后被调用.但它们的机制是不同的
+		Delegate<HDC,View*>	OnEraseBkgnd;	//也可以在这里面作图,它在OnDraw之前被调用.但它们的机制是不同的
 		Delegate<StringMemList*,View*>	OnDropFiles;//响应拖曳消息.
 	};
 	//Class ScrollView

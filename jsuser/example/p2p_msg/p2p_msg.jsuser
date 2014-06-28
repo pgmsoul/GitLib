@@ -1,7 +1,11 @@
+//file: p2p_msg.jsuser
+
+//主要模块：界面、Layout布局系统、ECC 加密、sha 摘要、socket 网络、TCP 服务器、upnp 端口映射（内网必须）。
 
 "use strict";
 require("base");
 require("wnd");
+var jscrypt = Api.loadModule("../jscrypt.dll");
 load("../crypt.jsuser");
 
 var port = 37129;	//外网端口
@@ -116,7 +120,7 @@ function initServer(){
 		butConnect.disabled = false;
     }
 	var submit = new CMemory();
-	var addr = CSha(pubkey,undefined,32);
+	var addr = sha(pubkey,undefined,32);
 	submit.copyFrom(addr.handle(),addr.length);
 	addr.dispose();
 	submit.copyFrom(pubkey.handle(),pubkey.length,32);
@@ -202,7 +206,7 @@ function initUI(){
 		ecc.saveKey(keyfile);
 	}
 	pubkey = ecc.getPublicKey();
-	var hash = CSha(pubkey,0,32);
+	var hash = sha(pubkey,0,32);
 	editMyAddr.text = hash.toBase64();
 	hash.dispose();
 
@@ -212,6 +216,7 @@ function initUI(){
 		editMyAddr.readOnly = true;
 		editInf.readOnly = true;
 		butSend.disabled = true;
+		logInf("这是一个p2p测试程序，窗口下面的编辑框是你的地址，把这个地址告诉你的好友，或者把好友的地址复制到上面的地址框，然后点连接，如果对方也开着本程序，连接成功后，就可以向对方发送消息。这些消息是经过椭圆不对称加密算法加密的，只有你自己能解密。你可以测试向自己的地址发送消息。");
 		initServer();
 		initConnect();
 		initUpnp();

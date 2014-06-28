@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdio.h>
 #include "../concise/xyssl/aes.h"
+#pragma usexpstyle
 
 void __stdcall onProgress(cs::DirData* dd,void* param){
 	uint preAfter = dd->PreOrAfter;
@@ -60,35 +61,6 @@ void __stdcall proc(WORD,WORD,void*){
 //DT_NOPREFIX		关闭前缀字符的处理，通常DrawText解释助记前缀字符，&为给其后的字符加下划线，解释&&为显示单个&。指定DT_NOPREFIX，这种处理被关闭。下划线可以被添加到空格和tab键的下面。
 //DT_TABSTOP		设置tab字符的最大宽度，在DRAWTEXTPARAMS参数的iTabLength里设置，如果这个值是0，会设为默认 8 。
 //DT_SINGLELINE		无视换行符，持续在一行输出。默认无论回车还是换行符，都会换行，但是连续的\r\n值换行一次，DT_SINGLELINE 会导致 uiLengthDrawn 失效，总是返回字串的长度。
-class Main : public cs::Frame{
-	LPCWSTR str;
-	uint count;
-	DRAWTEXTPARAMS	dtp;
-	void  onDraw(cs::DC* dc,cs::View* ){
-		cs::Rect r(20,20,210,216);
-		dc->SetBkTransparent();
-		::Rectangle(*dc,r.left,r.top,r.right,r.bottom);
-		cs::Font* font = cs::GetDefaultFont();
-		font->Select(*dc);
-		DWORD format = DT_WORDBREAK|DT_EXPANDTABS|DT_TABSTOP|DT_EDITCONTROL|DT_SINGLELINE;
-		int n = DrawTextEx(*dc,(LPWSTR)str,count,r,format,&dtp);
-		font->Select(*dc);
-	}
-public:
-	Main(){
-		cs::Font* font = cs::GetDefaultFont();
-		font->SetSize(20);
-		font->Create();
-		::ZeroMemory(&dtp,sizeof(dtp));
-		dtp.cbSize = sizeof(dtp);
-		dtp.iTabLength = 8;
-		str = L"搜狗\t浏\r览\n器日前宣\t布，dgdsfgdsfgsdfgdsfgds为小米路由器带来了研发两年的的网页加速引擎技术“搜狗预取引擎”，目前这一新插件已上线。\r\n\
-			   据官方介绍，“搜狗预取引擎”能精准预测下一步访问网页并提前加载，打开网页至少快一倍。小米路由器用户可以体验一下。";
-		count = cs::WcsLength(str);
-		OnDraw.Add(this,&Main::onDraw);
-		cs::SetWndRememberPos(this,L"wnd");
-	}
-};
 int shfile(LPCWSTR dst,LPCWSTR src,UINT func,FILEOP_FLAGS flag){
 	cs::String from = src;
 	cs::FPToFullPath(from);
@@ -139,28 +111,89 @@ int sh(){
 	LPCWSTR dst = L"D:\\Documents\\Downloads\\ABC3\\abc3";
 	return shmove(dst,src,false,true);
 }
-class A{
-int i;
-public:
-	A(){
-		i = 0;
+
+class Main : public cs::Frame{
+	LPCWSTR str;
+	uint count;
+	cs::Button	debugBut;
+	DRAWTEXTPARAMS	dtp; 
+	void  onDraw(cs::DC* dc,cs::View*){
+		cs::Rect r(20,20,210,216);
+		dc->SetBkTransparent();
+		::Rectangle(*dc,r.left,r.top,r.right,r.bottom);
+		cs::Font* font = cs::GetDefaultFont();
+		font->Select(*dc);
+		DWORD format = DT_WORDBREAK|DT_EXPANDTABS|DT_TABSTOP|DT_EDITCONTROL|DT_SINGLELINE;
+		int n = DrawTextEx(*dc,(LPWSTR)str,count,r,format,&dtp);
+		font->Select(*dc);
 	}
-	~A(){
-		i = -1;
+	void onCreate(cs::IWnd*){
+		debugBut.Create(_Handle);
+	}
+	void onDebug(WORD id,WORD type,cs::IWnd*){
+		cs::LogShowWindow(); 
+		cs::Log(L"孙中山先是从檀香山到香港，然后再改乘一中国沙船回到香山县金星港。当船进入中国海域后，船主特别提醒乘客，对上船来盘查收税的清政府官吏千万要毕恭毕敬，耐心等候，免得招惹麻烦。");
+	}
+public:
+	Main(){
+		debugBut.Param->Text = L"debug";
+		debugBut.Param->SetRect(480,0,80,30);
+		debugBut.OnCommand.Add(this,&Main::onDebug);
+		OnCreate.Add(this,&Main::onCreate);
+		cs::Font* font = cs::GetDefaultFont();
+		font->SetSize(12);
+		font->Create();
+		::ZeroMemory(&dtp,sizeof(dtp));
+		dtp.cbSize = sizeof(dtp);
+		dtp.iTabLength = 8;
+		str = L"搜狗\t浏\r览\n器日前宣\t布，dgdsfgdsfgsdfgdsfgds为小米路由器带来了研发两年的的网页加速引擎技术“搜狗预取引擎”，目前这一新插件已上线。\r\n\
+			   据官方介绍，“搜狗预取引擎”能精准预测下一步访问网页并提前加载，打开网页至少快一倍。小米路由器用户可以体验一下。";
+		count = cs::WcsLength(str);
+		OnDoubleDraw.Add(this,&Main::onDraw);
+		cs::SetWndRememberPos(this,L"wnd");
 	}
 };
-class B{
-	int j;
-	A a;
-public:
-	B(){
-		j = 0;
-	}
-	~B(){
-		j = -1;
-	}
-};
+int decrypt(){
+	LPCWSTR src = L"F:\\user\\Dropbox\\Dropbox\\Private\\pw2.enc";
+	cs::File file;
+	if(!file.Create(src)) return 0;
+	cs::Memory<char> decData,encData;
+	int srclen = file.Read(&encData);
+
+	decData.SetLength(96);
+	cs::Aes aes;
+	LPCSTR key = "昨天下了一夜雨走起路来脚挂泥";
+	LPCSTR iv = "天上有几丝云彩依然是好天气";
+	aes.SetDecKey(key,strlen(key),cs::aes_256);
+	aes.SetIV(iv);
+	aes.DecryptCbc(decData.Handle(),encData.Handle(),srclen);
+	::OutputDebugStringA(decData);
+	int r = 0;
+	return r;
+}
+int encrypt(){
+	LPCWSTR src = L"F:\\user\\Dropbox\\Dropbox\\Private\\pw.txt";
+	cs::File file;
+	if(!file.Create(src)) return 0;
+	cs::Memory<char> decData,encData;
+	int srclen = file.Read(&decData);
+	cs::Aes aes;
+	LPCSTR key = "昨天下了一夜雨走起路来脚挂泥";
+	LPCSTR iv = "天上有几丝云彩依然是好天气";
+	aes.SetEncKey(key,strlen(key),cs::aes_256);
+	aes.SetIV(iv);
+	int enclen = 96;
+	encData.SetLength(enclen);
+	aes.EncryptCbc(encData.Handle(),decData.Handle(),srclen);
+
+	LPCWSTR encfn = L"F:\\user\\Dropbox\\Dropbox\\Private\\pw2.enc";
+	file.Create(encfn);
+	file.SetLength(0);
+	file.Write(encData.Handle(),enclen);
+	return 0;
+}
 WINMAIN{
-	B a;
+	//encrypt();
+	decrypt();
 	return 0;
 };

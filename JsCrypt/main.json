@@ -1,0 +1,11 @@
+{
+	"name" : "test",
+	"wndpos" : {
+		"main_wnd" : {
+			"left" : 1105,
+			"top" : 448,
+			"right" : 1832,
+			"bottom" : 973
+		}
+	}
+}

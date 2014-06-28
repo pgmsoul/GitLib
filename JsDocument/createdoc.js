@@ -22,13 +22,15 @@ Class(function main() {
 	
 	var jsbase = jsuser.member[0];
 	var jswnd = jsuser.member[1];
+	var jscrypt = jsuser.member[2];
 
 	jsbase.member = createJsbaseDoc();
 	jswnd.member = createJswinDoc();
+	jscrypt.member = createJscryptDoc();
 	
 	parseJsonDoc(jsuser,[],"");
 	//生成 Notepad++ 的个性化配置
-	//createKw();
+	createKw();
 	//Console.readln();
 	//str = JSON.stringify(json,null,"\t");
 },true);
@@ -38,6 +40,12 @@ Class(function saveString(str,fn){
 	file.length = 0;
 	file.writeString(str,3);
 },true);
+function createJscryptDoc(){
+	var groups = [];
+	var group = getFileDocJson("D:\\SoftProject\\GitLib\\jsuser\\cryptdoc.cpp");
+	groups.push(group);
+	return groups;
+}
 function createJsbaseDoc(){
 	var groups = [];
 	var group = getFileDocJson("D:/SoftProject/GitLib/jsuser/jskernel.cpp");
@@ -50,8 +58,10 @@ function createJsbaseDoc(){
 	groups.push(group);
 	group = getFileDocJson("D:/SoftProject/GitLib/jsuser/jsgdi.cpp");
 	groups.push(group);
-	group = getFileDocJson("D:/SoftProject/GitLib/jsuser/v8base.cpp");
-	groups.push(group);
+	var base = getFileDocJson("D:/SoftProject/GitLib/jsuser/v8base.cpp");
+	groups.push(base);
+	var cproc = getFileDocJson("D:/SoftProject/GitLib/jsuser/jsapicb.cpp");
+	base.member.push(cproc);
 	return groups;
 }
 function createJswinDoc(){
