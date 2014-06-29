@@ -303,7 +303,7 @@ class CEcc{
 	//	}
 	//}//*
 };
-//*]}//*
+//*],"source":"d:\\SoftProject\\GitLib\\jsuser\\example\\ecc.jsuser"}//*
 
 //*,{
 //	"type":"function",
@@ -397,7 +397,7 @@ class CEcc{
 //	"return":{
 //		"type":"CMemory",
 //		"text":"成功返回一个 CMemory 对象，内存对象的长度是 bits 字节，需要手动清理。失败返回 false。"
-//	}
+//	},"source":"d:\\SoftProject\\GitLib\\jsuser\\example\\sha.jsuser"
 //}
 //,{
 //	"type":"function",
@@ -638,5 +638,5 @@ class CAes{
 	//	}
 	//}//*
 };
-//*],"source":"d:\\SoftProject\\GitLib\\jsuser\\example\\password_mgr.jsuser"
+//*],"source":"d:\\SoftProject\\GitLib\\jsuser\\example\\aes.jsuser"
 //}],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\crypt.jsuser"}//*

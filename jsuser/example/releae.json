@@ -1,0 +1,18 @@
+{
+	"output_wnd" : {
+		"Ê±¼ä" : null,
+		"Ãû³Æ" : null,
+		"app" : [
+			"jsuser"
+		],
+		"app_index" : 0
+	},
+	"wndpos" : {
+		"output_wnd" : {
+			"left" : 737,
+			"top" : 330,
+			"right" : 1237,
+			"bottom" : 630
+		}
+	}
+}

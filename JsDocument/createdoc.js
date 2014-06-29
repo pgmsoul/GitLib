@@ -16,7 +16,8 @@ function createKw(){
 	createColorKey();
 }
 Class(function main() {
-	Console.show();
+	log.show();
+	log.setFontSize(32);
 	
 	var jsuser = getFileDocJson("D:/SoftProject/GitLib/jsuser/jsuser.doc");
 	
@@ -31,7 +32,7 @@ Class(function main() {
 	parseJsonDoc(jsuser,[],"");
 	//生成 Notepad++ 的个性化配置
 	createKw();
-	//Console.readln();
+	startMsgLoop();
 	//str = JSON.stringify(json,null,"\t");
 },true);
 Class(function saveString(str,fn){
@@ -99,7 +100,7 @@ function getFileDocJson(fn){
 	sf = "Debug\\" + sf + ".js";
 	///用于调试////////////////
 	saveString(str,sf);
-	Console.log(sf);
+	log(sf);
 
 	return JSON.parse(str);
 }

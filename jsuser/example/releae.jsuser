@@ -1,18 +1,52 @@
 "use strict";
 
 require("base");
-
+var dst_path = "D:\\wamp\\www\\jsuser\\3\\downloads\\8AACA11537B94f14BA03895F7E121484\\";
 Class(function main(){
-	Console.show();
-	var fl = new CFileList();
-	fl.addFilter("php");
-	fl.onList = function(inf){
-		var fn = fl.path + "\\" + inf.name;
-		//var rst = FileSystem.delete(fn);
-		Console.log(rst+" - "+fn);
+	log.show();
+	FileSystem.copy("E:\\SDK\\npp.6.3.3\\userDefineLang.xml",dst_path+"nppxml\\userDefineLang.xml");
+	FileSystem.copy("E:\\SDK\\npp.6.3.3\\plugins\\APIs\\jsuser.xml",dst_path+"nppxml\\plugins\\APIs\\jsuser.xml");
+	FileSystem.copy("E:\\SDK\\npp.6.3.3\\userDefineLang.xml",dst_path+"jsuser_1.2\\npp.6.3.3\\userDefineLang.xml");
+	FileSystem.copy("E:\\SDK\\npp.6.3.3\\plugins\\APIs\\jsuser.xml",dst_path+"jsuser_1.2\\npp.6.3.3\\plugins\\APIs\\jsuser.xml");
+	FileSystem.copy("D:\\SoftProject\\GitLib\\jsuser\\release\\jsuser.exe",dst_path+"\\jsuser_1.2\\bin\\jsuser.exe");
+	FileSystem.copy("D:\\SoftProject\\GitLib\\jsuser\\example\\bin\\jscrypt.dll",dst_path+"\\jsuser_1.2\\bin\\jscrypt.dll");
+	FileSystem.copy("D:\\SoftProject\\GitLib\\LayoutDesigner\\Release\\LayoutDesigner.exe",dst_path+"LayoutDesigner_1.0.exe");
+
+	var example_path = "D:\\SoftProject\\GitLib\\jsuser\\example\\";
+	var files = [];
+	files.push("aes.jsuser");
+	files.push("combobox.jsuser");
+	files.push("console.jsuser");
+	files.push("cproc.jsuser");
+	files.push("crypt.jsuser");
+	files.push("dialog.jsuser");
+	files.push("ecc.jsuser");
+	files.push("file.jsuser");
+	files.push("filelist.jsuser");
+	files.push("bitmap.jsuser");
+	files.push("gif.jsuser");
+	files.push("layout.jsuser");
+	files.push("listview.jsuser");
+	files.push("password.txt");
+	files.push("password_mgr.jsuser");
+	files.push("sha.jsuser");
+	files.push("socketclient.jsuser");
+	files.push("socketserver.jsuser");
+	files.push("textdraw.jsuser");
+	files.push("wnd.jsuser");
+	files.push("image");
+	var count = files.length;
+	var failed = false;
+	for(var i=0;i<count;i++){
+		var file = files[i];
+		var rst = FileSystem.copy(example_path+file,dst_path+"jsuser_1.2\\project\\"+file);
+		if(!rst){
+			log("copy failed: " + file);
+			failed = true;
+		}
 	}
-	//fl.search("D:\\wamp\\www\\jsuser\\3\\document");
-	Console.readln();
+	if(failed)
+		startMsgLoop();
 },true);
 
 main();

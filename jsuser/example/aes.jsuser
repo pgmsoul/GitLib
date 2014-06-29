@@ -2,31 +2,31 @@
 
 require("base");
 
-load("crypto.jsuser");
+load("crypt.jsuser");
 
 Class(function main(){
-	Console.show();
+	log.show();
 	var aes = new CAes();
 	var key = "abcde";
-	Console.log("加密密码:"+key);
+	log("加密密码:"+key);
 	aes.setEncKey(key);
-	var iv = "new iv";
-	Console.log("为了让相同的原文加密后密文不同，设置一个向量, \r\niv = "+iv);
+	var iv = "向量";
+	log("为了让相同的原文加密后密文不同，设置一个向量, \r\niv = "+iv);
 	aes.setIv(iv);
 	var data = "星期一一大早，12岁的自贡男孩小强背着书包出了门，可是他没有去学校上课，而是径直走向网吧上网。随后，小强被父母找到，并在其书包里发现了家里不见的10万元现金。";
 	var src = new CMemory();
 	var srclen = src.setString(data);
-	Console.log("数据: " + data+"\r\n长度："+srclen);
-	Console.log("开始用 cbc 模式加密：");
+	log("数据: " + data+"\r\n长度："+srclen);
+	log("开始用 cbc 模式加密：");
 	var enc = aes.encCbc(src);
-	Console.log("密文长度: "+enc.length);
+	log("密文长度: "+enc.length);
 	aes.setDecKey(key);
 	aes.setIv(iv);
-	Console.log("\r\n开始用 cbc 模式解密：\r\n");
+	log("\r\n开始用 cbc 模式解密：\r\n");
 	var dec = aes.decCbc(enc);
 	//解密后的长度是16的整数倍，必须还原原来数据的长度。
 	var dec = dec.getString(0,srclen);
-	Console.log("解密: "+dec);
-	Console.readln();
+	log("解密: "+dec);
+	startMsgLoop();
 },true);
 main();

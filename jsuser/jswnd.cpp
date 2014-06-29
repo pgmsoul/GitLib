@@ -964,6 +964,15 @@ namespace v8{
 					cobj->UserDataList[1] = 0;
 					delete pobj;
 				}
+				if(cobj->Handle()){
+					Handle<Object> lay = args[0]->ToObject();
+					Handle<Function> refresh = Handle<Function>::Cast(lay->Get(NEW_STR(refresh)));
+					if(refresh->IsFunction()){
+						Handle<Value> argv[1];
+						argv[0] = Uint32::New((UINT_PTR)cobj->Handle());
+						CallFunc(lay,refresh,1,argv);
+					}
+				}
 				return True();
 			}
 			return Undefined();
@@ -1039,12 +1048,6 @@ namespace v8{
 			return Undefined();
 		}
 	public:
-		//*,{
-		//	"type":"property",
-		//	"name":"param",
-		//	"objtype":"CreateParam",
-		//	"text":"这个参数用于设置生成窗口时的一些参数，如果窗口已经生成，设置这个属性对窗口没有任何影响。"
-		//}//*
 		//*,{
 		//	"type":"property",
 		//	"name":"text",
@@ -1194,6 +1197,8 @@ namespace v8{
 				if(cobj->Handle()==0) classStyle = cobj->Param->ClassStyle;
 				else classStyle = ::GetClassLong(*cobj,GCL_STYLE);
 				return Uint32::New(classStyle);
+			}else if(name==L"className"){
+				return NEW_WSTR(cobj->Param->ClassName.Handle());
 			}else if(name==L"bkColor"){
 				return Uint32::New(cobj->BkColor);
 			}else if(name==L"fontColor"){
@@ -1245,6 +1250,8 @@ namespace v8{
 				DWORD classStyle = value->Uint32Value();
 				if(cobj->Handle()==0) cobj->Param->ClassStyle = classStyle;
 				else ::SetClassLong(*cobj,GCL_STYLE,classStyle);
+			}else if(name==L"className"){
+				GetString(value,cobj->Param->ClassName);
 			}else if(name==L"bkColor"){
 				cobj->BkColor = value->Uint32Value();
 				cobj->Invalidate();
@@ -1310,7 +1317,7 @@ namespace v8{
 			JsHandleObject::Load(glb,L"CWnd",TEMPLATE_ID_WND);
 		}
 	};
-	//*]}//*
+	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\wnd.jsuser"}//*
 	class BView : public BWnd<cs::ScrollView>{};
 	void __stdcall View_onDropFile(cs::StringMemList* fl,cs::View* cobj){
 		HandleScope store;
@@ -1937,7 +1944,432 @@ namespace v8{
 	//	"text":"CListBox 封装一个 Windows 标准 ListBox 控件，CListBox 继承自 CCtrl。",
 	//	"member":[//*
 	class BListBox : public BWnd<cs::ListBox>{};
-	class JsListBox : public JsWndObject<BListBox,JsListBox>{};
+	class JsListBox : public JsWndObject<BListBox,JsListBox>{
+		//*{
+		//	"type":"function",
+		//	"name":"addItem(str,[index])",
+		//	"text":"添加一个条目。",
+		//	"param":[
+		//		{
+		//			"type":"string",
+		//			"name":"str",
+		//			"text":"要添加的字串。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"[index]",
+		//			"text":"添加的位置，0 表示插入到最前面，-1 或者大于最大索引，会插入到末尾。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"integer",
+		//		"text":"成功返回插入的位置，失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> addItem(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				cs::String str;
+				GetString(args[0],str);
+				int index = -1;
+				if(args.Length()>1){
+					index = args[1]->Uint32Value();
+				}
+				int r = handle->AddString(str,index);
+				RET(r,Int32);
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"deleteItem(index)",
+		//	"text":"删除一个条目。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"index",
+		//			"text":"删除指定索引的条目。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，如果索引超界，函数失败，返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> deleteItem(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				int index = args[1]->Uint32Value();
+				bool r = handle->DeleteString(index);
+				return Bool(r);
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"clear()",
+		//	"text":"清除所有项。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> clear(const Arguments& args){
+			HandleScope store;
+			while(true){
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				handle->Clear();
+				return True();
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"setItem(str,index)",
+		//	"text":"设置指定项的文本。",
+		//	"param":[
+		//		{
+		//			"type":"string",
+		//			"name":"str",
+		//			"text":"要设置的文本。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"index",
+		//			"text":"要设置的项的索引位置。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> setItem(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<2) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				cs::String str;
+				GetString(args[0],str);
+				int index = args[1]->Uint32Value();
+				bool r = handle->SetText(index,str);
+				if(!r) break;
+				return True();
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"getItem(index)",
+		//	"text":"或者指定项的文本。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"index",
+		//			"text":"要获取的项的位置索引。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"string",
+		//		"text":"成功返回一个字串，失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> getItem(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				int index = args[0]->Uint32Value();
+				cs::String str;
+				bool r = LB_ERR!=handle->GetText(index,str);
+				if(!r) break;
+				return store.Close(String::New((uint16_t*)str.Handle()));
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"getCount()",
+		//	"text":"获取项的总数。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"integer",
+		//		"text":"返回一个数字，失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> getCount(const Arguments& args){
+			HandleScope store;
+			while(true){
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				int r = handle->GetCount();
+				RET(r,Int32);
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"getSelectItem()",
+		//	"text":"获取当前选中项的索引。",
+		//	"param":[
+		//	],
+		//	"return":{
+		//		"type":"integer|array",
+		//		"text":"单选情况，返回选中项的索引，如果没有选中项，返回 -1，多选情况，返回一个数组，数组的元素是选中项的索引，如果函数失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> getSelectItem(const Arguments& args){
+			HandleScope store;
+			while(true){
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				if(!handle->Handle()) break;
+				DWORD style = handle->GetWindowParam(GWL_STYLE);
+				if(style&LBS_MULTIPLESEL){
+					int count = handle->GetCount();
+					Handle<Array> selA = Array::New();
+					if(count==0) return store.Close(selA);
+					cs::Memory<int> sels;
+					sels.SetLength(count);
+					count = handle->GetSelItems(&sels);
+					for(int i=0;i<count;i++){
+						selA->Set(i,Uint32::New(sels[i]));
+					}
+					return store.Close(selA);
+				}else{
+					RET(handle->GetSelItem(),Int32);
+				}
+				break;
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"setSelectItem(index,[index2])",
+		//	"text":"设置指定项, 或者范围被选中，范围仅适用于多选列表框。",
+		//	"param":[
+		//		{
+		//			"type":"integer|string",
+		//			"name":"index",
+		//			"text":"要设置选中的项索引，如果此项为 -1 单选列表框清除选择项，多选列表框无效。这个参数还可以是一个字串，指定包含此字串的项被选中，此时第二个参数是搜索字串的起始位置。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"[index2]",
+		//			"text":"这个参数只有列表框是多选模式时，才会用到，index 用于指定列表框选择项的下限，index2 用于指定选择项范围的上限；如果 index2 小于 index 则清除这个范围内的选中状态。对于多选情况，如果要选中一个项，不要传第二个参数，因为相同的两个索引，表示清除这个项。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"integer|boolean",
+		//		"text":"单选的情况，返回选择项的索引（-1表示没有选中），多选的情况返回 true，失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> setSelectItem(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				if(!handle->Handle()) break;
+
+				DWORD style = handle->GetWindowParam(GWL_STYLE);
+				if(style&LBS_MULTIPLESEL){
+					if(args[0]->IsString()) break;
+					uint index = GET_ARGS_INT(0,0);
+					if(args.Length()<2||args[2]->IsUndefined()){
+						handle->SetSelItems(index,index+1);
+						handle->SetSelItems(index+1,index+1);
+					}else{
+						uint index2 = GET_ARGS_INT(1,-1);
+						handle->SetSelItems(index,index2);
+					}
+				}else{
+					int seli;
+					if(args[0]->IsString()){
+						cs::String str;
+						GetString(args[0],str);
+						int start = GET_ARGS_INT(1,-1);
+						seli = handle->SetSelItem(str,start);
+					}else{
+						seli = GET_ARGS_INT(0,0);
+						handle->SetSelItem(seli);
+					}
+					return store.Close(Int32::New(seli));
+				}
+				return True();
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"find(str,[start])",
+		//	"text":"查找一个字串，这个查找不区分大小写，只要项文本开头包含这个字串就可以。",
+		//	"param":[
+		//		{
+		//			"type":"string",
+		//			"name":"str",
+		//			"text":"要查找的文本。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"[start]",
+		//			"text":"从这一项开始查找，默认值是 0（从头查找）。注意这和 Windows 默认的搜索方式有区别，Windows 默认是 start 项是不搜索的，如果从开头搜索应该传 -1."
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"integer",
+		//		"text":"返回符合条件的项的位置索引，如果没有找到，返回 -1，如果函数失败，返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> find(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				cs::String str;
+				GetString(args[0],str);
+				int index = GET_ARGS_INT(1,0) - 1;
+				int r = handle->FindString(str,index);
+				RET(r,Int32);
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"findExact(str,[start])",
+		//	"text":"精确查找一个字串，项文本必须和搜索的文本相同，但是不区分大小写",
+		//	"param":[
+		//		{
+		//			"type":"string",
+		//			"name":"str",
+		//			"text":"要查找的文本。"
+		//		},
+		//		{
+		//			"type":"integer",
+		//			"name":"[start]",
+		//			"text":"从这一项开始查找，默认值是 0（从头查找）。注意这和 Windows 默认的搜索方式有区别，Windows 默认是 start 项是不搜索的，如果从开头搜索应该传 -1."
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"integer",
+		//		"text":"返回符合条件的项的位置索引，如果没有找到，返回 -1，如果函数失败，返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> findExact(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				cs::String str;
+				GetString(args[0],str);
+				int index = GET_ARGS_INT(1,0) - 1;
+				int r = handle->FindExactString(str,index);
+				RET(r,Int32);
+			}
+			return Undefined();
+		}
+		//*,{
+		//	"type":"function",
+		//	"name":"isItemSelected(index)",
+		//	"text":"指定项是否被选中状态。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"index",
+		//			"text":"要查询的项索引."
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"是返回 true，否返回 false，失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> isItemSelected(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				if(handle->Handle()==0) break;
+
+				uint index = GET_ARGS_INT(0,0);
+				bool r = handle->ItemIsSelect(index);
+				return Bool(r);
+			}
+			return Undefined();
+		}
+		//,{
+		//	"type":"function",
+		//	"name":"ensureVisible(index)",
+		//	"text":"滚动下拉框，让指定索引项显示出来。调用这个函数前，必须已经显示下拉框。",
+		//	"param":[
+		//		{
+		//			"type":"integer",
+		//			"name":"index",
+		//			"text":"要显示的项索引。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，失败返回 undefined。"
+		//	}
+		//}//
+		/*static Handle<Value> ensureVisible(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1) break;
+				Local<Object> self = args.This();
+				cs::ListBox* handle;
+				if(!GetCHandle(handle,self)) break;
+				int index = args[0]->Uint32Value();
+				bool r = handle->EnsureVisible(index);
+				return Bool(r);
+			}
+			return Undefined();
+		}*/
+		public:
+		static void init(Handle<FunctionTemplate>& ft){
+			HandleScope store;
+			Local<ObjectTemplate> func = ft->PrototypeTemplate();
+			SET_CLA_FUNC(addItem);
+			SET_CLA_FUNC(deleteItem);
+			SET_CLA_FUNC(clear);
+			SET_CLA_FUNC(setItem);
+			SET_CLA_FUNC(getItem);
+			SET_CLA_FUNC(getCount);
+			SET_CLA_FUNC(getSelectItem);
+			SET_CLA_FUNC(setSelectItem);
+			SET_CLA_FUNC(find);
+			SET_CLA_FUNC(findExact);
+			SET_CLA_FUNC(isItemSelected);
+			//SET_CLA_FUNC(ensureVisible);
+		}
+	};
 	//*]}//*
 
 	//*,{
@@ -1950,7 +2382,7 @@ namespace v8{
 	public:
 		//*{
 		//	"type":"function",
-		//	"name":"addString(str,[index])",
+		//	"name":"addItem(str,[index])",
 		//	"text":"添加一个条目。",
 		//	"param":[
 		//		{
@@ -1989,7 +2421,7 @@ namespace v8{
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"deleteString(index)",
+		//	"name":"deleteItem(index)",
 		//	"text":"删除一个条目。",
 		//	"param":[
 		//		{
@@ -2040,7 +2472,7 @@ namespace v8{
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"setItemText(str,index)",
+		//	"name":"setItem(str,index)",
 		//	"text":"设置指定项的文本。",
 		//	"param":[
 		//		{
@@ -2077,7 +2509,7 @@ namespace v8{
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"getItemText(index)",
+		//	"name":"getItem(index)",
 		//	"text":"或者指定项的文本。",
 		//	"param":[
 		//		{
@@ -2181,7 +2613,7 @@ namespace v8{
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"findString(str,[start])",
+		//	"name":"find(str,[start])",
 		//	"text":"查找一个字串，这个查找不区分大小写，只要项文本开头包含这个字串就可以。",
 		//	"param":[
 		//		{
@@ -2217,7 +2649,7 @@ namespace v8{
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"findExactString(str,[start])",
+		//	"name":"findExact(str,[start])",
 		//	"text":"精确查找一个字串，项文本必须和搜索的文本相同，但是不区分大小写",
 		//	"param":[
 		//		{
@@ -2308,9 +2740,7 @@ namespace v8{
 		}
 		static void init(Handle<FunctionTemplate>& ft){
 			HandleScope store;
-			//JsCtrlObject::init(ft);
 			Local<ObjectTemplate> func = ft->PrototypeTemplate();
-			//func->Set(String::New("addString"),FunctionTemplate::New(&addString)->GetFunction());
 			SET_CLA_FUNC(addItem);
 			SET_CLA_FUNC(deleteItem);
 			SET_CLA_FUNC(clear);
@@ -2325,7 +2755,7 @@ namespace v8{
 			SET_CLA_FUNC(ensureVisible);
 		}
 	};
-	//*]}//*
+	//*],"source":"d:\\SoftProject\\GitLib\\jsuser\\example\\combobox.jsuser"}//*
 
 	//*,{
 	//	"type":"class",
@@ -3080,7 +3510,7 @@ namespace v8{
 			SET_CLA_ACCESSOR(gridLine);
 		}
 	};
-	//*]}//*
+	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\listview.jsuser"}//*
 
 	//*,{
 	//	"type":"class",
@@ -3514,7 +3944,7 @@ namespace v8{
 	//			"text":"成功返回 true，失败返回 false。"
 	//		}
 	//	}
-	//]}//*
+	//],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\layout.jsuser"}//*
 	class JsMenu : public JsHandleObject<cs::UserMenu,HMENU,JsMenu>{
 		static Handle<Value> create(const Arguments& args){
 			HandleScope stack;

@@ -5,7 +5,8 @@
 "use strict";
 require("base");
 require("wnd");
-var jscrypt = Api.loadModule("../jscrypt.dll");
+var jscrypt = Api.loadModule("../../bin/jscrypt.dll");
+if(!jscrypt) throw "没有找到 jscrypt.dll";
 load("../crypt.jsuser");
 
 var port = 37129;	//外网端口

@@ -30,6 +30,63 @@ namespace v8{
 	//	"member":[
 	//{
 	//	"type":"class",
+	//	"name":"Color([red],[green],[blue],[alpha])",
+	//	"text":"颜色类，参数为红、绿、蓝、透明通道的值，每个通道的取值范围是 0——255，缺省时为 0。",
+	//	"member":[
+	//{
+	//	"type":"function",
+	//	"name":"getIntValue()",
+	//	"text":"颜色本质上是一个32位整数，这个函数返回颜色的整数值，红、绿、蓝、透明通道依次从低到高每个通道占 8 位。",
+	//	"param":[
+	//	],
+	//	"return":{
+	//		"type":"integer",
+	//		"text":"返回当前对象代表的颜色的整数值。"
+	//	}
+	//}
+	//,{
+	//	"type":"function",
+	//	"name":"setIntValue(color)",
+	//	"text":"设置当前颜色对象的整数值。",
+	//	"param":[
+	//		{
+	//			"type":"integer",
+	//			"name":"color",
+	//			"text":"一个代表颜色的整数值。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"void",
+	//		"text":"函数没有返回值。"
+	//	}
+	//}
+	//,{
+	//	"type":"property",
+	//	"name":"red",
+	//	"objtype":"integer",
+	//	"text":"当前颜色的红色值，范围是 0——255，如果设置了一个错误的数值，getIntValue 函数返回整数的时候会用 &0xFF 来处理。"
+	//}
+	//,{
+	//	"type":"property",
+	//	"name":"green",
+	//	"objtype":"integer",
+	//	"text":"当前颜色的绿色值，范围是 0——255，如果设置了一个错误的数值，getIntValue 函数返回整数的时候会用 &0xFF 来处理。"
+	//}
+	//,{
+	//	"type":"property",
+	//	"name":"blue",
+	//	"objtype":"integer",
+	//	"text":"当前颜色的蓝色值，范围是 0——255，如果设置了一个错误的数值，getIntValue 函数返回整数的时候会用 &0xFF 来处理。"
+	//}
+	//,{
+	//	"type":"property",
+	//	"name":"alpah",
+	//	"objtype":"integer",
+	//	"text":"当前颜色的 alpha 值，范围是 0——255，如果设置了一个错误的数值，getIntValue 函数返回整数的时候会用 &0xFF 来处理。"
+	//}
+	//]}
+	//,{
+	//	"type":"class",
 	//	"name":"CPen",
 	//	"text":"画笔类，它继承自 CHandleObject，用于控制画线时的颜色，宽度，样式等。",
 	//	"member":[//*
@@ -2113,6 +2170,11 @@ namespace v8{
 		//			"text":"透明度，取值范围是（0——255），0 表示完全透明，当前图像完全不覆盖背景，255 表示完全不透明，效果和 draw 相同。这个值缺省是 255。"
 		//		},
 		//		{
+		//			"type":"boolean",
+		//			"name":"[isAlpha]",
+		//			"text":"图像是否考虑透明通道。图像的每个像素，除了红绿蓝三个像素值之外，还有一个 alpha 值，它的取值范围也是 0——255，如果设为考虑透明通道（isAlpha = true），alphaDraw 在绘图时，每个像素会按照它的 alpha 值来决定透明度，0 完全透明，255 完全不透明。图标和 png 图像有透明通道，普通图像没有透明通道，也就是普通图像每个像素的 alpha 值都是 0。所以按绘制透明图的方式绘制普通图像，相当于整个图像是透明的，什么都看不到。反之，如果按照绘制普通图的方式绘制透明图像，alpah 通道的值完全不考虑，透明图会失去透明效果（会有一个黑色背景）。isAlpha = false 相当于把任意像素的 alpha 值设为 255，所以要正确的绘制普通图像，必须设置 isAlpha = false。"
+		//		},
+		//		{
 		//			"type":"integer",
 		//			"name":"[x]",
 		//			"text":"位图绘制水平位置，缺省是 0."
@@ -2217,7 +2279,7 @@ namespace v8{
 			SET_CLA_FUNC(alphaDraw);
 		}
 	};
-	//*]}//*
+	//*],"source":"d:\\SoftProject\\GitLib\\jsuser\\example\\bitmap.jsuser"}//*
 
 	//*,{
 	//	"type":"class",
@@ -2545,7 +2607,7 @@ namespace v8{
 			SET_OBJ_FUNC_RO(proto,draw,JSTextDraw::draw);
 		}
 	};
-	//*]}//*
+	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\textdraw.jsuser"}//*
 
 	//*,{
 	//	"type":"class",
@@ -2893,7 +2955,7 @@ namespace v8{
 			SET_CLA_FUNC(toBlackWhite);
 		}
 	};
-	//*]}//*
+	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\icon.jsuser"}//*
 
 	//*]}//*
 	void LoadGDI(Handle<Object>& glb){

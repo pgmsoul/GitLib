@@ -53,7 +53,7 @@ namespace cs{
 		//设置多选列表的选中范围,只能用于多选列表.如果last小于first,则这一范围的选中项会被清除.有两点需要注意,这个函数不能
 		//让first和last相同,否则函数失败.范围选择允许超界.如果想只选中一项可以采用交集的办法,先选2项,再清除一项.即使对于LBS_EXTENDEDSEL风格
 		//的列表,也可以和这个方法选取任意的项,而不一定连续.
-		inline int SetSelItems(WORD first,WORD last)		{return (int)SendMessage(LB_SELITEMRANGEEX,(WPARAM)first,(LPARAM)last);}//if last is less than first,the range is removed from select.
+		inline int SetSelItems(uint first,uint last)		{return (int)SendMessage(LB_SELITEMRANGEEX,(WPARAM)first,(LPARAM)last);}//if last is less than first,the range is removed from select.
 		//获取选中项的总数.
 		inline int GetSelCount()							{return (int)SendMessage(LB_GETSELCOUNT,0,0);}//this is only use for multy select style,for single select style it is always return -1;
 		//取得相应索引项的文本,可以预先用GetTextLength取得文本所需空间大小,text的空间必须要大于返回值加1.返回取得文本的长度或-1.

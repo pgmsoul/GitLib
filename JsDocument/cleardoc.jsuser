@@ -10,8 +10,8 @@ Class(function main(){
 		var fn = fl.path + "\\" + inf.name;
 		var rst = FileSystem.delete(fn);
 		if(!rst){
-			throw "can't delete "+inf.name;
-			inf.stop = true;
+			Console.log("can't delete "+inf.name);
+			//inf.stop = true;
 		}
 		Console.log(inf.name);
 	}

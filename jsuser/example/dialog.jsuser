@@ -1,4 +1,4 @@
-//file gun.jsuser
+//file dialog.jsuser
 
 require("base");
 require("wnd");

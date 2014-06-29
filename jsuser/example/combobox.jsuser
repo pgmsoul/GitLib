@@ -17,7 +17,7 @@ Class(function main(){
 	button.text = "click";
 	button.onCommand = function(){
 		//child.setCurSelect(2);
-		child.showDropDown();
+		child.dropDown();
 		child.ensureVisible(70);
 	}
 	//设置主窗口创建时的回调函数。
@@ -30,10 +30,10 @@ Class(function main(){
 		child.setFont(font);
 		button.create(frame.handle());
 		for(var i=0;i<20;i++){
-		child.addString("item1");
-		child.addString("itAcm2");
-		child.addString("item3");
-		child.addString("itabem4");
+		child.addItem("item1");
+		child.addItem("itAcm2");
+		child.addItem("item3");
+		child.addItem("itabem4");
 		}
 		
 	}

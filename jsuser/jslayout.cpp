@@ -64,7 +64,7 @@ namespace v8{
 				return L"CComboBox";
 				//return new ComboBox;
 			}else if(cs::WcsEqualNoCase(className,L"ListBox")){
-				return L"CMonthCalendar";
+				return L"CListBox";
 				//return new ListBox;
 			}else if(cs::WcsEqualNoCase(className,L"SysMonthCal32")){
 				return L"CMonthCalendar";

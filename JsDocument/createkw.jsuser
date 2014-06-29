@@ -1,3 +1,6 @@
+
+var npp_path = "E:\\SDK\\npp.6.3.3\\";
+
 function joinName(kws){
 	var str = "";
 	var count = kws.length;
@@ -7,7 +10,7 @@ function joinName(kws){
 	return str;
 }
 function createColorKey(){
-	var juxml = readFile("E:\\SDK\\npp.6.3.3\\userDefineLang.bak.xml");
+	var juxml = readFile("userDefineLang.xml");
 	var xml = [];
 	
 	var flag = '<Keywords name="Keywords5">';
@@ -76,12 +79,12 @@ function createColorKey(){
 	
 	str = xml.join("");
 	
-	saveString(str,"E:\\SDK\\npp.6.3.3\\userDefineLang.xml");
+	saveString(str,npp_path+"userDefineLang.xml");
 }
 function loadJsIner(){
-	var str = readFile("E:\\SDK\\npp.6.3.3\\jsuser\\jskeywords.txt");
+	var str = readFile("jskeywords.txt");
 	keywords[0] = str.split(" ");
-	var str = readFile("E:\\SDK\\npp.6.3.3\\jsuser\\jsfunction.txt");
+	var str = readFile("jsfunction.txt");
 	keywords[1] = str.split("\r\n");
 }
 function getSameOut(kws){
@@ -90,7 +93,7 @@ function getSameOut(kws){
 	for(var j=count-1;j>0;j--){
 		if(kws[j].name===kws[j-1].name){
 			kws.splice(j,1);
-			//Console.log(j+',find same name: '+ kws[j].name + ',pre is: ' + kws[j-1].name + ',pre is: ' + kws[j-2].name);
+			//log(j+',find same name: '+ kws[j].name + ',pre is: ' + kws[j-1].name + ',pre is: ' + kws[j-2].name);
 		}
 	}
 }
@@ -129,13 +132,13 @@ function createTip(){
 	for(var j=count-1;j>0;j--){
 		if(tips[j].name===tips[j-1].name){
 			tips.splice(j,1);
-			//Console.log('tips find same name: '+ tips[j].name + ',pre is: ' + tips[j-1].name);
+			//log('tips find same name: '+ tips[j].name + ',pre is: ' + tips[j-1].name);
 		}
 	}
 	
 	var count = tips.length;
 	for(var j=0;j<count;j++){
-		if(tips[j].name==undefined) Console.log('tips: '+tips[j] + j);
+		if(tips[j].name==undefined) log('tips: '+tips[j] + j);
 	}
 	tips.sort(ascSort);
 	//生成 xml 字串。
@@ -158,7 +161,7 @@ function createTip(){
 		str += ks;
 	}
 	str += '\t</AutoComplete>\r\n</NotepadPlus>';
-	saveString(str,"E:\\SDK\\npp.6.3.3\\plugins\\APIs\\jsuser.xml");
+	saveString(str,npp_path+"plugins\\APIs\\jsuser.xml");
 }
 function formatKws(){
 	var count = keywords.length;

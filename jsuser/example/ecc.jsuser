@@ -1,8 +1,9 @@
+//file: ecc.juser
 "use strict";
 
 require("base");
 
-load("crypto.jsuser");
+load("crypt.jsuser");
 
 Class(function main(){
 	Console.show();

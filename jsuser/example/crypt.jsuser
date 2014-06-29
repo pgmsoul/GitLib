@@ -4,7 +4,7 @@
 
 //jscrypt.dll 必须在脚本所在的目录，否则应该使用绝对路径或者相对路径指出 jscrypt.dll 位置。
 var jscrypt;
-if(!jscrypt) jscrypt = Api.loadModule("jscrypt.dll");
+if(!jscrypt) jscrypt = Api.loadModule("../bin/jscrypt.dll");
 if(!jscrypt) throw "load jscrypto.dll error";
 //如果要处理大数据的哈希值，需要使用 CMd5、CSha 等的实例对象方式，多次调用 update 函数来实现，当前文档没有包装这些函数。
 function initApi(name){
@@ -151,7 +151,7 @@ CEcc.prototype.getPrivateKey = function(){
 	return prikey;
 }
 CEcc.prototype.setPrivateKey = function(prikey,len){
-	var p = parseMemParamAsBin(pubkey,len,"setPrivateKey(data,len)");
+	var p = parseMemParamAsBin(prikey,len,"setPrivateKey(data,len)");
 	if(!p) return false;
 	if(p.len!=CEcc.keylen){
 		throw "CEcc.setPrivateKey(prikey,len), len!==68,len = "+len;
@@ -223,6 +223,8 @@ CEcc.prototype.loadKey = Class(function(filename){
 CEcc.prototype.getSign = function(data,len){
 	var p = parseMemParam(data,len,"CEcc.verify(sign,data,len)");
 	if(!p) return undefined;
+	var sign = new CMemory();
+	sign.length = CEcc.signlen;
 	var r = cryp.ecc_getsign(this.handle,sign.handle(),p.data,p.len);
 	if(p.mem) p.mem.dispose();
 	if(!r){
@@ -338,10 +340,10 @@ function sha_file(fn,bits){
 	}
 	return rst;
 }
-function shahmac(data,ken,key,klen,bits){
-	var pd = parseMemParam(data,len,"CShaHmac(data,ken,key,klen,bits)");
+function shahmac(data,len,key,klen,bits){
+	var pd = parseMemParam(data,len,"shahmac(data,ken,key,klen,bits)");
 	if(!pd) return undefined;
-	var pk = parseMemParam(key,klen,"CShaHmac(key,klen,data,ken,bits)");
+	var pk = parseMemParam(key,klen,"shahmac(key,klen,data,ken,bits)");
 	if(!pk) return undefined;
 	var digest = new CMemory();
 	digest.length = bits;
@@ -356,12 +358,12 @@ function shahmac(data,ken,key,klen,bits){
 }
 function cmpFileSha(file1,file2,bits){
 	if(bits!==20&&bits!==28&&bits!==32&&bits!==48&&bits!==64) bits = 20;
-	var digest1 = CSha.file(file1,bits);
+	var digest1 = sha_file(file1,bits);
 	if(!digest1){
 		throw "can't read file: " + file1;
 		return undefined;
 	}
-	var digest2 = CSha.file(file2,bits);
+	var digest2 = sha_file(file2,bits);
 	if(!digest2){
 		throw "can't read file: " + file2;
 		return undefined;

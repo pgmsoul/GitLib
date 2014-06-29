@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\..\..\jsuser\example\$(ProjectName).dll"
+				OutputFile="$(OutDir)\..\..\jsuser\bin\$(ProjectName).dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="jscrypto.def"
 				GenerateDebugInformation="true"
@@ -134,7 +134,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\..\..\jsuser\example\$(ProjectName).dll"
+				OutputFile="$(OutDir)\..\..\jsuser\bin\$(ProjectName).dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="jscrypto.def"
 				GenerateDebugInformation="true"

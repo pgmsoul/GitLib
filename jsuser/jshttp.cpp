@@ -1042,7 +1042,7 @@ namespace v8{
 			SET_CLA_FUNC(getLocalPort);
 		}
 	};
-	//*]}//*
+	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\socketclient.jsuser"}//*
 
 	//*,{
 	//	"type":"class",
@@ -1231,7 +1231,7 @@ namespace v8{
 			SET_CLA_FUNC(shutdown);
 		}
 	};
-	//*]}//*
+	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\socketserver.jsuser"}//*
 	typedef struct PORTMAPPING : public cs::_struct{
 		char ip[40];
 		char port[6];

@@ -50,7 +50,7 @@ Layout.prototype._weightIsZero = function(weight){
 	return ((weight<0.0001)&&(weight>-0.0001));
 }
 Layout.prototype.getByName = function(name){
-	if(this.name==name) return this;
+	if(this.name===name) return this;
 	var count = this.childs.length;
 	for(var i=0;i<count;i++){
 		var lay = this.childs[i].getByName(name);
@@ -160,7 +160,11 @@ Layout.prototype.setControl = function(className,id,text,style,exstyle){
 		}else{
 			this.control = this._createCtrlObject(className);
 		}
-		this.control.param = {"className":className,"text":text,"id":id,"style":style,"exStyle":exStyle};
+		this.control.className = className;
+		this.control.text = text;
+		this.control.id = id;
+		this.control.style = style;
+		this.control.exStyle = exStyle;
 	}else if(this.control){
 		this.control.dispose();
 		this.control = null;
@@ -249,12 +253,12 @@ Layout.prototype.toJson = function(){
 	json.margin_right = this.param.margin.right;
 	json.margin_bottom = this.param.margin.bottom;
 	if(this.control){
-		var param = this.control.param;
-		json.ctrl_class = param.className;
-		json.ctrl_text = param.text;
-		json.ctrl_style = param.style;
-		json.ctrl_exstyle = param.exStyle;
-		json.ctrl_id = param.id;
+		var ctrl = this.control;
+		json.ctrl_class = ctrl.className;
+		json.ctrl_text = ctrl.text;
+		json.ctrl_style = ctrl.style;
+		json.ctrl_exstyle = ctrl.exStyle;
+		json.ctrl_id = ctrl.id;
 	}
 	var count = this.childs.length;
 	if(count>0) json.childs = [];
@@ -273,7 +277,7 @@ Layout.prototype.parseJson = function(json){
 	param.margin.setValue(json.margin_left,json.margin_top,json.margin_right,json.margin_bottom);
 	if(typeof json.ctrl_class == "string"){
 		this.control = this._createCtrlObject(json.ctrl_class);
-		var cp = this.control.param;
+		var cp = this.control;
 		cp.text = json.ctrl_text;
 		cp.style = json.ctrl_style;
 		cp.exStyle = json.ctrl_exstyle;
