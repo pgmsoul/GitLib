@@ -177,7 +177,7 @@ function createDelegate(n,firstLine,paramStr){
 		"		//调用代表.添加的所有函数都会被呼叫.",
 		"		void Call(" + createCallParam(n) + "){",
 		"			for(uint i=0;i<_Ptrs.Count();i++){",
-		"				((STDCALLTYPE)_Ptrs[i])(" + paramStr + ");",
+		"				((STDCALLTYPE)_Ptrs[i])(" + paramStr.toLowerCase() + ");",
 		"			}",
 		"		}",
 		"	};"

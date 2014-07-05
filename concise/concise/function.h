@@ -344,7 +344,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2,T3 t3,T4 t4,T5 t5,T6 t6,T7 t7,T8 t8,T9 t9,T10 t10){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2,T3,T4,T5,T6,T7,T8,T9,T10);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2,t3,t4,t5,t6,t7,t8,t9,t10);
 			}
 		}
 	};
@@ -416,7 +416,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2,T3 t3,T4 t4,T5 t5,T6 t6,T7 t7,T8 t8,T9 t9){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2,T3,T4,T5,T6,T7,T8,T9);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2,t3,t4,t5,t6,t7,t8,t9);
 			}
 		}
 	};
@@ -488,7 +488,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2,T3 t3,T4 t4,T5 t5,T6 t6,T7 t7,T8 t8){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2,T3,T4,T5,T6,T7,T8);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2,t3,t4,t5,t6,t7,t8);
 			}
 		}
 	};
@@ -560,7 +560,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2,T3 t3,T4 t4,T5 t5,T6 t6,T7 t7){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2,T3,T4,T5,T6,T7);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2,t3,t4,t5,t6,t7);
 			}
 		}
 	};
@@ -632,7 +632,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2,T3 t3,T4 t4,T5 t5,T6 t6){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2,T3,T4,T5,T6);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2,t3,t4,t5,t6);
 			}
 		}
 	};
@@ -704,7 +704,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2,T3 t3,T4 t4,T5 t5){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2,T3,T4,T5);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2,t3,t4,t5);
 			}
 		}
 	};
@@ -776,7 +776,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2,T3 t3,T4 t4){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2,T3,T4);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2,t3,t4);
 			}
 		}
 	};
@@ -848,7 +848,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2,T3 t3){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2,T3);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2,t3);
 			}
 		}
 	};
@@ -920,7 +920,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1,T2 t2){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1,T2);
+				((STDCALLTYPE)_Ptrs[i])(t1,t2);
 			}
 		}
 	};
@@ -992,7 +992,7 @@ namespace cs{
 		//调用代表.添加的所有函数都会被呼叫.
 		void Call(T1 t1){
 			for(uint i=0;i<_Ptrs.Count();i++){
-				((STDCALLTYPE)_Ptrs[i])(T1);
+				((STDCALLTYPE)_Ptrs[i])(t1);
 			}
 		}
 	};
