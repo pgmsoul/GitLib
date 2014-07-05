@@ -405,9 +405,9 @@ namespace cs{
 				cs::SystemTime st;
 				st.GetLocalTime();
 				if(app&&_app)
-					str.Format(L"%02d:%02d:%02d (%s) %s",st.Hour,st.Minute,st.Second,app,inf);
+					str.Format(L"%02d:%02d:%02d.%03d (%s) %s",st.Hour,st.Minute,st.Second,st.Milliseconds,app,inf);
 				else
-					str.Format(L"%02d:%02d:%02d %s",st.Hour,st.Minute,st.Second,inf);
+					str.Format(L"%02d:%02d:%02d.%03d %s",st.Hour,st.Minute,st.Second,st.Milliseconds,inf);
 			}else{
 				if(app&&_app)
 					str.Format(L"(%s) %s",app,inf);
@@ -441,6 +441,13 @@ namespace cs{
 		cs::LocalCriticalSection lcs(_outputCs);
 		if((INT_PTR)app==-1) app = appname;
 		GetOutputFrame()->Log(str,color,app);
+	}
+	void Log(LPCSTR str,int color,LPCWSTR app){
+		cs::String logstr = str;
+		static cs::String appname = cs::App::GetAppName();
+		cs::LocalCriticalSection lcs(_outputCs);
+		if((INT_PTR)app==-1) app = appname;
+		GetOutputFrame()->Log(logstr,color,app);
 	}
 	void LogSetBkColor(int color){
 		cs::LocalCriticalSection lcs(_outputCs);

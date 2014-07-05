@@ -121,6 +121,8 @@ namespace cs{
 		Memory<char> buf;
 		String n = name;
 		int len = n.ToMultiByte(&buf);
+		if(buf.IsNull())
+			return Create("");
 		buf[len] = 0;
 		return Create(buf);
 	}

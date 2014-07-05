@@ -1,0 +1,20 @@
+"use strict";
+require("base");
+load("crypt.jsuser");
+log.show();
+var ecc = new CEcc();
+ecc.createKey();
+var rst = ecc.savePrivateKey("test.ecc",true);
+log("save key:"+rst);
+decodeURI();
+rst.toString();
+0x123;
+123;
+//rst = ecc.loadKey("test.ecc");
+//log("load key:"+rst);
+//rst = ecc.loadPublicKey("test.ecc");
+//log("load public key:"+rst);
+rst = ecc.loadPrivateKey("test.ecc");
+log("load private key:"+rst);
+
+startMsgLoop();

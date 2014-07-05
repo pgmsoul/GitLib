@@ -70,28 +70,6 @@ class CEcc{
 	//}
 	//,{
 	//	"type":"function",
-	//	"name":"close()",
-	//	"text":"释放内部的椭圆加密对象，效果和 dispose 相同，事实上 dispose 就是调用的 close 函数。",
-	//	"param":[
-	//	],
-	//	"return":{
-	//		"type":"boolean",
-	//		"text":"操作是否成功。"
-	//	}
-	//}
-	//,{
-	//	"type":"function",
-	//	"name":"close()",
-	//	"text":"释放内部的椭圆加密对象，dispose 就是直接调用 close 函数。",
-	//	"param":[
-	//	],
-	//	"return":{
-	//		"type":"boolean",
-	//		"text":"操作是否成功。"
-	//	}
-	//}
-	//,{
-	//	"type":"function",
 	//	"name":"createKey()",
 	//	"text":"生成一个新的公钥私钥对，初始对象是没有公钥私钥对的，必须加载或者生成新的秘钥，才可以使用其它功能。",
 	//	"param":[
@@ -178,8 +156,39 @@ class CEcc{
 	//}
 	//,{
 	//	"type":"function",
-	//	"name":"saveKey(filename,[override])",
+	//	"name":"saveKey(filename,[override],[noPublic],[noPrivate])",
 	//	"text":"保存公钥私钥对到文件。",
+	//	"param":[
+	//		{
+	//			"type":"string",
+	//			"name":"filename",
+	//			"text":"要保存的文件名。"
+	//		},
+	//		{
+	//			"type":"boolean",
+	//			"name":"[Override]",
+	//			"text":"如果指定的文件名已经存在，是否覆盖，缺省是不覆盖，函数抛出异常，并返回 false。"
+	//		},
+	//		{
+	//			"type":"string",
+	//			"name":"[noPublic]",
+	//			"text":"如果设为 true，则不保存公钥，只保存私钥。"
+	//		},
+	//		{
+	//			"type":"string",
+	//			"name":"[noPrivate]",
+	//			"text":"如果设为 true，则不保存私钥，只保存公钥。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"boolean",
+	//		"text":"操作是否成功。"
+	//	}
+	//}
+	//,{
+	//	"type":"function",
+	//	"name":"savePublicKey(filename,[override])",
+	//	"text":"保存公钥到文件。",
 	//	"param":[
 	//		{
 	//			"type":"string",
@@ -199,8 +208,71 @@ class CEcc{
 	//}
 	//,{
 	//	"type":"function",
-	//	"name":"loadKey(filename)",
-	//	"text":"读取一个秘钥文件，这个文件必须包括公钥和私钥，长度是 68*3 = 204 字节。",
+	//	"name":"savePrivateKey(filename,[override])",
+	//	"text":"保存私钥到文件。",
+	//	"param":[
+	//		{
+	//			"type":"string",
+	//			"name":"filename",
+	//			"text":"要保存的文件名。"
+	//		},
+	//		{
+	//			"type":"boolean",
+	//			"name":"[Override]",
+	//			"text":"如果指定的文件名已经存在，是否覆盖，缺省是不覆盖，函数抛出异常，并返回 false。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"boolean",
+	//		"text":"操作是否成功。"
+	//	}
+	//}
+	//,{
+	//	"type":"function",
+	//	"name":"loadKey(filename,[noPublic],[noPrivate])",
+	//	"text":"读取一个 saveKey 函数保存的秘钥文件，这个文件依不同情况，可以只包含公钥，只包含私钥，或者都包括。",
+	//	"param":[
+	//		{
+	//			"type":"string",
+	//			"name":"filename",
+	//			"text":"要读取的文件名。"
+	//		},
+	//		{
+	//			"type":"string",
+	//			"name":"[noPublic]",
+	//			"text":"如果设为 true，则只加载私钥。"
+	//		},
+	//		{
+	//			"type":"string",
+	//			"name":"[noPrivate]",
+	//			"text":"如果设为 true，则只加载公钥。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"boolean",
+	//		"text":"操作是否成功。"
+	//	}
+	//}
+	//,{
+	//	"type":"function",
+	//	"name":"loadPublicKey(filename)",
+	//	"text":"从文件加载公钥，这个文件必须包含公钥。",
+	//	"param":[
+	//		{
+	//			"type":"string",
+	//			"name":"filename",
+	//			"text":"要读取的文件名。"
+	//		}
+	//	],
+	//	"return":{
+	//		"type":"boolean",
+	//		"text":"操作是否成功。"
+	//	}
+	//}
+	//,{
+	//	"type":"function",
+	//	"name":"loadPrivateKey(filename)",
+	//	"text":"从文件加载私钥，这个文件必须包含私钥。",
 	//	"param":[
 	//		{
 	//			"type":"string",
@@ -639,4 +711,4 @@ class CAes{
 	//}//*
 };
 //*],"source":"d:\\SoftProject\\GitLib\\jsuser\\example\\aes.jsuser"
-//}],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\crypt.jsuser"}//*
+//}],"source":"D:\\SoftProject\\GitLib\\jsuser\\bin\\crypt.jsuser"}//*

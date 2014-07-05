@@ -1102,6 +1102,7 @@ namespace v8{
 		Handle<Value> r = _env->GetFunc(FUNC_ID_RECT)->CallAsConstructor(4,args);
 		return store.Close(r);
 	}
+	//程序的主要瓶颈是使用系统的分配释放内存函数（new malloc free delete 等），使用快速内存，这可以让运行速度提高 10 倍。
 	void LoadLibStruct(Handle<Object>& glb){
 		HandleScope store;
 
@@ -1121,12 +1122,17 @@ namespace v8{
 
 		Handle<Function> stack_push = GetObjProperty<Function>(Stack,L"push");
 		_env->SetFunc(stack_push,FUNC_ID_STACK_PUSH);
-
 		Handle<Function> stack_pop = GetObjProperty<Function>(Stack,L"pop");
 		_env->SetFunc(stack_pop,FUNC_ID_STACK_POP);
+		Handle<Function> stack_dispose = GetObjProperty<Function>(Stack,L"dispose");
+		_env->SetFunc(stack_dispose,FUNC_ID_STACK_DISPOSE);
 	}
 	////////////////////////////////////////////////
 	JsEnv* _env = 0;
+	_declspec(thread) int _threadFlag = 0;
+	bool JsEnv::IsMainThread(){
+		return _threadFlag==1;
+	}
 	JsEnv::JsEnv(){
 		cont = new Persistent<Context>();
 		//以下空间大小依实际情况调整
@@ -1147,6 +1153,7 @@ namespace v8{
 		int rt = -1;
 		if(_env!=0) return;
 		_env = new JsEnv;
+		_threadFlag = 1;
 		*_env->cont = Context::New(NULL,ObjectTemplate::New());
 		(*_env->cont)->Enter();
 		Handle<Object> glb = GetGlobal();
@@ -1329,18 +1336,18 @@ namespace v8{
 		}
 		return 0;
 	}*/
+	wchar_t bin_path[MAX_PATH];
 	bool ReadJsFile(cs::String& js,LPCWSTR file,DWORD cp){
-		cs::String nfile;
+		cs::String nfile,fn;
 		if(1!=cs::GetFileType(file)){
-			return 0;
+			fn = bin_path;
+			cs::FPLinkPath(fn,file);
+			file = fn;
+			if(1!=cs::GetFileType(file))
+				return 0;
 		}
 		cs::FileStream fs;
 		if(!fs.Create(file,OPEN_EXISTING)){
-#ifdef _DEBUG
-			cs::String inf;
-			inf.Format(L"无法读取文件: %s",file);
-			Alert(inf.Handle(),MT_ERROR);
-#endif
 			return false;
 		}
 		fs.ReadString(js,0,cp);
@@ -1434,15 +1441,28 @@ namespace v8{
 
 	//*,{
 	//	"type":"class",
-	//	"name":"CObject",
-	//	"text":"所有 C 类的基类，不需要调用 new CObject(); 来生成一个 CObject 对象，实际上根本没有纯粹的 CObject 对象，但是 CObject 的成员是任何 C 类对象的原型（prototype）的成员。",
+	//	"name":"CObject([cobj],[isBind])",
+	//	"text":"CObject 是所有 C 开头的内部类（C++定义的类）的基类，但是实际上并没有 CObject 这个类，只不过所有 C 开头的内部类都有 CObject 的成员函数。一个在 JavaScript 脚本里定义的 C 类，只有 dispose 函数，没有 CObject 的其它函数。之所以用 C 开头，是为了指示这个类是含有需要释放的 C 资源的对象，即使它是在 JavaScript 里定义的，也在某种方式下绑定了一个内部指针。所有的 C 类对象，永远都不会被垃圾收集器自动收集，即使没有任何外部引用，实际上它总是被添加到堆栈中的。用 Class 包装一个函数，就会在这个函数局部添加一个堆栈，所有这个函数内部生成的这类对象都被添加到这个堆栈，当函数返回的时候，所有的对象被自动调用 dispose。如果在函数内反复生成 C 类对象，比如一个循环内部，必须手动调用 dispose 函数来释放它的资源，否则会有大量的对象无法被垃圾收集器收集。一个调用了 dispsoe 的 C 类对象已经释放了它的内部资源，垃圾收集器会认为它和普通的 JavaScript 对象一样。",
+	//	"param":[
+	//		{
+	//			"type":"integer",
+	//			"name":"[cobj]",
+	//			"text":"内部 C++ 资源句柄，缺省值是 0，如果第二个参数是 false，这个参数是 0，会生成一个新的内部资源（这是缺省情形）。"
+	//		},
+	//		{
+	//			"type":"boolean",
+	//			"name":"[isBind]",
+	//			"text":"是否绑定型对象，缺省 false。"
+	//		}
+	//	],
 	//	"remark":[
-	//		"除非特别指明, 凡是C开头的类(构造函数)都绑定了一个内部 C++ 对象, CObject是它们的基类",
-	//		"C 类对象有两种，自有和绑定，isOwned() 函数返回是否是自有类型。自有类型的对象负责管理内部的 C++ 资源，当对象执行 dispose 的时候，C++ 资源被释放。而绑定型的 C 类对象，不负责内部 C++ 资源的释放，事实上这种类型的对象执行 dispose 没有任何效果，即它无须也不能通过调用 dispose 来释放内部资源。",
-	//		"C 类对象不能直接调用构造函数，必须使用 new 来生成对象。C 类对象的构造函数有 3 种方式：<br/>1. new CSomeThing(); 这种方式生成对象的同时，生成内部的 C++ 资源。<br/>2. new CSomethine(obj); 这种方式不生成新的 C++ 资源，而是把 obj 视为 C++ 资源，obj 必须是一个对应类型的有效 C++ 资源句柄，debind 函数返回的就是这样的句柄。<br/>3. new CSomethine(obj,true); 这种方式生成一个绑定型对象，对象不负责 obj 的释放。<br/> 2.和 3. 方式的 obj 可以是 0 ，对象将成为一个空对象，事实上 dispose 被执行后就是一个空对象。",
+	//		"除非特别指明, 凡是C开头的类(构造函数)都绑定了一个内部 C++ 对象。",
+	//		"C 类对象有两种，自有和绑定（JavaScript定义的C类对象没有这种区别），isOwned() 函数返回是否是自有类型。自有类型的对象负责管理内部的 C++ 资源，当对象执行 dispose 的时候，C++ 资源被释放。而绑定型的 C 类对象，不负责内部 C++ 资源的释放，事实上这种类型的对象执行 dispose 没有任何效果，即它无须也不能通过调用 dispose 来释放内部资源。",
+	//		"绑定类型往往用于一个内部对象绑定了 2 个以上的 C 类对象，应该让唯一的一个对象负责资源的释放，否则多次释放会引发错误。但是，所有绑定类型的对象在其它方面表现和自有型对象没有区别。",
+	//		"C 类对象可以直接调用构造函数来生成一个对象，实际上它内部还是调用了 new 来生成对象，所以出于效率的考虑，直接使用 new。C 类对象的构造函数有 3 种方式：<br/>1. new CSomeThing(); 这种方式生成对象的同时，生成内部的 C++ 资源。<br/>2. new CSomethine(obj); 这种方式不生成新的 C++ 资源，而是把 obj 视为 C++ 资源，obj 必须是一个对应类型的有效 C++ 资源句柄。<br/>3. new CSomethine(obj,true); 这种方式生成一个绑定型对象，对象不负责 obj 的释放。<br/> 2.和 3. 方式的 obj 可以是 0 或者一个对象指针，对于一个自有型对象，如果发现这个指针是 0 ，它会自动生成一个对象。",
 	//		"C 类对象自动在 Stack 管理之下，离开生成它的 Stack 范围，会自动调用 dispose。"
 	//	],
-	//	"member":[
+	//	"member":[//*
 	//	{
 	//		"type":"function",
 	//		"name":"bind(cobj,[bindType])",
@@ -1482,6 +1502,17 @@ namespace v8{
 	//			"这个操作意味着内部 C++ 资源不受任何管理，所以必须把返回值使用 bind 函数绑定到一个对应类型的 C 类对象，否则会造成内存泄露。"
 	//		]
 	//	},
+	//*	{
+	//		"type":"function",
+	//		"name":"dispose()",
+	//		"text":"释放这个对象，不论是自动还是手动，如果一个 C 类对象没有调用 dispose，它就不会被垃圾收集器收集。",
+	//		"param":[
+	//		],
+	//		"return":{
+	//			"type":"void",
+	//			"text":"函数没有返回值。"
+	//		}
+	//	},
 	//	{
 	//		"type":"function",
 	//		"name":"obj()",
@@ -1518,7 +1549,7 @@ namespace v8{
 	//			"text":"如果内部 C++ 资源为空，返回 true，否则返回 false。"
 	//		},
 	//		"remark":[
-	//			"dispose(),bind(0),debind() 都可以使内部的 C++ 资源为 0。"
+	//			"dispose() 可以使内部的 C++ 资源为 0。"
 	//		]
 	//	}
 	//	]
@@ -1590,8 +1621,8 @@ namespace v8{
 //	"type":"const",
 //	"name":"Stack",
 //	"text":"Stack 提供了一个函数退出时执行清理操作的机制。如果使用 Class 封装函数，无需手动处理 Stack 操作。",
-//	"member":[//*
-//*{
+//	"member":[
+//{
 //	"type":"function",
 //	"name":"create()",
 //	"text":"生成函数当前的 Stack，即使用户没有调用任何 Stack.create 函数，系统已经生成了一个根 Stack。",
@@ -1601,8 +1632,8 @@ namespace v8{
 //		"type":"void",
 //		"text":"函数没有返回值。"
 //	}
-//}//*
-//*,{
+//}
+//,{
 //	"type":"function",
 //	"name":"close()",
 //	"text":"调用 Stack 内对象的 dispose 函数，并且清理 Stack。",
@@ -1612,8 +1643,8 @@ namespace v8{
 //		"type":"void",
 //		"text":"函数没有返回值。"
 //	}
-//}//*
-//*,{
+//}
+//,{
 //	"type":"function",
 //	"name":"push(obj)",
 //	"text":"把对象 push 进 Stack，在函数退出时，对象的 dispose 函数被调用，后添加对象的 dispose 先于先添加对象的 dispose 被调用。",
@@ -1628,8 +1659,8 @@ namespace v8{
 //		"type":"void",
 //		"text":"函数没有返回值。"
 //	}
-//}//*
-//*,{
+//}
+//,{
 //	"type":"function",
 //	"name":"pop(obj)",
 //	"text":"把对象 pop 出 当前 Stack，并且 push 进上级 Stack。这个函数是 push 函数的逆函数。Stack 对象的 push 和 pop 顺序无关紧要，用户很少需要调用这个函数。",
@@ -1644,8 +1675,25 @@ namespace v8{
 //		"type":"boolean",
 //		"text":"成功返回 true，失败返回 false。顶级 Stack 不能 pop，根 Stack pop 一定会失败。"
 //	}
-//}],//*
-//*	"example":[
+//}
+//,{
+//	"type":"function",
+//	"name":"dispose(obj)",
+//	"text":"把对象 obj 移出当前 Stack，一个在 JavaScript 脚本里定义的 C 类对象，需要在 dispose 的时候调用这个函数，来把自己移出堆栈。移出搜索是从后向前的，刚刚 push 进 Stack 的对象，立即移出效率最高。",
+//	"param":[
+//	{
+//		"type":"object",
+//		"name":"obj",
+//		"text":"要移出的对象变量。"
+//	}
+//	],
+//	"return":{
+//		"type":"boolean",
+//		"text":"成功返回 true，失败返回 false。多次移出一个对象不会有问题，但是会遍历所有元素。"
+//	}
+//}
+//],
+//	"example":[
 //		"function testStack(){",
 //		"	//在函数开头初始化，之后必须调用 Stack.close()，否则 Stack 机制会被破坏。",
 //		"	Stack.create();",

@@ -1,0 +1,10 @@
+//
+"use strict";
+
+require("base");
+
+Class(function main(){
+	var r = Upnp.add(800);
+	alert(r);
+},true);
+main();

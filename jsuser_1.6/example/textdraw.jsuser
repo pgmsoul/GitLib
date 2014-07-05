@@ -1,0 +1,33 @@
+//file: textdraw.jsuser
+"use strict"
+
+require("base");
+require("wnd");
+
+Class(function main(){
+	var frame = new CFrame();
+	frame.text = "TextDraw Example";
+	frame.setRemPos("main_wnd");
+	//生成一个编辑控件对象
+	var td = new TextDraw();
+	td.color = 0xff0000;
+	//生成一个字体对象
+	var font = new CFont();
+	font.size = 30;
+	font.italic = true;
+	font.underline = true;
+	font.create();
+	td.font = font;
+	var str = "银行在发放理财品时，一般会通过期限的设置，让理财品在月末、季末这些考核时点之前大量到期，从而形成理财资金向存款的大量回流，以应付存款考核的要求。";
+	frame.onDraw = function(hdc){
+		td.hdc = hdc;
+		td.draw(str,10,10,200,200);
+	}
+	//生成主窗口，这个函数返回时，onCreate 也已经执行。缺省字体必须在控件生成之前设置，否则需要对每个控件重新调用 child.setFont(font)；
+	frame.create();
+	
+	//开始消息循环，如果不调用这个函数，应用程序会自己退出。
+	startMsgLoop();
+},true);
+
+main();

@@ -4,8 +4,40 @@
 require("base");
 require("wnd");
 
-Class(function main(){
+function main(){
+		thread();
+	timer();
+}
+Class(function thread(){
+	var CreateThread = new Api();
+	//CreateThread 函数在 Kernel32.dll 里，C 函数原型如下：
+	//HANDLE WINAPI CreateThread(void*,UINT,PROC,void* param,DWORD,LPDWORD);
+	//参数和返回值都是 32 位。PROC 格式如下：
+	//DWORD CALLBACK PROC(void* param);
+	//param 就是第四个参数传的值。
+	var ker32 = Api.loadModule("Kernel32.dll");
+	if(!CreateThread.create(ker32,"CreateThread")){
+		throw "无法加载 CreateThread 函数";
+		return;
+	}
+	var threadproc = new CProc();
+	//生成 1 个参数的回调函数，返回值就是 proc 的 C 指针。
+	var proc = threadproc.create(1,function(arg){
+		alert("thread is run, param is :"+arg);
+		return 8;
+	});
+	var idm = new CMemory();
+	idm.length = 4;
+	//线程启动后，直到 startMsgLoop 被调用，回调函数才会被呼叫。
+	var thread = CreateThread(0,0,proc,5,0,idm.handle());
+	//在回调函数使用过程中，不能销毁，为了防止自动销毁，添加到上一个堆栈。
+	var rst = Stack.pop(threadproc);
+	alert("thread handle:"+thread+",thread id:"+idm.getNumber(2));
+},true);
+Class(function timer(){
 	var frame = new CFrame();
+	frame.onCreate = function(){
+	}
 	var SetTimer = new Api();
 	//SetTimer 函数在 user32.dll 里，C 函数原型如下：
 	//UINT_PTR WINAPI SetTimer(HWND,UINT_PTR,UINT,TIMERPROC);

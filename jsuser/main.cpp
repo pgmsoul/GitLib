@@ -83,6 +83,7 @@ void plainStart(){
 	setJsFileShell();
 }
 void initAppC(LPCWSTR file){
+	cs::WcsCopy(bin_path,cs::App::GetAppDirectory());
 	//设置运行环境：App名称和工作目录。工作目录默认设置为 js 脚本所在目录。
 	wchar_t buf[MAX_PATH],*fn;
 	DWORD len = GetFullPathName(file,MAX_PATH,buf,&fn);
@@ -94,6 +95,7 @@ void initAppC(LPCWSTR file){
 	cs::App::SetAppName(name);
 }
 WINMAIN{
+	cs::InitConciseLib(128);
 	cs::String file;
 	if(!getCmdFile(lpCmdLine,file)){
 		setJsFileShell();

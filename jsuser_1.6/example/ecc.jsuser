@@ -1,0 +1,58 @@
+//file: ecc.juser
+"use strict";
+
+require("base");
+
+load("crypt.jsuser");
+
+Class(function main(){
+	Console.show();
+	//测试秘钥保存功能
+	var ecc = new CEcc();
+	ecc.createKey();
+	var rst = ecc.saveKey("ecc.key",true);//allow override a exist file
+	Console.log("保存秘钥到 ecc.key: "+rst);
+	ecc.dispose();
+	//测试秘钥加载功能
+	ecc = new CEcc();
+	rst = ecc.loadKey("ecc.key");
+	Console.log("加载秘钥文件 ecc.key: "+rst);
+	var prikey = ecc.getPrivateKey();
+	Console.log("私钥: "+prikey.toBase64());
+	var pubkey = ecc.getPublicKey();
+	Console.log("公钥: "+pubkey.toBase64());
+	ecc.dispose();
+	//私钥签名
+	ecc = new CEcc();
+	rst = ecc.setPrivateKey(prikey);
+	Console.log("set private key: "+rst);
+	var data = "相关数据显示，2008~2013年间，特斯拉申请的核心专利大多与电池安全控制相关。涉及到电池冷却、安全、电荷平衡等系统。";
+	//get sign data only use private key.
+	var sign = ecc.getSign(data);
+	Console.log("sign length = "+sign.length);
+	Console.log("sign data: "+sign.toBase64());
+	ecc.dispose();
+	//public key check sign
+	ecc = new CEcc();
+	rst = ecc.setPublicKey(pubkey);
+	Console.log("set public key: "+rst);
+	rst = ecc.verify(sign,data);
+	Console.log("verify result: "+rst);
+	ecc.dispose();
+	//开始测试加解密
+	ecc = new CEcc(true);
+	//加密使用的是公钥
+	rst = ecc.setPublicKey(pubkey);
+	var encdata = ecc.encrypt(data);
+	Console.log("encrypt data length: "+encdata.length);
+	Console.log("encrypt data: "+encdata.toBase64());
+	ecc.dispose();
+	//decrypt use private key;
+	ecc = new CEcc(true);
+	rst = ecc.setPrivateKey(prikey);
+	var decdata = ecc.decrypt(encdata);
+	Console.log("decrypt data length: "+decdata.length);
+	Console.log("decrypt data: "+decdata.getString());
+	Console.readln();
+},true);
+main();

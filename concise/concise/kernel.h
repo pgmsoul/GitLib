@@ -134,6 +134,21 @@ namespace cs{
 		delete pp;
 		return 1;
 	}
+	template<typename R,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6>DWORD __stdcall _ThreadCall(void* p){
+		struct PARAM : public _struct{
+			P1 p1;
+			P2 p2;
+			P3 p3;
+			P4 p4;
+			P5 p5;
+			P6 p6
+			Function<R,P1,P2,P3,P4,P5,P6> OnCall;
+		};
+		PARAM* pp = (PARAM*)p;
+		pp->OnCall(pp->p1,pp->p2,pp->p3,pp->p4,pp->p5,pp->p6);
+		delete pp;
+		return 1;
+	}
 	//0个参数
 	template<typename R,typename PROC>bool AsynCallStd(PROC proc){
 		struct PARAM : public _struct{
@@ -669,7 +684,7 @@ namespace cs{
 			Close();
 		}
 	};
-	//#define THREAD_STATUS_NULL		0	//线程为空，或者正要退出
+	/*/#define THREAD_STATUS_NULL		0	//线程为空，或者正要退出
 #define THREAD_STATUS_SUSPEND	1	//线程就绪，可以运行
 #define THREAD_STATUS_RUNNING	2	//运行状态
 
@@ -693,20 +708,30 @@ namespace cs{
 		}
 	};
 	template<typename PARAM> bool checkState(PARAM pp){
-		//此时Flag有3种可能：Suspend，Continue，Exit；如果状态为Exit，退出循环
+		//此时Flag有3种可能：Suspend，Continue，Exit；如果状态为Exit，退出循环,此时没有可能启动新任务。
 		if(THREAD_FLAG_EXIT==::InterlockedCompareExchange(&pp->Flag,THREAD_FLAG_EXIT,THREAD_FLAG_EXIT)){
 			return true;
 		}
 		//此时状态只可能为Continue或者Suspend，如果状态为Suspend，则执行挂起线程，否则继续。
-		if(THREAD_FLAG_SUSPEND==::InterlockedCompareExchange(&pp->Flag,THREAD_FLAG_SUSPEND,THREAD_FLAG_CONTINUE)){
-			//把状态置为Suspend。
-			::InterlockedCompareExchange(&pp->Status,THREAD_STATUS_SUSPEND,pp->Status);
-			//如果此时调用了Start，状态会置为Running，如果是Running不挂起线程。
-			if(THREAD_STATUS_RUNNING!=::InterlockedCompareExchange(&pp->Status,pp->Status,THREAD_STATUS_RUNNING)){
-				::SuspendThread(pp->Handle);
-			}
+		if(THREAD_FLAG_CONTINUE==::InterlockedCompareExchange(&pp->Flag,THREAD_FLAG_SUSPEND,THREAD_FLAG_CONTINUE)){
+			return false;
 		}
-		//如果从Suspend恢复，需要检测是否设置了退出标志。
+		//把状态置为Suspend,因为是异步，这个函数执行完之后，有可能又启动了新任务，或者发出退出命令，或者两者都有。
+		::InterlockedCompareExchange(&pp->Status,THREAD_STATUS_SUSPEND,pp->Status);
+		//如果此时调用了Start，状态会置为Running，如果是Running不挂起线程, 也不退出线程。
+		if(THREAD_STATUS_RUNNING==::InterlockedCompareExchange(&pp->Status,pp->Status,THREAD_STATUS_RUNNING)){
+			return false;
+		}
+		//if not running, check wether exit.
+		if(THREAD_FLAG_EXIT==::InterlockedCompareExchange(&pp->Flag,THREAD_FLAG_EXIT,THREAD_FLAG_EXIT))
+			return true;
+		//if not exit,suspend
+		DWORD count = ::SuspendThread(pp->Handle);
+		//after resume check is running 
+		if(THREAD_STATUS_RUNNING==::InterlockedCompareExchange(&pp->Status,pp->Status,THREAD_STATUS_RUNNING)){
+			return false;
+		}
+		//if not running check exit;
 		if(THREAD_FLAG_EXIT==::InterlockedCompareExchange(&pp->Flag,THREAD_FLAG_EXIT,THREAD_FLAG_EXIT)){
 			return true;
 		}
@@ -845,7 +870,7 @@ namespace cs{
 	StaticThread只有2中状态，Suspend和Running，可以通过IsRunning函数取得它的状态。如果在运行状
 	态下调用 SetCall 和 SetCallStd 函数，有两种情况，1，回调已经被呼叫，此时新设置
 	的参数直到下次呼叫才起作用，2.回调还未被呼叫，此时执行新设置的参数（执行了Start后，回调不一定
-	已经被执行）*/
+	已经被执行）
 	template<typename R,typename P1 = NullType,typename P2 = NullType,typename P3 = NullType,typename P4 = NullType,typename P5 = NullType> class CONCISETL_API StaticThread2 : public _StaticThread{
 	public:
 		template<typename PROC> void SetCallStd(PROC proc,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5){
@@ -1074,7 +1099,7 @@ namespace cs{
 	退出时对象的销毁顺序问题。一般是先调用退出线程的函数，TaskPool等待，退出结束后，开始销毁其它对象。
 
 	如果程序结束时不需要保存任何数据，可以使用ExitProcess迅速结束进程。
-	*/
+	/
 	class CONCISETL_API _TaskPool : public _class{
 	protected:
 		CriticalSection		_cs;
@@ -1205,6 +1230,599 @@ namespace cs{
 			return pst->Start();
 		}
 	};
+	*/
+	//TaskPool///////////////////////////////////////////////////////////////////////
+
+	struct CONCISE_API _TaskParam : public cs::_struct{
+		HANDLE handle;
+		bool exit;
+		bool over;
+		_TaskParam():handle(0),exit(0),over(0){}
+	};
+	class CONCISETL_API _TaskPool : public cs::_class{
+	protected:
+		cs::CriticalSection _cs;
+	public:
+	};
+	template<typename R,typename P1 = NullType,typename P2 = NullType,typename P3 = NullType,typename P4 = NullType,typename P5 = NullType> class CONCISETL_API TaskPool : public _TaskPool{
+		struct PARAM : public _TaskParam{
+			Function<R,P1,P2,P3,P4,P5> OnCall;
+			P1 p1;
+			P2 p2;
+			P3 p3;
+			P4 p4;
+			P4 p5;
+		};
+		cs::ObjectList<PARAM> _threadList;
+		static DWORD __stdcall _taskPoolProc(void* p){
+			PARAM* tp = (PARAM*)p;
+			while(true){
+				tp->OnCall(tp->p1,tp->p2,tp->p3,tp->p4,tp->p5);
+				if(tp->exit) break;
+				tp->over = true;
+				::SuspendThread(tp->handle);
+				if(!tp->over) continue;
+				if(tp->exit) break;
+			}
+			return 0;
+		}
+	public:
+		~TaskPool(){
+			Close();
+		};
+		void Close(){
+			cs::LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				tp.exit = true;
+				::ResumeThread(tp.handle);
+			}
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				::WaitForSingleObject(tp.handle,-1);
+				::CloseHandle(tp.handle);
+			}
+			_threadList.Clear();
+		}
+		template<typename PROC> bool StartStdTask(PROC cb,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.BindStd(cb);
+				th.p1 = p1;
+				th.p2 = p2;
+				th.p3 = p3;
+				th.p4 = p4;
+				th.p5 = p5;
+				
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.BindStd(proc);
+			tp->p1 = p1;
+			tp->p2 = p2;
+			tp->p3 = p3;
+			tp->p4 = p4;
+			tp->p5 = p5;
+			tp->handle = ::CreateThread(0,0,&_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+		template<typename OBJ,typename PROC> bool StartTask(OBJ obj,PROC cb,P1 p1,P2 p2,P3 p3,P4 p4,P5 p5){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.Bind(obj,cb);
+				th.p1 = p1;
+				th.p2 = p2;
+				th.p3 = p3;
+				th.p4 = p4;
+				th.p5 = p5;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.Bind(obj,cb);
+			tp->p1 = p1;
+			tp->p2 = p2;
+			tp->p3 = p3;
+			tp->p4 = p4;
+			tp->p5 = p5;
+			tp->handle = ::CreateThread(0,0,&TaskPool::_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+	};
+	template<typename R,typename P1,typename P2,typename P3,typename P4> class CONCISETL_API TaskPool<R,P1,P2,P3,P4> : public _TaskPool{
+		struct PARAM : public _TaskParam{
+			Function<R,P1,P2,P3,P4> OnCall;
+			P1 p1;
+			P2 p2;
+			P3 p3;
+			P4 p4;
+		};
+		cs::ObjectList<PARAM> _threadList;
+		static DWORD __stdcall _taskPoolProc(void* p){
+			PARAM* tp = (PARAM*)p;
+			while(true){
+				tp->OnCall(tp->p1,tp->p2,tp->p3,tp->p4);
+				if(tp->exit) break;
+				tp->over = true;
+				::SuspendThread(tp->handle);
+				if(!tp->over) continue;
+				if(tp->exit) break;
+			}
+			return 0;
+		}
+	public:
+		~TaskPool(){
+			Close();
+		};
+		void Close(){
+			cs::LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				tp.exit = true;
+				::ResumeThread(tp.handle);
+			}
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				::WaitForSingleObject(tp.handle,-1);
+				::CloseHandle(tp.handle);
+			}
+			_threadList.Clear();
+		}
+		template<typename PROC> bool StartStdTask(PROC cb,P1 p1,P2 p2,P3 p3,P4 p4){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.BindStd(cb);
+				th.p1 = p1;
+				th.p2 = p2;
+				th.p3 = p3;
+				th.p4 = p4;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.BindStd(proc);
+			tp->p1 = p1;
+			tp->p2 = p2;
+			tp->p3 = p3;
+			tp->p4 = p4;
+			tp->handle = ::CreateThread(0,0,&_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+		template<typename OBJ,typename PROC> bool StartTask(OBJ obj,PROC cb,P1 p1,P2 p2,P3 p3,P4 p4){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.Bind(obj,cb);
+				th.p1 = p1;
+				th.p2 = p2;
+				th.p3 = p3;
+				th.p4 = p4;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.Bind(obj,cb);
+			tp->p1 = p1;
+			tp->p2 = p2;
+			tp->p3 = p3;
+			tp->p4 = p4;
+			tp->handle = ::CreateThread(0,0,&TaskPool::_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+	};
+	template<typename R,typename P1,typename P2,typename P3> class CONCISETL_API TaskPool<R,P1,P2,P3> : public _TaskPool{
+		struct PARAM : public _TaskParam{
+			Function<R,P1,P2,P3> OnCall;
+			P1 p1;
+			P2 p2;
+			P3 p3;
+		};
+		cs::ObjectList<PARAM> _threadList;
+		static DWORD __stdcall _taskPoolProc(void* p){
+			PARAM* tp = (PARAM*)p;
+			while(true){
+				tp->OnCall(tp->p1,tp->p2,tp->p3);
+				if(tp->exit) break;
+				tp->over = true;
+				::SuspendThread(tp->handle);
+				if(!tp->over) continue;
+				if(tp->exit) break;
+			}
+			return 0;
+		}
+	public:
+		~TaskPool(){
+			Close();
+		};
+		void Close(){
+			cs::LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				tp.exit = true;
+				::ResumeThread(tp.handle);
+			}
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				::WaitForSingleObject(tp.handle,-1);
+				::CloseHandle(tp.handle);
+			}
+			_threadList.Clear();
+		}
+		template<typename PROC> bool StartStdTask(PROC cb,P1 p1,P2 p2,P3 p3){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.BindStd(cb);
+				th.p1 = p1;
+				th.p2 = p2;
+				th.p3 = p3;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.BindStd(proc);
+			tp->p1 = p1;
+			tp->p2 = p2;
+			tp->p3 = p3;
+			tp->handle = ::CreateThread(0,0,&_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+		template<typename OBJ,typename PROC> bool StartTask(OBJ obj,PROC cb,P1 p1,P2 p2,P3 p3){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.Bind(obj,cb);
+				th.p1 = p1;
+				th.p2 = p2;
+				th.p3 = p3;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.Bind(obj,cb);
+			tp->p1 = p1;
+			tp->p2 = p2;
+			tp->p3 = p3;
+			tp->handle = ::CreateThread(0,0,&TaskPool::_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+	};
+	template<typename R,typename P1,typename P2> class CONCISETL_API TaskPool<R,P1,P2> : public _TaskPool{
+		struct PARAM : public _TaskParam{
+			Function<R,P1,P2> OnCall;
+			P1 p1;
+			P2 p2;
+		};
+		cs::ObjectList<PARAM> _threadList;
+		static DWORD __stdcall _taskPoolProc(void* p){
+			PARAM* tp = (PARAM*)p;
+			while(true){
+				tp->OnCall(tp->p1,tp->p2);
+				if(tp->exit) break;
+				tp->over = true;
+				::SuspendThread(tp->handle);
+				if(!tp->over) continue;
+				if(tp->exit) break;
+			}
+			return 0;
+		}
+	public:
+		~TaskPool(){
+			Close();
+		};
+		void Close(){
+			cs::LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				tp.exit = true;
+				::ResumeThread(tp.handle);
+			}
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				::WaitForSingleObject(tp.handle,-1);
+				::CloseHandle(tp.handle);
+			}
+			_threadList.Clear();
+		}
+		template<typename PROC> bool StartStdTask(PROC cb,P1 p1,P2 p2){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.BindStd(cb);
+				th.p1 = p1;
+				th.p2 = p2;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.BindStd(proc);
+			tp->p1 = p1;
+			tp->p2 = p2;
+			tp->handle = ::CreateThread(0,0,&_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+		template<typename OBJ,typename PROC> bool StartTask(OBJ obj,PROC cb,P1 p1,P2 p2){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.Bind(obj,cb);
+				th.p1 = p1;
+				th.p2 = p2;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.Bind(obj,cb);
+			tp->p1 = p1;
+			tp->p2 = p2;
+			tp->handle = ::CreateThread(0,0,&TaskPool::_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+	};
+	template<typename R,typename P1> class CONCISETL_API TaskPool<R,P1> : public _TaskPool{
+		struct PARAM : public _TaskParam{
+			Function<R,P1> OnCall;
+			P1 p1;
+		};
+		cs::ObjectList<PARAM> _threadList;
+		static DWORD __stdcall _taskPoolProc(void* p){
+			PARAM* tp = (PARAM*)p;
+			while(true){
+				tp->OnCall(tp->p1);
+				if(tp->exit) break;
+				tp->over = true;
+				::SuspendThread(tp->handle);
+				if(!tp->over) continue;
+				if(tp->exit) break;
+			}
+			return 0;
+		}
+	public:
+		~TaskPool(){
+			Close();
+		};
+		void Close(){
+			cs::LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				tp.exit = true;
+				::ResumeThread(tp.handle);
+			}
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				::WaitForSingleObject(tp.handle,-1);
+				::CloseHandle(tp.handle);
+			}
+			_threadList.Clear();
+		}
+		template<typename PROC> bool StartStdTask(PROC cb,P1 p1){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.BindStd(cb);
+				th.p1 = p1;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.BindStd(proc);
+			tp->p1 = p1;
+			tp->handle = ::CreateThread(0,0,&_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+		template<typename OBJ,typename PROC> bool StartTask(OBJ obj,PROC cb,P1 p1){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.Bind(obj,cb);
+				th.p1 = p1;
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.Bind(obj,cb);
+			tp->p1 = p1;
+			tp->handle = ::CreateThread(0,0,&TaskPool::_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+	};
+	template<typename R> class CONCISETL_API TaskPool<R> : public _TaskPool{
+		struct PARAM : public _TaskParam{
+			Function<R> OnCall;
+		};
+		cs::ObjectList<PARAM> _threadList;
+		static DWORD __stdcall _taskPoolProc(void* p){
+			PARAM* tp = (PARAM*)p;
+			while(true){
+				tp->OnCall();
+				if(tp->exit) break;
+				tp->over = true;
+				::SuspendThread(tp->handle);
+				if(!tp->over) continue;
+				if(tp->exit) break;
+			}
+			return 0;
+		}
+	public:
+		~TaskPool(){
+			Close();
+		};
+		void Close(){
+			cs::LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				tp.exit = true;
+				::ResumeThread(tp.handle);
+			}
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& tp = _threadList[i];
+				::WaitForSingleObject(tp.handle,-1);
+				::CloseHandle(tp.handle);
+			}
+			_threadList.Clear();
+		}
+		template<typename PROC> bool StartStdTask(PROC cb){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.BindStd(cb);
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.BindStd(proc);
+			tp->handle = ::CreateThread(0,0,&_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+		template<typename OBJ,typename PROC> bool StartTask(OBJ obj,PROC cb){
+			LocalCriticalSection lcs(_cs);
+			for(uint i=0;i<_threadList.Count();i++){
+				PARAM& th = _threadList[i];
+				if(!th.over) continue;
+				th.OnCall.Bind(obj,cb);
+
+				th.over = false;
+				while(true){
+					//if thread not suspend,ResumeThread will return 0;
+					DWORD rcount = ::ResumeThread(th.handle);
+					if(rcount==-1) return false;
+					if(rcount==1) break; 
+					Sleep(1);
+				}
+				return true;
+			}
+			DWORD id;
+			PARAM* tp = _threadList.Add();
+			tp->OnCall.Bind(obj,cb);
+			tp->handle = ::CreateThread(0,0,&TaskPool::_taskPoolProc,tp,CREATE_SUSPENDED,&id);
+			ResumeThread(tp->handle);
+			return true;
+		}
+	};
 	//获取当前线程的句柄，与GetCurrentThread不同，这个函数返回的句柄不是伪句柄，可以被其他线程使用。
 	CONCISE_API HANDLE DuplicateCurrentThread();
 	//返回当前可执行文件的全路径名称.
@@ -1221,7 +1839,7 @@ namespace cs{
 		//从一个32个字节字符串初始化。
 		void FromByteString(LPCWSTR str);
 		//取得字节数据，buf至少为16个字节。
-		void ToByte(unsigned char* buf){memcpy(buf,this,16);}
+		void ToByte(void* buf){memcpy(buf,this,16);}
 		//设置字节数据，buf至少为16个字节。
 		inline void FromByte(unsigned char* buf){memcpy(this,buf,16);}
 		//判断两个GUID是否相同。

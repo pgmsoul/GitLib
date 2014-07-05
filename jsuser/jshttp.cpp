@@ -113,7 +113,7 @@ namespace v8{
 	//		"如果请求的页面设置了跳转，请求会指向新的页面。"
 	//	],
 	//	"member":[//*
-	class JsHttp : public JsCObject<V8Http,JsHttp>{
+	class JsHttp : public JsCObject<V8Http,JsHttp,TEMPLATE_ID_HTTP>{
 	public:
 		//*{
 		//	"type":"function",
@@ -427,7 +427,7 @@ namespace v8{
 	//		"提供 socket 的相关功能。"
 	//	],
 	//	"member":[//*
-	class JsSocket : public JsWrapObject<AsynSocket,JsSocket>{
+	class JsSocket : public JsWrapObject<AsynSocket,JsSocket,TEMPLATE_ID_SOCKET>{
 		//*{
 		//	"type":"function",
 		//	"name":"getRemoteIp()",
@@ -1049,7 +1049,7 @@ namespace v8{
 	//	"name":"CTcpServer",
 	//	"text":"提供 TCP 服务器功能。",
 	//	"member":[//*
-	class JsTcpServer : public JsWrapObject<cs::TCPServer,JsTcpServer>{
+	class JsTcpServer : public JsWrapObject<cs::TCPServer,JsTcpServer,TEMPLATE_ID_TCPSERVER>{
 		//*{
 		//	"type":"function",
 		//	"name":"startup(port)",
@@ -1382,7 +1382,7 @@ namespace v8{
 	//	"name":"CUpnp",
 	//	"text":"提供路由器的端口映射操作。",
 	//	"member":[//*
-	class JsUpnp : public JsWrapObject<Upnp,JsUpnp>{
+	class JsUpnp : public JsWrapObject<Upnp,JsUpnp,TEMPLATE_ID_UPNP>{
 		//*{
 		//	"type":"function",
 		//	"name":"set(port,[udpOrTcp],[disabled],[innerPort],[name],[localIp])",
@@ -1649,11 +1649,97 @@ namespace v8{
 		}
 	};
 	//*]}//*
+	//*,{
+	//	"type":"class",
+	//	"name":"Host",
+	//	"text":"主机是一种域名解析系统，提供把域名字串解析为特定的 ip 地址以及其它信息的功能。",
+	//	"member":[//*
+	class JsHost : public JsObject<JsHost>{
+		//*{
+		//	"type":"function",
+		//	"name":"create([name])",
+		//	"text":"用主机的名称初始化主机对象，name 可以是一个域名，也可以是一个 ip 地址，缺省或空串表示本机。",
+		//	"param":[
+		//		{
+		//			"type":"string",
+		//			"name":"[name]",
+		//			"text":"主机名称，它可以是一个域名，也可以是一个 ip 地址。缺省或空串表示取回本机的信息。"
+		//		}
+		//	],
+		//	"return":{
+		//		"type":"boolean",
+		//		"text":"成功返回 true，失败返回 undefined。"
+		//	}
+		//}//*
+		static Handle<Value> create(const Arguments& args){
+			HandleScope stack;
+			while(true){
+				Handle<Object> self = args.This();
+				cs::Memory<char> name;
+				if(args.Length()>0&&!args[0]->IsUndefined()){ 
+					GetAscii(args[0],name);
+				}
+				WSADATA wsd;
+				::WSAStartup(MAKEWORD(2,2),&wsd);
+				hostent* host = ::gethostbyname(name);
+				if(host==0) break;
+				int count = 0;
+				Handle<Array> aliases = Array::New();
+				self->Set(NEW_STR(aliases),aliases);
+				while(host->h_aliases[count]){
+					aliases->Set(count,String::New(host->h_aliases[count]));
+					count++;
+				}
+
+				Handle<Array> ip = Array::New();
+				self->Set(NEW_STR(ip),ip);
+				count = 0;
+				while(host->h_addr_list[count]){
+					cs::IP _ip = *((u_long*)host->h_addr_list[count]);
+
+					ip->Set(count,String::New(_ip.ToString()));
+					count++;
+				}
+
+				self->Set(NEW_STR(official),String::New(host->h_name));
+				::WSACleanup();
+				return True();
+			}
+			::WSACleanup();
+			return Undefined();
+		}
+		//*,{
+		//	"type":"property",
+		//	"name":"official",
+		//	"objtype":"string",
+		//	"text":"取回主机的官方名称。"
+		//}//*
+		//*,{
+		//	"type":"property",
+		//	"name":"aliases",
+		//	"objtype":"array",
+		//	"text":"主机的别名数组，一个主机可能有多个别名。"
+		//}//*
+		//*,{
+		//	"type":"property",
+		//	"name":"ip",
+		//	"objtype":"array",
+		//	"text":"主机的 ip 数组，一个主机可能有多个 ip。"
+		//}//*
+	public:
+		static void init(Handle<FunctionTemplate>& ft){
+			HandleScope store;
+			Handle<ObjectTemplate> func = ft->PrototypeTemplate();
+			SET_CLA_FUNC(create);
+		};
+	};
+	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\host.jsuser"}//*
 	void LoadNet(Handle<Object>& glb){
-		JsHttp::Load(glb,L"CHttpRequest",TEMPLATE_ID_HTTP);
-		JsSocket::Load(glb,L"CSocket",TEMPLATE_ID_SOCKET);
-		JsTcpServer::Load(glb,L"CTcpServer",TEMPLATE_ID_TCPSERVER);
-		JsUpnp::Load(glb,L"CUpnp",TEMPLATE_ID_UPNP);
+		JsHttp::Load(glb,L"CHttpRequest");
+		JsSocket::Load(glb,L"CSocket");
+		JsTcpServer::Load(glb,L"CTcpServer");
+		JsUpnp::Load(glb,L"CUpnp");
+		JsHost::Load(glb,L"Host");
 	}
 	//*]}//*
 }

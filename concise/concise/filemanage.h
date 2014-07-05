@@ -97,7 +97,7 @@ namespace cs{
 		//接收文件系统消息的回调函数，这个回调可能是多线程异步呼叫。
 		Function<void,DWORD,LPCWSTR,FolderWatch*> OnChange;
 		//开始监视一个文件夹，每次调用Start都会在一个新线程里。
-		Event* Start(LPCWSTR folder,void* userData = 0,bool subfolder = true,DWORD type = FolderWatch::Normal);
+		bool Start(LPCWSTR folder,void* userData = 0,bool subfolder = true,DWORD type = FolderWatch::Normal);
 		//停止监视一个文件夹，但是对应的线程不一定结束。
 		bool Stop(LPCWSTR folder);
 		//停止监视所有文件夹，关闭所有线程，并且等待这些线程结束，才会返回。

@@ -473,7 +473,7 @@ namespace v8{
 		}
 	};
 	class BIWnd : public BWnd<cs::IWnd>{};
-	template<typename T,typename S> class JsWndObject : public JsHandleObject<T,HWND,S>{
+	template<typename T,typename S,int id> class JsWndObject : public JsHandleObject<T,HWND,S,id>{
 		static void _on_create(Handle<Object>& self,BIWnd* cobj){
 			Persistent<Object>* ps = (Persistent<Object>*)cobj->UserDataList[0];
 			*ps = Persistent<Object>::New(self);
@@ -498,7 +498,7 @@ namespace v8{
 	//	"name":"CWnd",
 	//	"text":"CWnd 封装一个窗口对象，Windows 系统的任何窗口和子窗口都是一个 CWnd 对象。",
 	//	"member":[//*
-	class JsWnd : public JsWndObject<BIWnd,JsWnd>{
+	class JsWnd : public JsWndObject<BIWnd,JsWnd,TEMPLATE_ID_WND>{
 		//*{
 		//	"type":"function",
 		//	"name":"sendMessage(id,[wParam],[lParam])",
@@ -1314,7 +1314,7 @@ namespace v8{
 			SET_CLA_ACCESSOR(onMessage);
 		}
 		static void Load(Handle<Object>& glb){
-			JsHandleObject::Load(glb,L"CWnd",TEMPLATE_ID_WND);
+			JsHandleObject::Load(glb,L"CWnd");
 		}
 	};
 	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\wnd.jsuser"}//*
@@ -1368,7 +1368,7 @@ namespace v8{
 	//	"name":"CView",
 	//	"text":"CView 是一个通常的窗口对象，集成滚动条绘图等功能。CView 继承自 CWnd。",
 	//	"member":[//*
-	class JsView : public JsWndObject<BView,JsView>{
+	class JsView : public JsWndObject<BView,JsView,TEMPLATE_ID_VIEW>{
 		//*{
 		//	"type":"function",
 		//	"name":"create(parent)",
@@ -1519,7 +1519,7 @@ namespace v8{
 			SET_CLA_ACCESSOR(onDraw);
 		}
 		static void Load(Handle<Object>& glb){
-			JsHandleObject::Load(glb,L"CView",TEMPLATE_ID_VIEW,&GetEnv()->GetTemplate(TEMPLATE_ID_WND));
+			JsHandleObject::Load(glb,L"CView",&GetEnv()->GetTemplate(TEMPLATE_ID_WND));
 		}
 	};
 	//*]}//*
@@ -1529,7 +1529,7 @@ namespace v8{
 	//	"name":"CFrame",
 	//	"text":"CFrame 封装一个顶级窗口对象，顶级窗口直接显示在屏幕上，而不是作为子窗口显示在父窗口上，通常的主窗口都是顶级窗口。CFrame 继承自 CView。",
 	//	"member":[//*
-	class JsFrame : public JsWndObject<BFrame,JsFrame>{
+	class JsFrame : public JsWndObject<BFrame,JsFrame,TEMPLATE_ID_FRAME>{
 		//*{
 		//	"type":"function",
 		//	"name":"create([parent],[quit],[show])",
@@ -1653,7 +1653,7 @@ namespace v8{
 			SET_CLA_FUNC(setIcon);
 		}
 		static void Load(Handle<Object>& glb){
-			JsHandleObject::Load(glb,L"CFrame",TEMPLATE_ID_FRAME,&GetEnv()->GetTemplate(TEMPLATE_ID_VIEW));
+			JsHandleObject::Load(glb,L"CFrame",&GetEnv()->GetTemplate(TEMPLATE_ID_VIEW));
 		}
 	};
 	//*]}//*
@@ -1687,7 +1687,7 @@ namespace v8{
 	//	"name":"CCtrl",
 	//	"text":"CCtrl 封装一个 Windows 标准控件，CCtrl 继承自 CWnd。",
 	//	"member":[//*
-	class JsICtrl : public JsWndObject<BICtrl,JsICtrl>{
+	class JsICtrl : public JsWndObject<BICtrl,JsICtrl,TEMPLATE_ID_CTRL>{
 		//*{
 		//	"type":"function",
 		//	"name":"create(parent)",
@@ -1757,7 +1757,7 @@ namespace v8{
 			SET_CLA_FUNC(create);
 		}
 		static void Load(Handle<Object>& glb){
-			JsHandleObject::Load(glb,L"CCtrl",TEMPLATE_ID_CTRL,&GetEnv()->GetTemplate(TEMPLATE_ID_WND));
+			JsHandleObject::Load(glb,L"CCtrl",&GetEnv()->GetTemplate(TEMPLATE_ID_WND));
 		}
 	};
 	//*]}//*
@@ -1768,7 +1768,7 @@ namespace v8{
 	//	"text":"CLabel 封装一个 Windows 标准 Static 控件，CLabel 继承自 CCtrl。",
 	//	"member":[//*
 	class BLabel : public BWnd<cs::Label>{};
-	class JsLabel : public JsWndObject<BLabel,JsLabel>{
+	class JsLabel : public JsWndObject<BLabel,JsLabel,TEMPLATE_ID_LABEL>{
 	public:
 		static void on_create(Handle<Object>& self,BLabel* cobj){
 			JsICtrl::on_create(self,(BICtrl*)cobj);
@@ -1786,7 +1786,7 @@ namespace v8{
 	//	"text":"CButton 封装一个 Windows 标准 Button（按钮） 控件，CButton 继承自 CCtrl。",
 	//	"member":[//*
 	class BButton : public BWnd<cs::Button>{};
-	class JsButton : public JsWndObject<BButton,JsButton>{};
+	class JsButton : public JsWndObject<BButton,JsButton,TEMPLATE_ID_BUTTON>{};
 	//*]}//*
 
 	//*,{
@@ -1795,7 +1795,7 @@ namespace v8{
 	//	"text":"CGroupBox 封装一个 Windows 标准 Button（但是设置了 BS_GROUPBOX 风格） 控件，CGroupBox 继承自 CCtrl。",
 	//	"member":[//*
 	class BGroupBox : public BWnd<cs::GroupBox>{};
-	class JsGroupBox : public JsWndObject<BGroupBox,JsGroupBox>{};
+	class JsGroupBox : public JsWndObject<BGroupBox,JsGroupBox,TEMPLATE_ID_GROUPBOX>{};
 	//*]}//*
 
 	//*,{
@@ -1804,7 +1804,7 @@ namespace v8{
 	//	"text":"CCheckBox 封装一个 Windows 标准 Button（但是设置了 BS_AUTOCHECKBOX 风格） 控件，CCheckBox 继承自 CCtrl。",
 	//	"member":[//*
 	class BCheckBox : public BWnd<cs::CheckBox>{};
-	class JsCheckBox : public JsWndObject<BCheckBox,JsCheckBox>{};
+	class JsCheckBox : public JsWndObject<BCheckBox,JsCheckBox,TEMPLATE_ID_CHECKBOX>{};
 	//*]}//*
 
 	//*,{
@@ -1813,7 +1813,7 @@ namespace v8{
 	//	"text":"CRadio 封装一个 Windows 标准 Button（但是设置了 BS_AUTORADIOBUTTON 风格） 控件，CRadio 继承自 CCtrl。",
 	//	"member":[//*
 	class BRadio : public BWnd<cs::Radio>{};
-	class JsRadio : public JsWndObject<BRadio,JsRadio>{};
+	class JsRadio : public JsWndObject<BRadio,JsRadio,TEMPLATE_ID_RADIO>{};
 	//*]}//*
 	class BEdit : public BWnd<cs::Edit>{};
 	void __stdcall Edit_onTextChange(cs::Edit* cobj){
@@ -1829,7 +1829,7 @@ namespace v8{
 	//	"name":"CEdit",
 	//	"text":"CEdit 封装一个 Windows 标准编辑控件，CEdit 继承自 CCtrl。",
 	//	"member":[//*
-	class JsEdit : public JsWndObject<BEdit,JsEdit>{
+	class JsEdit : public JsWndObject<BEdit,JsEdit,TEMPLATE_ID_EDIT>{
 	public:
 		//*{
 		//	"type":"property",
@@ -1926,7 +1926,7 @@ namespace v8{
 	//	"text":"CDateTimePicker 封装一个 Windows 标准 DateTimePicker 控件，CDateTimePicker 继承自 CCtrl。",
 	//	"member":[//*
 	class BDateTimePicker : public BWnd<cs::DateTimePicker>{};
-	class JsDateTimePicker : public JsWndObject<BDateTimePicker,JsDateTimePicker>{};
+	class JsDateTimePicker : public JsWndObject<BDateTimePicker,JsDateTimePicker,TEMPLATE_ID_DATETIMEPICKER>{};
 	//*]}//*
 
 	//*,{
@@ -1935,7 +1935,7 @@ namespace v8{
 	//	"text":"CMonthCalendar 封装一个 Windows 标准 MonthCalendar 控件，CMonthCalendar 继承自 CCtrl。",
 	//	"member":[//*
 	class BMonthCalendar : public BWnd<cs::MonthCalendar>{};
-	class JsMonthCalendar : public JsWndObject<BMonthCalendar,JsMonthCalendar>{};
+	class JsMonthCalendar : public JsWndObject<BMonthCalendar,JsMonthCalendar,TEMPLATE_ID_MONTHCALENDAR>{};
 	//*]}//*
 
 	//*,{
@@ -1944,7 +1944,7 @@ namespace v8{
 	//	"text":"CListBox 封装一个 Windows 标准 ListBox 控件，CListBox 继承自 CCtrl。",
 	//	"member":[//*
 	class BListBox : public BWnd<cs::ListBox>{};
-	class JsListBox : public JsWndObject<BListBox,JsListBox>{
+	class JsListBox : public JsWndObject<BListBox,JsListBox,TEMPLATE_ID_LISTBOX>{
 		//*{
 		//	"type":"function",
 		//	"name":"addItem(str,[index])",
@@ -2378,7 +2378,7 @@ namespace v8{
 	//	"text":"CComboBox 封装一个 Windows 标准 ComboBox 控件，CComboBox 继承自 CCtrl。",
 	//	"member":[//*
 	class BComboBox : public BWnd<cs::ComboBox>{};
-	class JsComboBox : public JsWndObject<BComboBox,JsComboBox>{
+	class JsComboBox : public JsWndObject<BComboBox,JsComboBox,TEMPLATE_ID_COMBOBOX>{
 	public:
 		//*{
 		//	"type":"function",
@@ -2763,7 +2763,7 @@ namespace v8{
 	//	"text":"CComboBoxEx 封装一个 Windows 标准 ComboBoxEx 控件，CComboBoxEx 继承自 CCtrl。",
 	//	"member":[//*
 	class BComboBoxEx : public BWnd<cs::ComboBoxEx>{};
-	class JsComboBoxEx : public JsWndObject<BComboBoxEx,JsComboBoxEx>{
+	class JsComboBoxEx : public JsWndObject<BComboBoxEx,JsComboBoxEx,TEMPLATE_ID_COMBOBOXEX>{
 	public:
 		//*{
 		//	"type":"function",
@@ -2878,7 +2878,7 @@ namespace v8{
 	//	"text":"CTreeView 封装一个 Windows 标准 TreeView 控件，CTreeView 继承自 CCtrl。",
 	//	"member":[//*
 	class BTreeView : public BWnd<cs::TreeView>{};
-	class JsTreeView : public JsWndObject<BTreeView,JsTreeView>{};
+	class JsTreeView : public JsWndObject<BTreeView,JsTreeView,TEMPLATE_ID_TREEVIEW>{};
 	//*]}//*
 
 	//*,{
@@ -2887,7 +2887,7 @@ namespace v8{
 	//	"text":"CToolBar 封装一个 Windows 标准 ToolBar 控件，CToolBar 继承自 CCtrl。",
 	//	"member":[//*
 	class BToolBar : public BWnd<cs::ToolBar>{};
-	class JsToolBar : public JsWndObject<BToolBar,JsToolBar>{};
+	class JsToolBar : public JsWndObject<BToolBar,JsToolBar,TEMPLATE_ID_TOOLBAR>{};
 	//*]}//*
 
 	//*,{
@@ -2896,7 +2896,7 @@ namespace v8{
 	//	"text":"CProgressBar 封装一个 Windows 标准 ProgressBar 控件，CProgressBar 继承自 CCtrl。",
 	//	"member":[//*
 	class BProgressBar : public BWnd<cs::ProgressBar>{};
-	class JsProgressBar : public JsWndObject<BProgressBar,JsProgressBar>{};
+	class JsProgressBar : public JsWndObject<BProgressBar,JsProgressBar,TEMPLATE_ID_PROGRESSBAR>{};
 	//*]}//*
 
 	//*,{
@@ -2905,7 +2905,7 @@ namespace v8{
 	//	"text":"CToolTip 封装一个 Windows 标准 ToolTip 控件，CToolTip 继承自 CCtrl。",
 	//	"member":[//*
 	class BToolTip : public BWnd<cs::ToolTip>{};
-	class JsToolTip : public JsWndObject<BToolTip,JsToolTip>{};
+	class JsToolTip : public JsWndObject<BToolTip,JsToolTip,TEMPLATE_ID_TOOLTIP>{};
 	//*]}//*
 
 	//*,{
@@ -2914,7 +2914,7 @@ namespace v8{
 	//	"text":"CTabPage 封装一个 Windows 标准 Tab 控件，CTabPage 继承自 CCtrl。",
 	//	"member":[//*
 	class BTabPage : public BWnd<cs::TabPage>{};
-	class JsTabPage : public JsWndObject<BTabPage,JsTabPage>{};
+	class JsTabPage : public JsWndObject<BTabPage,JsTabPage,TEMPLATE_ID_TABPAGE>{};
 	//*]}//*
 
 	//*,{
@@ -2923,7 +2923,7 @@ namespace v8{
 	//	"text":"CHotKey 封装一个 Windows 标准 HotKey 控件，CHotKey 继承自 CCtrl。",
 	//	"member":[//*
 	class BHotKey : public BWnd<cs::HotKey>{};
-	class JsHotKey : public JsWndObject<BHotKey,JsHotKey>{};
+	class JsHotKey : public JsWndObject<BHotKey,JsHotKey,TEMPLATE_ID_HOTKEY>{};
 	//*]}//*
 	//*,{
 	//	"type":"class",
@@ -2985,7 +2985,7 @@ namespace v8{
 			}
 		}*/
 	}
-	class JsListView : public JsWndObject<BListView,JsListView>{
+	class JsListView : public JsWndObject<BListView,JsListView,TEMPLATE_ID_LISTVIEW>{
 	public:
 		//*{
 		//	"type":"function",
@@ -3518,7 +3518,7 @@ namespace v8{
 	//	"text":"CStatusBar 封装一个 Windows 标准 StatusBar 控件，CStatusBar 继承自 CCtrl。",
 	//	"member":[//*
 	class BStatusBar : public BWnd<cs::StatusBar>{};
-	class JsStatusBar : public JsWndObject<BStatusBar,JsStatusBar>{};
+	class JsStatusBar : public JsWndObject<BStatusBar,JsStatusBar,TEMPLATE_ID_STATUSBAR>{};
 	//*]}//*
 
 	//*,{
@@ -3527,7 +3527,7 @@ namespace v8{
 	//	"text":"CTrackBar 封装一个 Windows 标准 TrackBar 控件，CTrackBar 继承自 CCtrl。",
 	//	"member":[//*
 	class BTrackBar : public BWnd<cs::TrackBar>{};
-	class JsTrackBar : public JsWndObject<BTrackBar,JsTrackBar>{};
+	class JsTrackBar : public JsWndObject<BTrackBar,JsTrackBar,TEMPLATE_ID_TRACKBAR>{};
 	//*]}//*
 
 	//*,{
@@ -3536,7 +3536,7 @@ namespace v8{
 	//	"text":"CUpDown 封装一个 Windows 标准 UpDown 控件，CUpDown 继承自 CCtrl。",
 	//	"member":[//*
 	class BUpDown : public BWnd<cs::UpDown>{};
-	class JsUpDown : public JsWndObject<BUpDown,JsUpDown>{};
+	class JsUpDown : public JsWndObject<BUpDown,JsUpDown,TEMPLATE_ID_UPDOWN>{};
 	//*]}//*
 
 	//*,{
@@ -3545,7 +3545,7 @@ namespace v8{
 	//	"text":"CHeader 封装一个 Windows 标准 Header 控件，CHeader 继承自 CCtrl。",
 	//	"member":[//*
 	class BHeader : public BWnd<cs::Header>{};
-	class JsHeader : public JsWndObject<BHeader,JsHeader>{};
+	class JsHeader : public JsWndObject<BHeader,JsHeader,TEMPLATE_ID_HEADER>{};
 	//*]}//*
 
 	//*,{
@@ -3554,7 +3554,7 @@ namespace v8{
 	//	"text":"CLink 封装一个 Windows 标准 Link 控件，CLink 继承自 CCtrl。",
 	//	"member":[//*
 	class BLink : public BWnd<cs::Link>{};
-	class JsLink : public JsWndObject<BLink,JsLink>{};
+	class JsLink : public JsWndObject<BLink,JsLink,TEMPLATE_ID_LINK>{};
 	//*]}//*
 
 	//*,{
@@ -3563,7 +3563,7 @@ namespace v8{
 	//	"text":"CIpAddress 封装一个 Windows 标准 IpAddress 控件，CIpAddress 继承自 CCtrl。",
 	//	"member":[//*
 	class BIpAddress : public BWnd<cs::IpAddress>{};
-	class JsIpAddress : public JsWndObject<BIpAddress,JsIpAddress>{};
+	class JsIpAddress : public JsWndObject<BIpAddress,JsIpAddress,TEMPLATE_ID_IPADDRESS>{};
 
 	//*]}//*
 
@@ -3945,7 +3945,7 @@ namespace v8{
 	//		}
 	//	}
 	//],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\layout.jsuser"}//*
-	class JsMenu : public JsHandleObject<cs::UserMenu,HMENU,JsMenu>{
+	class JsMenu : public JsHandleObject<cs::UserMenu,HMENU,JsMenu,TEMPLATE_ID_MENU>{
 		static Handle<Value> create(const Arguments& args){
 			HandleScope stack;
 			while(true){
@@ -3982,30 +3982,30 @@ namespace v8{
 		JsFrame::Load(glb);
 		JsICtrl::Load(glb);
 		Persistent<FunctionTemplate>& ctrlft = GetEnv()->GetTemplate(TEMPLATE_ID_CTRL);
-		JsLabel::Load(glb,L"CLabel",TEMPLATE_ID_LABEL,&ctrlft);
-		JsButton::Load(glb,L"CButton",TEMPLATE_ID_BUTTON,&ctrlft);
-		JsGroupBox::Load(glb,L"CGroupBox",TEMPLATE_ID_GROUPBOX,&ctrlft);
-		JsCheckBox::Load(glb,L"CCheckBox",TEMPLATE_ID_CHECKBOX,&ctrlft);
-		JsRadio::Load(glb,L"CRadio",TEMPLATE_ID_RADIO,&ctrlft);
-		JsEdit::Load(glb,L"CEdit",TEMPLATE_ID_EDIT,&ctrlft);
-		JsDateTimePicker::Load(glb,L"CDateTimePicker",TEMPLATE_ID_DATETIMEPICKER,&ctrlft);
-		JsMonthCalendar::Load(glb,L"CMonthCalendar",TEMPLATE_ID_MONTHCALENDAR,&ctrlft);
-		JsListBox::Load(glb,L"CListBox",TEMPLATE_ID_LISTBOX,&ctrlft);
-		JsComboBox::Load(glb,L"CComboBox",TEMPLATE_ID_COMBOBOX,&ctrlft);
-		JsComboBoxEx::Load(glb,L"CComboBoxEx",TEMPLATE_ID_COMBOBOXEX,&ctrlft);
-		JsTreeView::Load(glb,L"CTreeView",TEMPLATE_ID_TREEVIEW,&ctrlft);
-		JsToolBar::Load(glb,L"CToolBar",TEMPLATE_ID_TOOLBAR,&ctrlft);
-		JsProgressBar::Load(glb,L"CProgressBar",TEMPLATE_ID_PROGRESSBAR,&ctrlft);
-		JsToolTip::Load(glb,L"CToolTip",TEMPLATE_ID_TOOLTIP,&ctrlft);
-		JsTabPage::Load(glb,L"CTabPage",TEMPLATE_ID_TABPAGE,&ctrlft);
-		JsHotKey::Load(glb,L"CHotKey",TEMPLATE_ID_HOTKEY,&ctrlft);
-		JsListView::Load(glb,L"CListView",TEMPLATE_ID_LISTVIEW,&ctrlft);
-		JsStatusBar::Load(glb,L"CStatusBar",TEMPLATE_ID_STATUSBAR,&ctrlft);
-		JsTrackBar::Load(glb,L"CTrackBar",TEMPLATE_ID_TRACKBAR,&ctrlft);
-		JsUpDown::Load(glb,L"CUpDown",TEMPLATE_ID_UPDOWN,&ctrlft);
-		JsHeader::Load(glb,L"CHeader",TEMPLATE_ID_HEADER,&ctrlft);
-		JsLink::Load(glb,L"CLink",TEMPLATE_ID_LINK,&ctrlft);
-		JsIpAddress::Load(glb,L"CIpAddress",TEMPLATE_ID_IPADDRESS,&ctrlft);
+		JsLabel::Load(glb,L"CLabel",&ctrlft);
+		JsButton::Load(glb,L"CButton",&ctrlft);
+		JsGroupBox::Load(glb,L"CGroupBox",&ctrlft);
+		JsCheckBox::Load(glb,L"CCheckBox",&ctrlft);
+		JsRadio::Load(glb,L"CRadio",&ctrlft);
+		JsEdit::Load(glb,L"CEdit",&ctrlft);
+		JsDateTimePicker::Load(glb,L"CDateTimePicker",&ctrlft);
+		JsMonthCalendar::Load(glb,L"CMonthCalendar",&ctrlft);
+		JsListBox::Load(glb,L"CListBox",&ctrlft);
+		JsComboBox::Load(glb,L"CComboBox",&ctrlft);
+		JsComboBoxEx::Load(glb,L"CComboBoxEx",&ctrlft);
+		JsTreeView::Load(glb,L"CTreeView",&ctrlft);
+		JsToolBar::Load(glb,L"CToolBar",&ctrlft);
+		JsProgressBar::Load(glb,L"CProgressBar",&ctrlft);
+		JsToolTip::Load(glb,L"CToolTip",&ctrlft);
+		JsTabPage::Load(glb,L"CTabPage",&ctrlft);
+		JsHotKey::Load(glb,L"CHotKey",&ctrlft);
+		JsListView::Load(glb,L"CListView",&ctrlft);
+		JsStatusBar::Load(glb,L"CStatusBar",&ctrlft);
+		JsTrackBar::Load(glb,L"CTrackBar",&ctrlft);
+		JsUpDown::Load(glb,L"CUpDown",&ctrlft);
+		JsHeader::Load(glb,L"CHeader",&ctrlft);
+		JsLink::Load(glb,L"CLink",&ctrlft);
+		JsIpAddress::Load(glb,L"CIpAddress",&ctrlft);
 		LoadLayout(glb);
 	}
 	void LoadDialog(Handle<Object>& glb);

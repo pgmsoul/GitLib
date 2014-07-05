@@ -1,0 +1,2482 @@
+<?xml version="1.0" encoding="Windows-1252" ?>
+<NotepadPlus>
+	<AutoComplete language="jsuser">
+		<KeyWord name="__defineGetter__" func="yes">
+			<Overload retVal="void">
+				<Param name="string name" />
+				<Param name="function" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="__defineSetter__" func="yes">
+			<Overload retVal="void">
+				<Param name="string name" />
+				<Param name="function" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="__proto__" />
+		<KeyWord name="abs" func="yes">
+			<Overload retVal="number">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="abstract" />
+		<KeyWord name="acos" func="yes">
+			<Overload retVal="number">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="add" func="yes">
+			<Overload retVal="Layout">
+				<Param name="[index]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="addColumn" func="yes">
+			<Overload retVal="boolean">
+				<Param name="str" />
+				<Param name="[index]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="addFilter" func="yes">
+			<Overload retVal="boolean">
+				<Param name="text" />
+				<Param name="types" />
+				<Param name="[index]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="addin" func="yes">
+			<Overload retVal="bool">
+				<Param name="lay" />
+				<Param name="[index]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="addItem" func="yes">
+			<Overload retVal="boolean">
+				<Param name="text" />
+				<Param name="[index]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="after" />
+		<KeyWord name="alert" func="yes">
+			<Overload retVal="integer">
+				<Param name="[text]" />
+				<Param name="[title]" />
+				<Param name="[iconAndtype]" />
+				<Param name="[parent]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="aliases" />
+		<KeyWord name="alpah" />
+		<KeyWord name="alphaDraw" func="yes">
+			<Overload retVal="boolean">
+				<Param name="hdc" />
+				<Param name="[alpha]" />
+				<Param name="[x]" />
+				<Param name="[y]" />
+				<Param name="[cx]" />
+				<Param name="[cy]" />
+				<Param name="[sx]" />
+				<Param name="[sy]" />
+				<Param name="[scx]" />
+				<Param name="[scy]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Api" />
+		<KeyWord name="apply" func="yes">
+			<Overload retVal="any">
+				<Param name="objThis" />
+				<Param name="arguments" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="arc" func="yes">
+			<Overload retVal="boolean">
+				<Param name="rect" />
+				<Param name="point1" />
+				<Param name="point2" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="arguments
+" />
+		<KeyWord name="Array" func="yes">
+			<Overload retVal="array">
+				<Param name="[count|a0]" />
+				<Param name="[a1]" />
+				<Param name="..." />
+				<Param name="[an]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="asin" func="yes">
+			<Overload retVal="number">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="atan" func="yes">
+			<Overload retVal="number">
+				<Param name="number rad" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="atan2" func="yes">
+			<Overload retVal="number">
+				<Param name="y" />
+				<Param name="x" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="attach" func="yes">
+			<Overload retVal="boolean">
+				<Param name="handle" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="before" />
+		<KeyWord name="bind" func="yes">
+			<Overload retVal="boolean">
+				<Param name="cobj" />
+				<Param name="[bindType]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="bkColor" />
+		<KeyWord name="blue" />
+		<KeyWord name="boolean" />
+		<KeyWord name="Boolean" func="yes">
+			<Overload retVal="object">
+				<Param name="[boolean]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="bottom" />
+		<KeyWord name="break" />
+		<KeyWord name="button" />
+		<KeyWord name="CAes" func="yes">
+			<Overload retVal="void">
+				<Param name="[bits]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="call" func="yes">
+			<Overload retVal="any">
+				<Param name="objThis" />
+				<Param name="[arg0]" />
+				<Param name="[arg1]" />
+				<Param name="[...]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="caller arguments.callee" />
+		<KeyWord name="case" />
+		<KeyWord name="catch" func="yes">
+			<Overload retVal="void">
+				<Param name="e" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CBitmap" />
+		<KeyWord name="CBrush" />
+		<KeyWord name="CButton" />
+		<KeyWord name="CCheckBox" />
+		<KeyWord name="CComboBox" />
+		<KeyWord name="CComboBoxEx" />
+		<KeyWord name="CCtrl" />
+		<KeyWord name="CDateTimePicker" />
+		<KeyWord name="CEcc" func="yes">
+			<Overload retVal="void">
+				<Param name="[isIes]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CEdit" />
+		<KeyWord name="ceil" func="yes">
+			<Overload retVal="integer">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CFile" />
+		<KeyWord name="CFileDialog" />
+		<KeyWord name="CFileList" />
+		<KeyWord name="CFont" />
+		<KeyWord name="CFontDialog" />
+		<KeyWord name="CFrame" />
+		<KeyWord name="CGroupBox" />
+		<KeyWord name="CHandleObject" />
+		<KeyWord name="charAt" func="yes">
+			<Overload retVal="char">
+				<Param name="integer index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="charCodeAt" func="yes">
+			<Overload retVal="integer">
+				<Param name="integer index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CHeader" />
+		<KeyWord name="checkBox" />
+		<KeyWord name="child" />
+		<KeyWord name="childs" />
+		<KeyWord name="CHotKey" />
+		<KeyWord name="CHttpRequest" />
+		<KeyWord name="CIcon" />
+		<KeyWord name="CImageLoader" />
+		<KeyWord name="CIpAddress" />
+		<KeyWord name="CLabel" />
+		<KeyWord name="class" />
+		<KeyWord name="Class" func="yes">
+			<Overload retVal="function">
+				<Param name="proc" />
+				<Param name="global" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="classStyle" />
+		<KeyWord name="clear" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CLink" />
+		<KeyWord name="CListBox" />
+		<KeyWord name="CListView" />
+		<KeyWord name="close" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CMemory" />
+		<KeyWord name="CMonthCalendar" />
+		<KeyWord name="cmpFileSha" func="yes">
+			<Overload retVal="boolean">
+				<Param name="file1" />
+				<Param name="file2" />
+				<Param name="[bits]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CObject" />
+		<KeyWord name="code" />
+		<KeyWord name="color" />
+		<KeyWord name="Color" func="yes">
+			<Overload retVal="void">
+				<Param name="[red]" />
+				<Param name="[green]" />
+				<Param name="[blue]" />
+				<Param name="[alpha]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="combine" func="yes">
+			<Overload retVal="integer">
+				<Param name="rgn" />
+				<Param name="mode" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="compile" func="yes">
+			<Overload retVal="void">
+				<Param name="RegExp reg" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="concat" func="yes">
+			<Overload retVal="array">
+				<Param name="[array a0]" />
+				<Param name="[array a1]" />
+				<Param name="[...]" />
+				<Param name="[array an]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="connect" func="yes">
+			<Overload retVal="boolean">
+				<Param name="ip|host" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Console" />
+		<KeyWord name="const" />
+		<KeyWord name="constructor" />
+		<KeyWord name="continue" />
+		<KeyWord name="copy" func="yes">
+			<Overload retVal="boolean">
+				<Param name="src" />
+				<Param name="dst" />
+				<Param name="[onFileProgress(param" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="copyFrom" func="yes">
+			<Overload retVal="boolean">
+				<Param name="bitmap" />
+				<Param name="[cx]" />
+				<Param name="[cy]" />
+				<Param name="[x]" />
+				<Param name="[y]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="copyTo" func="yes">
+			<Overload retVal="integer">
+				<Param name="pointer" />
+				<Param name="length" />
+				<Param name="[offset]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="cos" func="yes">
+			<Overload retVal="integer">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CPen" />
+		<KeyWord name="CProc" />
+		<KeyWord name="CProgressBar" />
+		<KeyWord name="CRadio" />
+		<KeyWord name="create" func="yes">
+			<Overload retVal="integer">
+				<Param name="argn" />
+				<Param name="func" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="createFolder" func="yes">
+			<Overload retVal="boolean">
+				<Param name="path" />
+				<Param name="[parent]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="createKey" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="CRegistry" />
+		<KeyWord name="CRgn" />
+		<KeyWord name="CSocket" />
+		<KeyWord name="CStatusBar" />
+		<KeyWord name="CTabPage" />
+		<KeyWord name="CTcpServer" />
+		<KeyWord name="CToolBar" />
+		<KeyWord name="CToolTip" />
+		<KeyWord name="CTrackBar" />
+		<KeyWord name="CTreeView" />
+		<KeyWord name="CUpDown" />
+		<KeyWord name="CUpnp" />
+		<KeyWord name="CView" />
+		<KeyWord name="CWnd" />
+		<KeyWord name="Date" func="yes">
+			<Overload retVal="currentDate">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="debind" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="debugger" />
+		<KeyWord name="decCbc" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="deccrypt" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="decEcb" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="decodeURI" func="yes">
+			<Overload retVal="string">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="decodeURIComponent" func="yes">
+			<Overload retVal="string">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="default" />
+		<KeyWord name="defExt" />
+		<KeyWord name="defName" />
+		<KeyWord name="del" func="yes">
+			<Overload retVal="bool">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="delete" />
+		<KeyWord name="delete" func="yes">
+			<Overload retVal="boolean">
+				<Param name="src" />
+				<Param name="[onFileProgress(param" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="deleteColumn" func="yes">
+			<Overload retVal="boolean">
+				<Param name="iColumn" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="deleteFilter" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="deleteItem" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="delFilter" func="yes">
+			<Overload retVal="void">
+				<Param name="filter" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="destroy" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="detach" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="disabled" />
+		<KeyWord name="do" />
+		<KeyWord name="double" func="yes">
+			<Overload retVal="boolean">
+				<Param name="[minSize]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="double" />
+		<KeyWord name="draw" func="yes">
+			<Overload retVal="boolean">
+				<Param name="hdc" />
+				<Param name="[x]" />
+				<Param name="[y]" />
+				<Param name="[cx]" />
+				<Param name="[cy]" />
+				<Param name="[sx]" />
+				<Param name="[sy]" />
+				<Param name="[scx]" />
+				<Param name="[scy]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="drawRect" func="yes">
+			<Overload retVal="boolean">
+				<Param name="rect" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="dropDown" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="ellipse" func="yes">
+			<Overload retVal="boolean">
+				<Param name="rect" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="else" />
+		<KeyWord name="encCbc" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="encEcb" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="encodeURI" func="yes">
+			<Overload retVal="string">
+				<Param name="string uri" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="encodeURIComponent" func="yes">
+			<Overload retVal="string">
+				<Param name="string component" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="encrypt" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="ensureVisible" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="enum" />
+		<KeyWord name="equal" func="yes">
+			<Overload retVal="boolean">
+				<Param name="pointer" />
+				<Param name="length" />
+				<Param name="[offset]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Error" func="yes">
+			<Overload retVal="object">
+				<Param name="[string message]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="escape" func="yes">
+			<Overload retVal="string">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="eval" func="yes">
+			<Overload retVal="any">
+				<Param name="string script" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="event" />
+		<KeyWord name="exec" func="yes">
+			<Overload retVal="array">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="exitMsgLoop" func="yes">
+			<Overload retVal="void">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="exp" func="yes">
+			<Overload retVal="number">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="export" />
+		<KeyWord name="exStyle" />
+		<KeyWord name="extends" />
+		<KeyWord name="false" />
+		<KeyWord name="FilePath" />
+		<KeyWord name="FileSystem" />
+		<KeyWord name="fillRect" func="yes">
+			<Overload retVal="boolean">
+				<Param name="rect" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fillRgn" func="yes">
+			<Overload retVal="boolean">
+				<Param name="rgn" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="filter" />
+		<KeyWord name="final" />
+		<KeyWord name="finally" />
+		<KeyWord name="find" func="yes">
+			<Overload retVal="integer">
+				<Param name="str" />
+				<Param name="[start]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="findExact" func="yes">
+			<Overload retVal="integer">
+				<Param name="str" />
+				<Param name="[start]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="flag" />
+		<KeyWord name="flagEx" />
+		<KeyWord name="float" />
+		<KeyWord name="floor" func="yes">
+			<Overload retVal="integer">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="flush" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="folder" />
+		<KeyWord name="font" />
+		<KeyWord name="fontColor" />
+		<KeyWord name="for" func="yes">
+			<Overload retVal="void">
+				<Param name="var key in obj" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="format" func="yes">
+			<Overload retVal="string">
+				<Param name="fms" />
+				<Param name="[var...]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="freeModule" func="yes">
+			<Overload retVal="boolean">
+				<Param name="module" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromBase64" func="yes">
+			<Overload retVal="number">
+				<Param name="base64" />
+				<Param name="[start]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromBitmap" func="yes">
+			<Overload retVal="boolean">
+				<Param name="bitmap" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromCharCode" func="yes">
+			<Overload retVal="string">
+				<Param name="integer code0" />
+				<Param name="[...]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromDCBrush" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromDCPen" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromDefault" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromHex" func="yes">
+			<Overload retVal="number">
+				<Param name="hex" />
+				<Param name="[start]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromIcon" func="yes">
+			<Overload retVal="boolean">
+				<Param name="icon" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromMemory" func="yes">
+			<Overload retVal="boolean">
+				<Param name="mem" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromStockBrush" func="yes">
+			<Overload retVal="boolean">
+				<Param name="stock" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="fromStockPen" func="yes">
+			<Overload retVal="boolean">
+				<Param name="stock" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="function" />
+		<KeyWord name="Function" func="yes">
+			<Overload retVal="function">
+				<Param name="[string arg0]" />
+				<Param name="[string arg1]" />
+				<Param name="[...]" />
+				<Param name="[string argn]" />
+				<Param name="string func_body" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="get" func="yes">
+			<Overload retVal="PortMapping">
+				<Param name="port" />
+				<Param name="[udpOrTcp]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getAttribute" func="yes">
+			<Overload retVal="integer">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getBitmap" func="yes">
+			<Overload retVal="boolean">
+				<Param name="bitmap" />
+				<Param name="[index]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getByName" func="yes">
+			<Overload retVal="Layout">
+				<Param name="name" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getCheck" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getClass" func="yes">
+			<Overload retVal="object">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getClientSize" func="yes">
+			<Overload retVal="Size">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getColor" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getColumnCount" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getCount" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getCurSelect" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getDate" func="yes">
+			<Overload retVal="day">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getDay" func="yes">
+			<Overload retVal="week">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getErrorMsg" func="yes">
+			<Overload retVal="string">
+				<Param name="code" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getExt" func="yes">
+			<Overload retVal="string">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getExtIp" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getFullPath" func="yes">
+			<Overload retVal="string">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getFullYear" func="yes">
+			<Overload retVal="year">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getHours" func="yes">
+			<Overload retVal="hour">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getInfo" func="yes">
+			<Overload retVal="object">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getIntValue" func="yes">
+			<Overload retVal="integer">
+				<Param name="name" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getIp" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getItem" func="yes">
+			<Overload retVal="string">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getItemCount" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getItemText" func="yes">
+			<Overload retVal="string">
+				<Param name="iItem" />
+				<Param name="int iColumn" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getLastError" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getLocalIp" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getLocalPort" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getLocation" func="yes">
+			<Overload retVal="Point">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getMilliseconds" func="yes">
+			<Overload retVal="ms">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getMinutes" func="yes">
+			<Overload retVal="minute">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getMonth" func="yes">
+			<Overload retVal="month">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getNumber" func="yes">
+			<Overload retVal="number">
+				<Param name="type" />
+				<Param name="[sign]" />
+				<Param name="[start]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getPageCode" func="yes">
+			<Overload retVal="integer">
+				<Param name="codename" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getParent" func="yes">
+			<Overload retVal="string">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getPixelArray" func="yes">
+			<Overload retVal="array">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getPrivateKey" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getPublicKey" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getRect" func="yes">
+			<Overload retVal="Rect">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getRemoteIp" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getRemotePort" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getSeconds" func="yes">
+			<Overload retVal="second">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getSelected" func="yes">
+			<Overload retVal="integer">
+				<Param name="[start]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getSelectItem" func="yes">
+			<Overload retVal="integer|array">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getSign" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getSize" func="yes">
+			<Overload retVal="Size">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getString" func="yes">
+			<Overload retVal="string">
+				<Param name="[start]" />
+				<Param name="[length]" />
+				<Param name="[code]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getStrValue" func="yes">
+			<Overload retVal="string">
+				<Param name="name" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getSysMessage" func="yes">
+			<Overload retVal="string">
+				<Param name="[code]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getTime" func="yes">
+			<Overload retVal="msFrom1970">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getTimezoneOffset" func="yes">
+			<Overload retVal="minutesOffset">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getTitle" func="yes">
+			<Overload retVal="string">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getUTCDate" func="yes">
+			<Overload retVal="utcDay">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getUTCDay" func="yes">
+			<Overload retVal="utcWeek">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getUTCFullYear" func="yes">
+			<Overload retVal="utcYear">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getUTCHours" func="yes">
+			<Overload retVal="utcHour">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getUTCMilliseconds" func="yes">
+			<Overload retVal="utcMs">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getUTCMinutes" func="yes">
+			<Overload retVal="utcMinute">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getUTCMonth" func="yes">
+			<Overload retVal="utcMonth">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="getUTCSeconds" func="yes">
+			<Overload retVal="utcSecond">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Global" />
+		<KeyWord name="Global" />
+		<KeyWord name="goto" />
+		<KeyWord name="green" />
+		<KeyWord name="gridLine" />
+		<KeyWord name="handle" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="hdc" />
+		<KeyWord name="header" />
+		<KeyWord name="Host" />
+		<KeyWord name="host" />
+		<KeyWord name="https" />
+		<KeyWord name="hWnd" />
+		<KeyWord name="id" />
+		<KeyWord name="if" />
+		<KeyWord name="implements" />
+		<KeyWord name="import" />
+		<KeyWord name="in" />
+		<KeyWord name="indexOf" func="yes">
+			<Overload retVal="PortMapping">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="indexOf" func="yes">
+			<Overload retVal="integer">
+				<Param name="element" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Infinity" />
+		<KeyWord name="initDir" />
+		<KeyWord name="instanceof" />
+		<KeyWord name="int" />
+		<KeyWord name="interface" />
+		<KeyWord name="invalidate" func="yes">
+			<Overload retVal="boolean">
+				<Param name="rgn" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="ip" />
+		<KeyWord name="isConnected" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isDisposed" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isEmpty" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isExist" func="yes">
+			<Overload retVal="boolean">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isFile" func="yes">
+			<Overload retVal="boolean">
+				<Param name="filename" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isFinite" func="yes">
+			<Overload retVal="boolean">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isFolder" func="yes">
+			<Overload retVal="boolean">
+				<Param name="filename" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isHorizontal" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isItemSelected" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isLButton" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isLDBClick" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isLDown" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isLeave" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isLUp" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isMButton" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isMDBClick" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isMDown" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isMove" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isMUp" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isNaN" func="yes">
+			<Overload retVal="boolean">
+				<Param name="any" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isNull" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isOwned" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isRButton" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isRDBClick" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isRDown" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isRUp" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isSame" func="yes">
+			<Overload retVal="boolean">
+				<Param name="path1" />
+				<Param name="path2" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isSelected" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isVertical" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isWheel" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isX1Button" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isX2Button" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isXDBClick" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isXDown" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="isXUp" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="italic" />
+		<KeyWord name="join" func="yes">
+			<Overload retVal="string">
+				<Param name="string link" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="JSON" />
+		<KeyWord name="keylen" />
+		<KeyWord name="killTimer" func="yes">
+			<Overload retVal="boolean">
+				<Param name="id" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="lastIndexOf" func="yes">
+			<Overload retVal="integer">
+				<Param name="element" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Layout" />
+		<KeyWord name="LayoutParam" />
+		<KeyWord name="left" />
+		<KeyWord name="length" />
+		<KeyWord name="lineTo" func="yes">
+			<Overload retVal="boolean">
+				<Param name="x" />
+				<Param name="y" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="linkExt" func="yes">
+			<Overload retVal="string">
+				<Param name="path" />
+				<Param name="ext" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="linkPath" func="yes">
+			<Overload retVal="string">
+				<Param name="path" />
+				<Param name="..." />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="load" func="yes">
+			<Overload retVal="boolean">
+				<Param name="finename" />
+				<Param name="[cx]" />
+				<Param name="[cy]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="loadKey" func="yes">
+			<Overload retVal="boolean">
+				<Param name="filename" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="loadModule" func="yes">
+			<Overload retVal="integer">
+				<Param name="dll" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="localeCompare" func="yes">
+			<Overload retVal="integer">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="log" func="yes">
+			<Overload retVal="number">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="log" func="yes">
+			<Overload retVal="void">
+				<Param name="text" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="logfont" />
+		<KeyWord name="long" />
+		<KeyWord name="lParam" />
+		<KeyWord name="makePublicKey" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="margin" />
+		<KeyWord name="match" func="yes">
+			<Overload retVal="array">
+				<Param name="RegExp|string" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Math" />
+		<KeyWord name="Math.E" />
+		<KeyWord name="Math.LN10" />
+		<KeyWord name="Math.LN2" />
+		<KeyWord name="Math.LOG10E" />
+		<KeyWord name="Math.LOG2E" />
+		<KeyWord name="Math.PI" />
+		<KeyWord name="Math.SQRT1_2" />
+		<KeyWord name="Math.SQRT2" />
+		<KeyWord name="max" func="yes">
+			<Overload retVal="number">
+				<Param name="n1" />
+				<Param name="[n2]" />
+				<Param name="[...]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="maxClients" />
+		<KeyWord name="md5" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="md5_file" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="filename" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="md5hmac" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+				<Param name="key" />
+				<Param name="[keylen]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Message" />
+		<KeyWord name="method" />
+		<KeyWord name="min" func="yes">
+			<Overload retVal="number">
+				<Param name="n1" />
+				<Param name="[n2]" />
+				<Param name="[...]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Mouse" />
+		<KeyWord name="move" func="yes">
+			<Overload retVal="integer">
+				<Param name="src" />
+				<Param name="dst" />
+				<Param name="length" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="moveTo" func="yes">
+			<Overload retVal="boolean">
+				<Param name="x" />
+				<Param name="y" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="multiSelect" />
+		<KeyWord name="name" />
+		<KeyWord name="NaN" />
+		<KeyWord name="native" />
+		<KeyWord name="new" />
+		<KeyWord name="null" />
+		<KeyWord name="Number" func="yes">
+			<Overload retVal="object">
+				<Param name="[value]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Number.MAX_VALUE" />
+		<KeyWord name="Number.MIN_VALUE" />
+		<KeyWord name="Number.NEGATIVE_INFINITY" />
+		<KeyWord name="Number.POSITIVE_INFINITY" />
+		<KeyWord name="obj" func="yes">
+			<Overload retVal="integer">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Object" func="yes">
+			<Overload retVal="object">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="official" />
+		<KeyWord name="offset" func="yes">
+			<Overload retVal="boolean">
+				<Param name="dx" />
+				<Param name="[dy]" />
+				<Param name="[dcx]" />
+				<Param name="[dcy]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onAccept" func="yes">
+			<Overload retVal="void">
+				<Param name="client" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onApply" func="yes">
+			<Overload retVal="void">
+				<Param name="logfont" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onCommand" func="yes">
+			<Overload retVal="void">
+				<Param name="id" />
+				<Param name="type" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onConnect" func="yes">
+			<Overload retVal="void">
+				<Param name="connected" />
+				<Param name="error" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onCreate" func="yes">
+			<Overload retVal="void">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onCustomDraw" func="yes">
+			<Overload retVal="void">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onDataProgress" func="yes">
+			<Overload retVal="void">
+				<Param name="param" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onDraw" func="yes">
+			<Overload retVal="void">
+				<Param name="dc" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onDropFile" />
+		<KeyWord name="onFileOk" func="yes">
+			<Overload retVal="boolean">
+				<Param name="filename" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onFileProgress" func="yes">
+			<Overload retVal="void">
+				<Param name="param" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onList" func="yes">
+			<Overload retVal="void">
+				<Param name="data" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onMouse" func="yes">
+			<Overload retVal="void">
+				<Param name="mouse" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onNotify" func="yes">
+			<Overload retVal="integer">
+				<Param name="code" />
+				<Param name="lParam" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onRecv" func="yes">
+			<Overload retVal="void">
+				<Param name="len" />
+				<Param name="error" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onRequest" func="yes">
+			<Overload retVal="void">
+				<Param name="html" />
+				<Param name="header" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onRequestMemory" func="yes">
+			<Overload retVal="void">
+				<Param name="mem" />
+				<Param name="header" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onScroll" func="yes">
+			<Overload retVal="void">
+				<Param name="dx" />
+				<Param name="dy" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onSend" func="yes">
+			<Overload retVal="void">
+				<Param name="len" />
+				<Param name="error" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onSize" func="yes">
+			<Overload retVal="void">
+				<Param name="cx" />
+				<Param name="cy" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="onTextChange" func="yes">
+			<Overload retVal="void">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="package" />
+		<KeyWord name="page" />
+		<KeyWord name="param" />
+		<KeyWord name="parent" />
+		<KeyWord name="parent" func="yes">
+			<Overload retVal="Layout">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="parse" func="yes">
+			<Overload retVal="msFrom1970">
+				<Param name="string dateStr" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="parseFloat" func="yes">
+			<Overload retVal="number">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="parseInt" func="yes">
+			<Overload retVal="number">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="parseJson" func="yes">
+			<Overload retVal="void">
+				<Param name="json" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="parseMemParam" func="yes">
+			<Overload retVal="object">
+				<Param name="data" />
+				<Param name="len" />
+				<Param name="errFlag" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="parseUrl" func="yes">
+			<Overload retVal="boolean">
+				<Param name="url" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="path" />
+		<KeyWord name="Point" />
+		<KeyWord name="pointer" />
+		<KeyWord name="poly" func="yes">
+			<Overload retVal="boolean">
+				<Param name="pointArray" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="polyTo" func="yes">
+			<Overload retVal="boolean">
+				<Param name="pointArray" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="pop" func="yes">
+			<Overload retVal="object">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="pop" func="yes">
+			<Overload retVal="boolean">
+				<Param name="obj" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="port" />
+		<KeyWord name="pow" func="yes">
+			<Overload retVal="number">
+				<Param name="nX" />
+				<Param name="nY" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="private" />
+		<KeyWord name="proc" />
+		<KeyWord name="protected" />
+		<KeyWord name="prototype" />
+		<KeyWord name="ptInLayout" func="yes">
+			<Overload retVal="boolean">
+				<Param name="pt" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="ptInRect" func="yes">
+			<Overload retVal="boolean">
+				<Param name="x" />
+				<Param name="[y]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="ptInRgn" func="yes">
+			<Overload retVal="boolean">
+				<Param name="pt" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="public" />
+		<KeyWord name="push" func="yes">
+			<Overload retVal="length">
+				<Param name="any a0" />
+				<Param name="[...]" />
+				<Param name="[any an]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="push" func="yes">
+			<Overload retVal="void">
+				<Param name="obj" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="quit" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="random" func="yes">
+			<Overload retVal="number0_1">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="read" func="yes">
+			<Overload retVal="integer">
+				<Param name="memory" />
+				<Param name="[readLen]" />
+				<Param name="[memoryPos]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="readln" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="readString" func="yes">
+			<Overload retVal="string">
+				<Param name="[code]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Rect" />
+		<KeyWord name="rect" func="yes">
+			<Overload retVal="boolean">
+				<Param name="rect" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="rectBox" func="yes">
+			<Overload retVal="Rect">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="recv" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="recvData" />
+		<KeyWord name="red" />
+		<KeyWord name="refresh" func="yes">
+			<Overload retVal="void">
+				<Param name="hwnd" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="RegExp" func="yes">
+			<Overload retVal="object">
+				<Param name="string patern" />
+				<Param name="[string g/i/m]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="remove" func="yes">
+			<Overload retVal="Layout">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="replace" func="yes">
+			<Overload retVal="string">
+				<Param name="RegExp|string" />
+				<Param name="string|function" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="request" func="yes">
+			<Overload retVal="boolean">
+				<Param name="[upload]" />
+				<Param name="[uplen]" />
+				<Param name="[sync]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="require" func="yes">
+			<Overload retVal="void">
+				<Param name="lib" />
+				<Param name="[compnent]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="reset" func="yes">
+			<Overload retVal="void">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="resize" func="yes">
+			<Overload retVal="boolean">
+				<Param name="cx" />
+				<Param name="cy" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="return" />
+		<KeyWord name="reverse" func="yes">
+			<Overload retVal="void">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="right" />
+		<KeyWord name="round" func="yes">
+			<Overload retVal="integer">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="roundRect" func="yes">
+			<Overload retVal="boolean">
+				<Param name="rect" />
+				<Param name="rx" />
+				<Param name="ry" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="rowSelect" />
+		<KeyWord name="run" func="yes">
+			<Overload retVal="any">
+				<Param name="js" />
+				<Param name="[name]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="save" func="yes">
+			<Overload retVal="Layout">
+				<Param name="file" />
+				<Param name="[code]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="saveKey" func="yes">
+			<Overload retVal="boolean">
+				<Param name="filename" />
+				<Param name="[override]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="search" func="yes">
+			<Overload retVal="void">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="search" func="yes">
+			<Overload retVal="integer">
+				<Param name="RegExp|string" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="send" func="yes">
+			<Overload retVal="boolean">
+				<Param name="len" />
+				<Param name="[nohead]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="sendData" />
+		<KeyWord name="sendMessage" func="yes">
+			<Overload retVal="integer">
+				<Param name="id" />
+				<Param name="[wParam]" />
+				<Param name="[lParam]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="set" func="yes">
+			<Overload retVal="boolean">
+				<Param name="port" />
+				<Param name="[udpOrTcp]" />
+				<Param name="[disabled]" />
+				<Param name="[innerPort]" />
+				<Param name="[name]" />
+				<Param name="[localIp]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setAlignBottom" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setAlignCenter" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setAlignLeft" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setAlignRight" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setAlignTop" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setAlignVCenter" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setAttribute" func="yes">
+			<Overload retVal="boolean">
+				<Param name="path" />
+				<Param name="attribute" />
+				<Param name="[option]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setBkColor" func="yes">
+			<Overload retVal="void">
+				<Param name="color" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setCheck" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+				<Param name="[check]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setColor" func="yes">
+			<Overload retVal="void">
+				<Param name="color" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setConfig" func="yes">
+			<Overload retVal="boolean">
+				<Param name="callback" />
+				<Param name="[filename]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setControl" func="yes">
+			<Overload retVal="void">
+				<Param name="className" />
+				<Param name="id" />
+				<Param name="text" />
+				<Param name="style" />
+				<Param name="exstyle" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setCurSelect" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setCursor" func="yes">
+			<Overload retVal="void">
+				<Param name="icon" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setDate" func="yes">
+			<Overload retVal="void">
+				<Param name="integer day" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setDCColor" func="yes">
+			<Overload retVal="boolean">
+				<Param name="[color]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setDecKey" func="yes">
+			<Overload retVal="boolean">
+				<Param name="key" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setDefFilter" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setEditControl" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setEncKey" func="yes">
+			<Overload retVal="boolean">
+				<Param name="key" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setEndEllipsis" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setFont" func="yes">
+			<Overload retVal="boolean">
+				<Param name="font" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setFontSize" func="yes">
+			<Overload retVal="void">
+				<Param name="size" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setFullYear" func="yes">
+			<Overload retVal="void">
+				<Param name="integer year" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setHorizontal" func="yes">
+			<Overload retVal="void">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setHours" func="yes">
+			<Overload retVal="void">
+				<Param name="integer hour" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setIcon" func="yes">
+			<Overload retVal="boolean">
+				<Param name="icon" />
+				<Param name="[big]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setIntValue" func="yes">
+			<Overload retVal="void">
+				<Param name="color" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setItem" func="yes">
+			<Overload retVal="boolean">
+				<Param name="str" />
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setItemText" func="yes">
+			<Overload retVal="boolean">
+				<Param name="iItem" />
+				<Param name="int iColumn" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setIv" func="yes">
+			<Overload retVal="boolean">
+				<Param name="key" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setLayout" func="yes">
+			<Overload retVal="boolean">
+				<Param name="layout" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setLocation" func="yes">
+			<Overload retVal="void">
+				<Param name="[x]" />
+				<Param name="[y]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setMaxLine" func="yes">
+			<Overload retVal="void">
+				<Param name="[count]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setMilliseconds" func="yes">
+			<Overload retVal="void">
+				<Param name="integer ms" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setMinutes" func="yes">
+			<Overload retVal="void">
+				<Param name="integer minute" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setMonth" func="yes">
+			<Overload retVal="void">
+				<Param name="integer month" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setMultiLine" func="yes">
+			<Overload retVal="void">
+				<Param name="[multiline]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setNoClip" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setNoPrefix" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setNumber" func="yes">
+			<Overload retVal="boolean">
+				<Param name="number" />
+				<Param name="type" />
+				<Param name="[start]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setPixelArray" func="yes">
+			<Overload retVal="boolean">
+				<Param name="pixelArray" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setPosition" func="yes">
+			<Overload retVal="boolean">
+				<Param name="x" />
+				<Param name="[y]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setPrivateKey" func="yes">
+			<Overload retVal="boolean">
+				<Param name="prikey" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setPublicKey" func="yes">
+			<Overload retVal="boolean">
+				<Param name="pubkey" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setRect" func="yes">
+			<Overload retVal="boolean">
+				<Param name="x" />
+				<Param name="y" />
+				<Param name="cx" />
+				<Param name="cy" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setRemPos" func="yes">
+			<Overload retVal="boolean">
+				<Param name="name" />
+				<Param name="[flag]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setSeconds" func="yes">
+			<Overload retVal="void">
+				<Param name="integer second" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setSelected" func="yes">
+			<Overload retVal="boolean">
+				<Param name="index" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setSelectItem" func="yes">
+			<Overload retVal="integer|boolean">
+				<Param name="index" />
+				<Param name="[index2]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setSingleLine" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setSize" func="yes">
+			<Overload retVal="boolean">
+				<Param name="width" />
+				<Param name="[height]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setString" func="yes">
+			<Overload retVal="integer">
+				<Param name="str" />
+				<Param name="[start]" />
+				<Param name="[code]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setStrValue" func="yes">
+			<Overload retVal="boolean">
+				<Param name="name" />
+				<Param name="value" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setTime" func="yes">
+			<Overload retVal="void">
+				<Param name="integer msFrom1970" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setTimer" func="yes">
+			<Overload retVal="integer">
+				<Param name="ms" />
+				<Param name="callback" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setUTCDate" func="yes">
+			<Overload retVal="void">
+				<Param name="integer utcDay" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setUTCFullYear" func="yes">
+			<Overload retVal="void">
+				<Param name="integer utcYear" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setUTCHours" func="yes">
+			<Overload retVal="void">
+				<Param name="integer utcHour" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setUTCMilliseconds" func="yes">
+			<Overload retVal="void">
+				<Param name="integer utcMs" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setUTCMinutes" func="yes">
+			<Overload retVal="void">
+				<Param name="integer utcMinute" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setUTCMonth" func="yes">
+			<Overload retVal="void">
+				<Param name="integer utcMonth" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setUTCSeconds" func="yes">
+			<Overload retVal="void">
+				<Param name="integer utcSecond" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setValue" func="yes">
+			<Overload retVal="void">
+				<Param name="left" />
+				<Param name="top" />
+				<Param name="right" />
+				<Param name="bottom" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setVertical" func="yes">
+			<Overload retVal="void">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="setWordBreak" func="yes">
+			<Overload retVal="void">
+				<Param name="yes" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="sha" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+				<Param name="[bits]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="sha_file" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="filename" />
+				<Param name="[bits]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="shahmac" func="yes">
+			<Overload retVal="CMemory">
+				<Param name="data" />
+				<Param name="[len]" />
+				<Param name="key" />
+				<Param name="[keylen]" />
+				<Param name="[bits]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="shCopy" func="yes">
+			<Overload retVal="boolean">
+				<Param name="src" />
+				<Param name="dst" />
+				<Param name="[noAsk]" />
+				<Param name="[noUndo]" />
+				<Param name="[noError]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="shDelete" func="yes">
+			<Overload retVal="boolean">
+				<Param name="path" />
+				<Param name="[noAsk]" />
+				<Param name="[noUndo]" />
+				<Param name="[noError]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="shift" func="yes">
+			<Overload retVal="firstElement">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="shMove" func="yes">
+			<Overload retVal="boolean">
+				<Param name="src" />
+				<Param name="dst" />
+				<Param name="[noAskExist]" />
+				<Param name="[noUndo]" />
+				<Param name="[noError]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="short" />
+		<KeyWord name="show" func="yes">
+			<Overload retVal="string">
+				<Param name="owner" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="showColorDialog" func="yes">
+			<Overload retVal="integer">
+				<Param name="owner" />
+				<Param name="[color]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="showFolderDialog" func="yes">
+			<Overload retVal="string">
+				<Param name="owner" />
+				<Param name="[init]" />
+				<Param name="[title]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="showSave" func="yes">
+			<Overload retVal="string">
+				<Param name="owner" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="shRename" func="yes">
+			<Overload retVal="boolean">
+				<Param name="src" />
+				<Param name="dst" />
+				<Param name="[noAskExist]" />
+				<Param name="[noUndo]" />
+				<Param name="[noError]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="shutdown" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="signlen" />
+		<KeyWord name="sin" func="yes">
+			<Overload retVal="number">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="size" func="yes">
+			<Overload retVal="Size">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="size" />
+		<KeyWord name="Size getSize" />
+		<KeyWord name="slice" func="yes">
+			<Overload retVal="array">
+				<Param name="start" />
+				<Param name="[end]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="sort" func="yes">
+			<Overload retVal="void">
+				<Param name="function" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="splice" func="yes">
+			<Overload retVal="void">
+				<Param name="start" />
+				<Param name="[count]" />
+				<Param name="[insertElement]" />
+				<Param name="[...]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="split" func="yes">
+			<Overload retVal="array">
+				<Param name="string split" />
+				<Param name="[maxArrayCount]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="sqrt" func="yes">
+			<Overload retVal="number">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="Stack" />
+		<KeyWord name="startMsgLoop" func="yes">
+			<Overload retVal="void">
+				<Param name="[qMsg]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="startup" func="yes">
+			<Overload retVal="boolean">
+				<Param name="port" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="static" />
+		<KeyWord name="strikeOut" />
+		<KeyWord name="String" func="yes">
+			<Overload retVal="object">
+				<Param name="[string str]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="style" />
+		<KeyWord name="substr" func="yes">
+			<Overload retVal="string">
+				<Param name="start" />
+				<Param name="[length]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="substring" func="yes">
+			<Overload retVal="string">
+				<Param name="start" />
+				<Param name="[end]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="super" />
+		<KeyWord name="switch" />
+		<KeyWord name="synchronized" />
+		<KeyWord name="tabstop" />
+		<KeyWord name="tan" func="yes">
+			<Overload retVal="number">
+				<Param name="number" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="test" func="yes">
+			<Overload retVal="boolean">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="text" />
+		<KeyWord name="TextDraw" />
+		<KeyWord name="this" />
+		<KeyWord name="throw" />
+		<KeyWord name="throws" />
+		<KeyWord name="title" />
+		<KeyWord name="toBackslash" func="yes">
+			<Overload retVal="string">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toBase64" func="yes">
+			<Overload retVal="string">
+				<Param name="[start]" />
+				<Param name="[length]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toBlackWhite" func="yes">
+			<Overload retVal="boolean">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toDateString" func="yes">
+			<Overload retVal="yearMonthDay">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toExponential" func="yes">
+			<Overload retVal="string">
+				<Param name="integer dotLen" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toFixed" func="yes">
+			<Overload retVal="string">
+				<Param name="integer dotLen" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toHex" func="yes">
+			<Overload retVal="string">
+				<Param name="[start]" />
+				<Param name="[length]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toJson" func="yes">
+			<Overload retVal="object">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toLocaleDateString" func="yes">
+			<Overload retVal="yearMonthDay">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toLocaleLowerCase" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toLocaleString" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toLocaleTimeString" func="yes">
+			<Overload retVal="timeString">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toLocaleUpperCase" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toLowerCase" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toMemory" func="yes">
+			<Overload retVal="integer">
+				<Param name="mem" />
+				<Param name="type" />
+				<Param name="[quality]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="top" />
+		<KeyWord name="toPrecision" func="yes">
+			<Overload retVal="string">
+				<Param name="integer len" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toSlash" func="yes">
+			<Overload retVal="string">
+				<Param name="path" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toString" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toSubKey" func="yes">
+			<Overload retVal="integer">
+				<Param name="name" />
+				<Param name="[create]" />
+				<Param name="[noMulti]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toTimeString" func="yes">
+			<Overload retVal="timeString">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toUpperCase" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="toUTCString" func="yes">
+			<Overload retVal="string">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="transient" />
+		<KeyWord name="true" />
+		<KeyWord name="try" />
+		<KeyWord name="typeof" />
+		<KeyWord name="undefined" />
+		<KeyWord name="underline" />
+		<KeyWord name="unescape" func="yes">
+			<Overload retVal="string">
+				<Param name="string str" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="unshift" func="yes">
+			<Overload retVal="length">
+				<Param name="element0" />
+				<Param name="[...]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="UTC" func="yes">
+			<Overload retVal="utcDate">
+				<Param name="" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="var" />
+		<KeyWord name="verify" func="yes">
+			<Overload retVal="boolean">
+				<Param name="sign" />
+				<Param name="data" />
+				<Param name="[len]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="void" />
+		<KeyWord name="void positive" />
+		<KeyWord name="void setSize" />
+		<KeyWord name="volatile" />
+		<KeyWord name="weight" />
+		<KeyWord name="wheel" />
+		<KeyWord name="while" func="yes">
+			<Overload retVal="void">
+				<Param name="boolean" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="with" />
+		<KeyWord name="wParam" />
+		<KeyWord name="write" func="yes">
+			<Overload retVal="integer">
+				<Param name="memory" />
+				<Param name="[writeLen]" />
+				<Param name="[memoryPos]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="writeString" func="yes">
+			<Overload retVal="string">
+				<Param name="str" />
+				<Param name="[code]" />
+			</Overload>
+		</KeyWord>
+		<KeyWord name="x" />
+		<KeyWord name="y" />
+		<KeyWord name="zero" func="yes">
+			<Overload retVal="integer">
+				<Param name="[offset]" />
+				<Param name="[length]" />
+			</Overload>
+		</KeyWord>
+	</AutoComplete>
+</NotepadPlus>

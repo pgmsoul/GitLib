@@ -90,7 +90,7 @@ namespace v8{
 	//	"name":"CPen",
 	//	"text":"画笔类，它继承自 CHandleObject，用于控制画线时的颜色，宽度，样式等。",
 	//	"member":[//*
-	class JSPen : public JsHandleObject<cs::Pen,HPEN,JSPen>{
+	class JSPen : public JsHandleObject<cs::Pen,HPEN,JSPen,TEMPLATE_ID_PEN>{
 		//*{
 		//	"type":"function",
 		//	"name":"arc(rect,point1,point2)",
@@ -607,7 +607,7 @@ namespace v8{
 	//	"name":"CRgn",
 	//	"text":"区域类，它继承自 CHandleObject，用于表示一个区域，规则的或不规则的。区域（Region）是 Windows 的系统对象，用于很多绘图函数。",
 	//	"member":[//*
-	class JSRgn : public JsHandleObject<cs::Rgn,HRGN,JSRgn>{
+	class JSRgn : public JsHandleObject<cs::Rgn,HRGN,JSRgn,TEMPLATE_ID_RGN>{
 	protected:
 		//*{
 		//	"type":"function",
@@ -980,7 +980,7 @@ namespace v8{
 	//	"name":"CBrush",
 	//	"text":"画刷对象，它继承自 CHandleObject，画刷用于绘制一个区域。",
 	//	"member":[//*
-	class JSBrush : public JsHandleObject<cs::Brush,HBRUSH,JSBrush>{
+	class JSBrush : public JsHandleObject<cs::Brush,HBRUSH,JSBrush,TEMPLATE_ID_BRUSH>{
 	protected:
 		//*{
 		//	"type":"function",
@@ -1400,7 +1400,7 @@ namespace v8{
 	//	"name":"CFont",
 	//	"text":"字体，它继承自 CHandleObject，字体是系统用于输出文字的 gdi 对象。",
 	//	"member":[//*
-	class JSFont : public JsHandleObject<cs::Font,HFONT,JSFont>{
+	class JSFont : public JsHandleObject<cs::Font,HFONT,JSFont,TEMPLATE_ID_FONT>{
 	public:
 		//*{
 		//	"type":"function",
@@ -1654,7 +1654,7 @@ namespace v8{
 	//		"大尺寸的位图非常耗费系统资源，不要在内存中保留大量的大尺寸位图对象。绘制大尺寸位图也非常耗时间。"
 	//	],
 	//	"member":[//*
-	class JSBitmap : public JsHandleObject<cs::Bitmap,HBITMAP,JSBitmap>{
+	class JSBitmap : public JsHandleObject<cs::Bitmap,HBITMAP,JSBitmap,TEMPLATE_ID_BITMAP>{
 	protected:
 		//*{
 		//	"type":"function",
@@ -2614,7 +2614,7 @@ namespace v8{
 	//	"name":"CImageLoader",
 	//	"text":"一个图像文件不一定只有一帧图像，比如 gif 可以有多帧图像，这个类可以加载第一帧以外的图像。",
 	//	"member":[//*
-	class JSImageLoader : public JsCObject<cs::Image,JSImageLoader>{
+	class JSImageLoader : public JsCObject<cs::Image,JSImageLoader,TEMPLATE_ID_IMAGELOADER>{
 		//*{
 		//	"type":"function",
 		//	"name":"load(file|mem,[len])",
@@ -2712,7 +2712,7 @@ namespace v8{
 	//	"name":"CIcon",
 	//	"text":"图标类。",
 	//	"member":[//*
-	class JSIcon : public JsHandleObject<cs::Icon,HICON,JSIcon>{
+	class JSIcon : public JsHandleObject<cs::Icon,HICON,JSIcon,TEMPLATE_ID_ICON>{
 		//*{
 		//	"type":"function",
 		//	"name":"load(finename,[cx],[cy])",
@@ -2960,13 +2960,13 @@ namespace v8{
 	//*]}//*
 	void LoadGDI(Handle<Object>& glb){
 		LoadJsRes(IDR_JS_GDI_BEFORE,L"gdi_before.js");
-		JSPen::Load(glb,L"CPen",TEMPLATE_ID_PEN);
-		JSBrush::Load(glb,L"CBrush",TEMPLATE_ID_BRUSH);
-		JSRgn::Load(glb,L"CRgn",TEMPLATE_ID_RGN);
-		JSBitmap::Load(glb,L"CBitmap",TEMPLATE_ID_BITMAP);
-		JSImageLoader::Load(glb,L"CImageLoader",TEMPLATE_ID_IMAGELOADER);
-		JSIcon::Load(glb,L"CIcon",TEMPLATE_ID_ICON);
-		JSFont::Load(glb,L"CFont",TEMPLATE_ID_FONT);
+		JSPen::Load(glb,L"CPen");
+		JSBrush::Load(glb,L"CBrush");
+		JSRgn::Load(glb,L"CRgn");
+		JSBitmap::Load(glb,L"CBitmap");
+		JSImageLoader::Load(glb,L"CImageLoader");
+		JSIcon::Load(glb,L"CIcon");
+		JSFont::Load(glb,L"CFont");
 		JSTextDraw::Load(glb);
 		LoadJsRes(IDR_JS_GDI_AFTER,L"gdi_after.js");
 	}

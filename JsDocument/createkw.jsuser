@@ -78,7 +78,7 @@ function createColorKey(){
 	xml.push(str);
 	
 	str = xml.join("");
-	
+
 	saveString(str,npp_path+"userDefineLang.xml");
 }
 function loadJsIner(){

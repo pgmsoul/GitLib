@@ -335,6 +335,12 @@ namespace cs{
 		if(p!=NULL) return _getMemory(p);
 		p = _findSapceAfter(len);
 		if(p==NULL){
+#ifdef ALERT_FASTMEM_FAILED
+			::MessageBox(0,L"预分配内存已经用尽，可能存在内存泄露，应该尽快释放不使用的内存。",L"Error",MB_ICONERROR);
+#ifndef _DEBUG 
+	::ExitProcess(0);
+#endif		
+#endif
 			CONASSERT(L"IMemory.Alloc: 预分配内存已经用尽");
 			_cs.Unlock();
 			return 0;

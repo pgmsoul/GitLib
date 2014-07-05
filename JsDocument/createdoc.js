@@ -18,7 +18,6 @@ function createKw(){
 Class(function main() {
 	log.show();
 	log.setFontSize(32);
-	
 	var jsuser = getFileDocJson("D:/SoftProject/GitLib/jsuser/jsuser.doc");
 	
 	var jsbase = jsuser.member[0];
@@ -30,7 +29,7 @@ Class(function main() {
 	jscrypt.member = createJscryptDoc();
 	
 	parseJsonDoc(jsuser,[],"");
-	//Éú³É Notepad++ µÄ¸öĞÔ»¯ÅäÖÃ
+	//ç”Ÿæˆ Notepad++ çš„ä¸ªæ€§åŒ–é…ç½®
 	createKw();
 	startMsgLoop();
 	//str = JSON.stringify(json,null,"\t");
@@ -38,6 +37,7 @@ Class(function main() {
 Class(function saveString(str,fn){
     var file = new CFile();
 	file.create(fn);
+	if(str===file.readString(3)) return;
 	file.length = 0;
 	file.writeString(str,3);
 },true);
@@ -98,7 +98,7 @@ function getFileDocJson(fn){
     str = data.join("");
 	var sf = FilePath.getTitle(fn);
 	sf = "Debug\\" + sf + ".js";
-	///ÓÃÓÚµ÷ÊÔ////////////////
+	///ç”¨äºè°ƒè¯•////////////////
 	saveString(str,sf);
 	log(sf);
 
@@ -127,22 +127,22 @@ Class(function readFile(fn,code) {
     return file.readString(code);
 },true);
 function formatBlock(str) {
-	//Ñ¡³öµÄ doc ÎÄ±¾°´ĞĞ split
+	//é€‰å‡ºçš„ doc æ–‡æœ¬æŒ‰è¡Œ split
     var lines = str.split("\n");
-	//È¥µôÃ¿ĞĞµÄµÚÒ»¸ö ¡°//¡±£¬È¡ºóÃæµÄÎÄ±¾£¬²¢ÇÒÈ¥µôĞĞÎ²µÄ¿Õ×Ö·û¡£
+	//å»æ‰æ¯è¡Œçš„ç¬¬ä¸€ä¸ª â€œ//â€ï¼Œå–åé¢çš„æ–‡æœ¬ï¼Œå¹¶ä¸”å»æ‰è¡Œå°¾çš„ç©ºå­—ç¬¦ã€‚
     var reg = /\s*\/\/([\s\S]*)/g;
     for(var i=0;i<lines.length;i++){
         var line = lines[i].trimRight();
         reg.lastIndex = 0;
         var a = reg.exec(line);
-		//¿ÕĞĞ»á±»È¥µô
+		//ç©ºè¡Œä¼šè¢«å»æ‰
         if(a==null) continue;
         lines[i] = replaceTab(a[1]);
     }
     return lines.join("\n");
 }
 function getCommentBlock(str) {
-	//Ñ¡³öÁ½¸ö //* Ö®¼äµÄÎÄ±¾¡£
+	//é€‰å‡ºä¸¤ä¸ª //* ä¹‹é—´çš„æ–‡æœ¬ã€‚
 	var reg = /\/\/\*([\s\S]*?)\/\/\*/g;
 	var data = [];
 	while (true) {
@@ -152,7 +152,7 @@ function getCommentBlock(str) {
 	}
 	return data;
 }
-//JSON.parse ²»ÄÜ´¦Àí×Ö´®Öµº¬ tab ×Ö·ûµÄÇé¿ö£¬Ìæ»»Îª 4 ¸ö¿Õ¸ñ¡£
+//JSON.parse ä¸èƒ½å¤„ç†å­—ä¸²å€¼å« tab å­—ç¬¦çš„æƒ…å†µï¼Œæ›¿æ¢ä¸º 4 ä¸ªç©ºæ ¼ã€‚
 function replaceTab(str){
 	function getQuote(str,pos){
 		while(true){
@@ -229,22 +229,22 @@ function parseJsonDoc(json,tree,comment,menu){
 	tree.push(json.name);
 	var content = "";
 	if(json.type=="library"){
-		content = createContent(json,"Àà¿â",menu,tree);
+		content = createContent(json,"ç±»åº“",menu,tree);
 	}else if(json.type=="const"){
-		content = createContent(json,"³£Á¿",menu,tree);
+		content = createContent(json,"å¸¸é‡",menu,tree);
 		kwConst.push(json.name);
 	}else if(json.type=="group"){
-		content = createContent(json,"¹¦ÄÜ×é",menu,tree);
+		content = createContent(json,"åŠŸèƒ½ç»„",menu,tree);
 	}else if(json.type=="variant"){
-		content = createContent(json,"±äÁ¿",menu,tree);
+		content = createContent(json,"å˜é‡",menu,tree);
 	}else if(json.type=="class"){
-		content = createContent(json,"Àà",menu,tree);
+		content = createContent(json,"ç±»",menu,tree);
 		kwClass.push(json.name);
 	}else if(json.type=="function"){
-		content = createContent(json,"º¯Êı",menu,tree);
+		content = createContent(json,"å‡½æ•°",menu,tree);
 		kwFunction.push(json["return"].type+" "+json.name);
 	}else if(json.type=="property"){
-		content = createContent(json,"ÊôĞÔ",menu,tree);
+		content = createContent(json,"å±æ€§",menu,tree);
 		kwProperty.push(json.name);
 	}
 	
@@ -275,11 +275,11 @@ function createHtmlPage(title,content,comment,menuHtml){
     '		<div id="header"><center>',
 	'		<table style="width:90%;"><tr>',
 	'			<td class="cla_logo">',
-	'				<a class="cla_logo_j" href="'+baseUrl+'" title="Ê×Ò³">jsuser</a>&nbsp;&nbsp;',
-	'				<a class="cla_logo_s" href="'+baseUrl+'document/jsuser.html" title="²éÔÄjsuserÎÄµµ">ÎÄµµ</a>&nbsp;&nbsp;',
-	'				<a class="cla_logo_s" href="'+baseUrl+'sdk_tools.html" title="ÏÂÔØSDK">SDK Tools</a>&nbsp;&nbsp;',
-	'				<a class="cla_logo_s" href="'+baseUrl+'app.html" title="Ó¦ÓÃ">Ó¦ÓÃ</a>&nbsp;&nbsp;',
-	'				<a class="cla_logo_s" href="'+baseUrl+'connect_us.html" title="ÁªÏµÎÒÃÇ">ÁªÏµÎÒÃÇ</a>',
+	'				<a class="cla_logo_j" href="'+baseUrl+'" title="é¦–é¡µ">jsuser</a>&nbsp;&nbsp;',
+	'				<a class="cla_logo_s" href="'+baseUrl+'document/jsuser.html" title="æŸ¥é˜…jsuseræ–‡æ¡£">æ–‡æ¡£</a>&nbsp;&nbsp;',
+	'				<a class="cla_logo_s" href="'+baseUrl+'sdk_tools.html" title="ä¸‹è½½SDK">SDK Tools</a>&nbsp;&nbsp;',
+	'				<a class="cla_logo_s" href="'+baseUrl+'app.html" title="åº”ç”¨">åº”ç”¨</a>&nbsp;&nbsp;',
+	'				<a class="cla_logo_s" href="'+baseUrl+'connect_us.html" title="è”ç³»æˆ‘ä»¬">è”ç³»æˆ‘ä»¬</a>',
 	'			</td>',
 	'			<td class="cla_our"></td>',
 	'		</tr></table></center></div>' ,
@@ -290,7 +290,7 @@ function createHtmlPage(title,content,comment,menuHtml){
 	'				<td class="menu">' ,
     					menuHtml ,
     '				</td>' ,
-    '				<td class="info">' + getTimeStampString(),
+    '				<td class="info"><?PHP echo date("Y-m-d H:i:s",filemtime(basename(__FILE__))); ?>',
     '				</td>' ,
     '			</tr>' ,
     '			</table>' ,
@@ -314,6 +314,7 @@ Class(function saveHtmlPage(fn,html){
     var file = new CFile();
 	fn = "D:\\wamp\\www\\jsuser\\3\\document\\" + fn;
 	file.create(fn);
+	if(file.readString(65001)===html) return fn;
     file.length = 0;
     file.writeString(html,65001);
 	return fn;
@@ -331,22 +332,22 @@ function createContent(doc,typename,menu,tree){
 	var content = [];
 	if(doc.type){
 		if(!typename) typename = doc.type;
-		content.push('				<p><span class="classic">ÀàĞÍ:</span> '+typename+'</p>');
+		content.push('				<p><span class="classic">ç±»å‹:</span> '+typename+'</p>');
 	}
 	if(doc.objtype){
-		content.push('				<p><span class="classic">ÀàĞÍ:</span> <span class="type">'+doc.objtype+'</span></p>');
+		content.push('				<p><span class="classic">ç±»å‹:</span> <span class="type">'+doc.objtype+'</span></p>');
 	}
     if(doc.text){
-		content.push('				<p><span class="classic">ËµÃ÷:</span> ' + doc.text + '</p>');
+		content.push('				<p><span class="classic">è¯´æ˜:</span> ' + doc.text + '</p>');
 	}
-	createParam(doc,"param","²ÎÊı",content);
-	createParam(doc,"property","ÊôĞÔ",content);
-	createParam(doc,"component","×é¼ş",content);
+	createParam(doc,"param","å‚æ•°",content);
+	createParam(doc,"property","å±æ€§",content);
+	createParam(doc,"component","ç»„ä»¶",content);
 	if(doc.return){
-		content.push('				<p><span class="classic">·µ»ØÖµ</span>: <span class="type">'+doc.return.type+'</span>, ' + doc.return.text + '</p>');
+		content.push('				<p><span class="classic">è¿”å›å€¼</span>: <span class="type">'+doc.return.type+'</span>, ' + doc.return.text + '</p>');
 	}
     if(doc.remark){
-		var html = '					<div><span class="classic">±¸×¢</span>: ';
+		var html = '					<div><span class="classic">å¤‡æ³¨</span>: ';
 		for(var i=0;i<doc.remark.length;i++){
 			html += '					<p>'+doc.remark[i]+'</p>\r\n';
 		}
@@ -356,7 +357,7 @@ function createContent(doc,typename,menu,tree){
 	if(doc.member){
 		var subcomment = "";
 		var submenu = createMenuHtml(menu,tree,doc.name);
-		subcomment += '\r\n				<div><span class="classic">³ÉÔ±:</span>\r\n';
+		subcomment += '\r\n				<div><span class="classic">æˆå‘˜:</span>\r\n';
 		var str = '';
 		var count = doc.member.length;
 		for(var i=0;i<count;i++){
@@ -381,7 +382,7 @@ function createContent(doc,typename,menu,tree){
 	}
 
 	if(doc.example){
-		var html = '					<div><span class="classic">Ê¾Àı: </span>\r\n<pre class="prettyprint js font">\r\n';
+		var html = '					<div><span class="classic">ç¤ºä¾‹: </span>\r\n<pre class="prettyprint js font">\r\n';
 		for(var i=0;i<doc.example.length;i++){
 			html += '<div class="codeline">' + doc.example[i] + '</div>\r\n';
 		}
@@ -389,12 +390,12 @@ function createContent(doc,typename,menu,tree){
 		content.push(html);
 	}
 	if(doc.source){
-		//´ÓÎÄ¼ş¼ÓÔØÔ´Âë£¬±ØĞëÖ¸¶¨Ò»¸ö¾ø¶ÔÂ·¾¶£¬ÒòÎª´Ë³ÌĞòµÄÔËĞĞÎ»ÖÃ¿ÉÄÜ»á±ä»¯¡£
+		//ä»æ–‡ä»¶åŠ è½½æºç ï¼Œå¿…é¡»æŒ‡å®šä¸€ä¸ªç»å¯¹è·¯å¾„ï¼Œå› ä¸ºæ­¤ç¨‹åºçš„è¿è¡Œä½ç½®å¯èƒ½ä¼šå˜åŒ–ã€‚
 		var source = readFile(doc.source);
 		if(!source) throw "read doc.source failed:" + doc.source;
 		source = source.replace(/[\<]/g,"&lt;");
 		source = source.replace(/[\>]/g,"&gt;");
-		var html = '					<div><span class="classic">Ê¾Àı: </span>\r\n<pre class="prettyprint js font">';
+		var html = '					<div><span class="classic">ç¤ºä¾‹: </span>\r\n<pre class="prettyprint js font">';
 		html += source;
 		html += '</pre></div>\r\n';
 		content.push(html);

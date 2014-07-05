@@ -3,20 +3,22 @@
 require("base");
 
 Class(function main(){
-	Console.show();
+	log.show();
 	var fl = new CFileList();
 	fl.addFilter("php");
+	var i = 0;
 	fl.onList = function(inf){
 		var fn = fl.path + "\\" + inf.name;
 		var rst = FileSystem.delete(fn);
 		if(!rst){
-			Console.log("can't delete "+inf.name);
+			log(i+": "+inf.name,0xff);
 			//inf.stop = true;
-		}
-		Console.log(inf.name);
+		}else 
+		log(i+": "+inf.name,0x9900);
+		i++;
 	}
 	fl.search("D:\\wamp\\www\\jsuser\\3\\document");
-	Console.readln();
+	startMsgLoop();
 },true);
 
 main();

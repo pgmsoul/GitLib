@@ -16,7 +16,7 @@ namespace v8{
 	//	"name":"CFileDialog",
 	//	"text":"打开/保存文件对话框。",
 	//	"member":[//*
-	class JsFileDialog : public JsWrapObject<cs::FileDialog,JsFileDialog>{
+	class JsFileDialog : public JsWrapObject<cs::FileDialog,JsFileDialog,TEMPLATE_ID_FILEDIALOG>{
 		class CBObject : public WrapObject{
 		public:
 			bool onFileOk(LPOPENFILENAME pfn,cs::FileDialog*){
@@ -365,7 +365,7 @@ namespace v8{
 	//	"name":"CFontDialog",
 	//	"text":"字体选择对话框。",
 	//	"member":[//*
-	class JsFontDialog : public JsWrapObject<cs::FontDialog,JsFontDialog>{
+	class JsFontDialog : public JsWrapObject<cs::FontDialog,JsFontDialog,TEMPLATE_ID_FONTDIALOG>{
 		class CBObject : public WrapObject{
 		public:
 			//*{
@@ -538,8 +538,8 @@ namespace v8{
 	}
 	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\dialog.jsuser"}//*
 	void LoadDialog(Handle<Object>& glb){
-		JsFileDialog::Load(glb,L"CFileDialog",TEMPLATE_ID_FILEDIALOG);
-		JsFontDialog::Load(glb,L"CFontDialog",TEMPLATE_ID_FONTDIALOG);
+		JsFileDialog::Load(glb,L"CFileDialog");
+		JsFontDialog::Load(glb,L"CFontDialog");
 		SET_OBJ_FUNC_RO(glb,showFolderDialog,showFolderDialog);
 		SET_OBJ_FUNC_RO(glb,showColorDialog,showColorDialog);
 	}

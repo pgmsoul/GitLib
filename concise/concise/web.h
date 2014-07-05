@@ -166,6 +166,7 @@ namespace cs{
 	public:
 		Host();
 		~Host();
+		bool IsNull(){return _Hostent==0;}
 		//获取本机的地址信息.
 		bool Create();
 		//通过整数形式的网络地址获取.

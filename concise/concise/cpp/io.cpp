@@ -764,7 +764,8 @@ namespace cs{
 		}else{
 			FileSystem fs(src);
 			fs.OnProgress = dsp->OnFileProgress;
-			r = FS_OK==fs.Copy(dst);
+			HRESULT hr = fs.Copy(dst);
+			r = (FS_OK==hr||FS_FILE_COPYED==hr);
 		}
 		if(!dsp->OnComplete.IsNull())
 			dsp->OnComplete(src,dst,dsp->UserData);
@@ -934,8 +935,7 @@ namespace cs{
 		_Handle = handle;
 		return 1;
 	}
-	uint64 File::GetLength()
-	{
+	uint64 File::GetLength(){
 		LARGE_INTEGER li;
 		if(::GetFileSizeEx(_Handle,&li)==0) return (unsigned __int64)(-1);
 		return li.QuadPart;

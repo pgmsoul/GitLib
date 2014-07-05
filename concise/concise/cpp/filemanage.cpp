@@ -258,7 +258,7 @@ namespace cs{
 		_watchList.Delete(pfw);
 	}
 
-	Event* MultiFolderWatch::Start(LPCWSTR folder,void* userData,bool subfolder,DWORD type){
+	bool MultiFolderWatch::Start(LPCWSTR folder,void* userData,bool subfolder,DWORD type){
 		LocalCriticalSection lcs(_csList);
 		FolderWatch* pfw = _watchList.Add();
 		pfw->UserData = userData;

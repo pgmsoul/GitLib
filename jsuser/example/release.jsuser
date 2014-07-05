@@ -1,0 +1,37 @@
+"use strict";
+
+require("base");
+var dst_path = "D:\\wamp\\www\\jsuser\\3\\downloads\\8AACA11537B94f14BA03895F7E121484\\";
+Class(function main(){
+	log.show();
+	FileSystem.copy("D:\\SoftProject\\GitLib\\jsuser\\npp.6.3.3",dst_path+"jsuser_1.2\\npp.6.3.3");
+	FileSystem.copy("E:\\SDK\\npp.6.3.3\\userDefineLang.xml",dst_path+"nppxml\\userDefineLang.xml");
+	FileSystem.copy("E:\\SDK\\npp.6.3.3\\plugins\\APIs\\jsuser.xml",dst_path+"nppxml\\plugins\\APIs\\jsuser.xml");
+	FileSystem.copy("E:\\SDK\\npp.6.3.3\\userDefineLang.xml",dst_path+"jsuser_1.2\\npp.6.3.3\\userDefineLang.xml");
+	FileSystem.copy("E:\\SDK\\npp.6.3.3\\plugins\\APIs\\jsuser.xml",dst_path+"jsuser_1.2\\npp.6.3.3\\plugins\\APIs\\jsuser.xml");
+	FileSystem.copy("D:\\SoftProject\\GitLib\\jsuser\\bin\\jsuser.exe",dst_path+"jsuser_1.2\\bin\\jsuser.exe");
+	FileSystem.copy("D:\\SoftProject\\GitLib\\jsuser\\bin\\jscrypt.dll",dst_path+"jsuser_1.2\\bin\\jscrypt.dll");
+	FileSystem.copy("D:\\SoftProject\\GitLib\\jsuser\\bin\\crypt.jsuser",dst_path+"jsuser_1.2\\bin\\crypt.jsuser");
+	FileSystem.copy("D:\\SoftProject\\GitLib\\LayoutDesigner\\Release\\LayoutDesigner.exe",dst_path+"LayoutDesigner_1.0.exe");
+
+	var example_path = "D:\\SoftProject\\GitLib\\jsuser\\example\\";
+	var files = [];
+	files.push("aes.jsuser","combobox.jsuser","console.jsuser","cproc.jsuser","dialog.jsuser","ecc.jsuser",
+	"file.jsuser","filelist.jsuser","bitmap.jsuser","gif.jsuser","hello.jsuser","layout.jsuser","listview.jsuser","password.txt",
+	"password_mgr.jsuser","sha.jsuser","socketclient.jsuser","socketserver.jsuser","textdraw.jsuser","wnd.jsuser","image",
+	"p2p_msg");
+	var count = files.length;
+	var failed = false;
+	for(var i=0;i<count;i++){
+		var file = files[i];
+		var rst = FileSystem.copy(example_path+file,dst_path+"jsuser_1.2\\project\\"+file);
+		if(!rst){
+			log("copy failed: " + file);
+			failed = true;
+		}
+	}
+	if(failed)
+		startMsgLoop();
+},true);
+
+main();

@@ -16,7 +16,7 @@ namespace v8{
 	//	"name":"CMemory",
 	//	"text":"内存是一个非常重要的概念，因为任何数据，包括数字和字串，都占用一定的内存空间，也就是说，任何数据都是内存，所以内存的操作非常重要。",
 	//	"member":[//*
-	class JSMemory : public JsHandleObject<cs::Memory<char>,char*,JSMemory>{
+	class JSMemory : public JsHandleObject<cs::Memory<char>,char*,JSMemory,TEMPLATE_ID_MEMORY>{
 	public:
 		//*{
 		//	"type":"function",
@@ -917,6 +917,7 @@ namespace v8{
 		static void set(cs::String& name,cs::Memory<char>* cobj,Local<Value>& value,Local<Object>& self){
 			if(name==L"length"){
 				int len = value->Uint32Value();
+				if(len>0x10000) cobj->SetUseSysMemory(1);
 				if(!cobj->SetLength(len)){
 					ThrowException(NEW_STR("CMemory set length failed"));
 					return;
@@ -1065,7 +1066,7 @@ namespace v8{
 		return Undefined();
 	}
 	void LoadKernel(Handle<Object>& glb){
-		JSMemory::Load(glb,L"CMemory",TEMPLATE_ID_MEMORY);
+		JSMemory::Load(glb,L"CMemory");
 		LoadJsRes(IDR_JS_MEMORY_AFTER,L"memory_after.js");
 		SET_OBJ_FUNC_RO(glb,setTimer,setTimer);
 		SET_OBJ_FUNC_RO(glb,killTimer,killTimer);

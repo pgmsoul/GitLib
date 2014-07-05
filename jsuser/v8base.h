@@ -68,9 +68,12 @@ namespace v8{
 		inline Persistent<FunctionTemplate>& GetTemplate(int id){
 			return TemplateList[id];
 		}
+		bool IsMainThread();
 		JsEnv();
 		~JsEnv();
 	};
+	extern wchar_t bin_path[MAX_PATH];
+	
 	extern JsEnv* _env;
 	inline JsEnv* GetEnv(){return _env;}
 	int ReportError(TryCatch& err);
@@ -106,6 +109,11 @@ namespace v8{
 		v8::String::Utf8Value sv(val);
 		LPCSTR str = (LPCSTR)*sv;
 		utf8.CopyFrom(str,strlen(str)+1);
+	}
+	inline void GetAscii(Handle<Value> val,cs::Memory<char>& ascii){
+		v8::String::AsciiValue sv(val);
+		LPCSTR str = (LPCSTR)*sv;
+		ascii.CopyFrom(str,strlen(str)+1);
 	}
 	inline void GetString(Handle<Value> val,cs::String& str){
 		v8::String::Value sv(val);
@@ -150,4 +158,7 @@ namespace v8{
 	typedef void (*LOADJSCOMPONENT)(Handle<Object>&);
 	void loadComponent(cs::StringList& sl,LPCWSTR modeList,LPCWSTR component,Handle<Object>& glb,LPCWSTR checkName,LOADJSCOMPONENT loadc);
 	Handle<Value> require(const Arguments& args);
+	inline bool IsPointer(void* p){
+		return p==0||(0xffff0000&(UINT_PTR)p);
+	}
 }

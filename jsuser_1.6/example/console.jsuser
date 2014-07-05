@@ -1,0 +1,20 @@
+//file: console.jsuser
+"use strict"
+
+Class(function main(){
+	Console.show();
+	Console.log("在控制台输出一行文字");
+	for(var i=0;i<8;i++){
+		Console.setColor(i);
+		Console.log("颜色"+i);
+	}
+	Console.write("输出文本，");
+	Console.write("但是不换行。\r\n");
+	Console.log("输入文本，然后回车。");
+	var input = Console.readln();
+	Console.log("你输入的文本是："+input);
+	Console.log("按回车键退出程序...");
+	Console.readln();
+},true);
+
+main();

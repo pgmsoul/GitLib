@@ -135,7 +135,7 @@ namespace cs{
 		//复制文件。check = 1: 检测目标文件的大小和写入时间，如何和源文件相同则不执行真正的数据拷贝，而且函数返回操作成功标志1.
 		//如果设置check = 1：且检测目标文件不存在或者大小或写入时间和源文件不同，则拷贝数据，且在完成之后，会设置文件的最后写入时间和源文件相同。
 		//Copy操作可以续传数据，正常取消操作后，下次执行同一文件时，数据可以续传。但是非正常终止的操作是不可以续传的。
-		HRESULT Copy(LPCWSTR newName,bool check = 0);
+		HRESULT Copy(LPCWSTR newName,bool check = 1);
 		//删除文件。
 		HRESULT Delete();
 		//移动文件。同分区的移动不必拷贝数据，不同分区则是结合了 Copy 和 Delete 操作。

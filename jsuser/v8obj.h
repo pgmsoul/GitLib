@@ -82,52 +82,216 @@ namespace v8{
 	template<typename T> inline void SetCHandle(T* handle,Handle<Object>& self){
 		setInternelPointer(self,0,handle);
 	}
-	//C++环境调用
-	template<typename T> bool Dispose(Handle<Object>& self){
-		T* cobj = (T*)getInternelPointer(self,0);
-		if(!cobj) return false;
-		setInternelPointer(self,0,0);
-		Persistent<Object>* _self = (Persistent<Object>*)getInternelPointer(self,1);
-		if(_self){
-			setInternelPointer(self,1,0);
-			_self->ClearWeak();
-			_self->Dispose();
-			_self->Clear();
-			delete _self;
-			delete cobj;
-		}
-		return true;
+	typedef struct SELF : public cs::_struct{
+		Persistent<Object> handle;
+	}SELF;
+	static uint count = 0,logcount = 0;
+	inline void debugLog(LPCWSTR name,bool inc){
+		/*if(inc) count++;
+		else count--;
+		logcount++;
+		if((logcount%10000)==0){
+			cs::Print(L"%s,%d",name,count);
+		}*/ 
 	}
-	//解除这个对象绑定的C++对象，和dispose不同的是，这个函数不销毁C++对象，而是返回它，JavaScript对象被置空。
-	template<typename T> T* Detach(Handle<Object>& self){
-		T* cobj = (T*)getInternelPointer(self,0);
-		setInternelPointer(self,0,0);
-		Persistent<Object>* _self = (Persistent<Object>*)getInternelPointer(self,1);
-		if(_self){
-			setInternelPointer(self,1,0);
-			_self->ClearWeak();
-			_self->Dispose();
-			_self->Clear();
+	template<typename T,typename R,int id,int size = 256> class JsCObject{
+		//这个函数实际上永远不会被调用，因为 C 类对象永远不会被垃圾收集器收集。
+		static void onWeak(Persistent<Value> value,void* data){
+			SELF* _self = (SELF*)data;
+			T* cobj;
+			if(GetCHandle(cobj,_self->handle)){
+				delete cobj;
+			}
+			value.Dispose();
 			delete _self;
+			V8::AdjustAmountOfExternalAllocatedMemory(-size);
+			debugLog(L"onWeak",false);
 		}
-		return cobj;
-	}
-	/*@class CObject
-	@text 除非特别指明, 凡是C开头的类(构造函数)都绑定了一个内部 C++ 对象, CObject是它们的基类。
-	@text 所有CObject继承的对象 new 的时候都可以带一个Boolean类型参数, 用来指明是否生成这个C++对象, 
-	缺省和 false 时，创建JavaScript对象的时候也会生成对应的C++对象。如果这个参数设为 true, 
-	将不会生成内部的C++对象, 而是绑定一个已存在的C++对象. 
-	@text 带参数的new CObject一般只由库内部来调用, 如果用户在JavaScript代码里使用 new CObject(true)生成了一
-	个对象, 这个对象会永远是一个空对象(isDisposed()返回true).
-	@text 一个CObject对象，通过执行 dispose 来释放它绑定的资源，一旦 dispose 被调用，此对象就
-	成为一个普通的JavaScript对象，内部的C++对象无法被再次赋值。
-	@text 可以通过isOwned()函数来判断是那种类型的CObject对象, 此函数取回的值和生成时的参数相同, 是一个bool类型.
-	@text 一个CObject实际上是在堆栈管理之下的，JavaScript函数的堆栈是通过Auto声明函数来实现的。一个
-	CObject类对象如果在一个Auto声明的函数里生成（通过调用 new ），那么函数结束后，此对象会被自动
-	dispose。但是绑定类型的对象不受此限制，实际上一个绑定类型的CObject对象和一个普通的JavaScript对象
-	没有任何区别。*/
-	/*@range_begin*/
-	template<typename T,typename R> class JsCObject{
+	public:
+		static Handle<Value> Create(const Arguments& args){
+			HandleScope store;
+			Local<Object> self = args.This();
+
+			if(self==GetGlobal()){
+				//没有使用 new 而是直接调用函数
+				Handle<Value> argv[5];
+				int count = cs::Minimum(args.Length(),5);
+				for(int i=0;i<count;i++){
+					argv[i] = args[i];
+				}
+				Handle<Value> obj = GetEnv()->GetTemplate(id)->GetFunction()->NewInstance(args.Length(),argv);
+				return store.Close(obj);
+			}
+			bool isb = GET_ARGS_VALUE(1,false,Boolean);
+			T* cobj = (T*)GET_ARGS_VALUE(0,0,Uint32);
+			if(isb){
+				//绑定型
+			}else{
+				//自有型
+				SELF* _self = new SELF;
+				_self->handle = Persistent<Object>::New(self);
+				//_self->handle.MakeWeak(_self, onWeak); 
+				setInternelPointer(self,1,_self);
+				if(!IsPointer(cobj)){
+					ThrowException(String::New("create value not a pointer"));
+					return Undefined();
+				}
+				if(cobj==0){
+					cobj = new T;
+				}
+				Handle<Function> push = GetEnv()->GetFunc(FUNC_ID_STACK_PUSH);
+				Handle<Value> argv[1];
+				argv[0] = self;
+				CallFunc(GetGlobal(),push,1,argv);
+				R::on_create(self,cobj);
+				V8::AdjustAmountOfExternalAllocatedMemory(size);
+			}
+			setInternelPointer(self,0,cobj);
+			debugLog(L"create",true);
+			return store.Close(self);
+		}
+		static Handle<Value> dispose(const Arguments& args){
+			HandleScope stack;
+			Handle<Object> self = args.This();
+			SELF* _self = (SELF*)getInternelPointer(self,1);
+			if(_self){
+				setInternelPointer(self,1,0);
+				_self->handle.Dispose();
+				delete _self;
+				T* cobj;
+				if(GetCHandle(cobj,self)){
+					R::on_dispose(self,cobj);
+					setInternelPointer(self,0,0);
+					delete cobj;
+				}
+				V8::AdjustAmountOfExternalAllocatedMemory(-size);
+				Handle<Function> dis = GetEnv()->GetFunc(FUNC_ID_STACK_DISPOSE);
+				Handle<Value> argv[1];
+				argv[0] = self;
+				CallFunc(GetGlobal(),dis,1,argv);
+				debugLog(L"dispose",false);
+			}
+			return Undefined();
+		}
+		static Handle<Value> isDisposed(const Arguments& args){
+			HandleScope store;
+			Local<Object> self = args.This();
+			T* cobj;
+			return Bool(!GetCHandle<T>(cobj,self));
+		}
+		static Handle<Value> isOwned(const Arguments& args){
+			HandleScope store;
+			Local<Object> self = args.This();
+			return Bool(0!=getInternelPointer(self,1));
+		}
+		static Handle<Value> obj(const Arguments& args){
+			HandleScope store;
+			Local<Object> self = args.This();
+			T* cobj;
+			GetCHandle(cobj,self);
+			return store.Close(Uint32::New((UINT_PTR)cobj));
+		}
+		//把外部对象指针绑定到这个js对象，如果第二个参数是 true，则是一个绑定类型的对象。
+		static Handle<Value> bind(const Arguments& args){
+			HandleScope store;
+			while(true){
+				if(args.Length()<1||!args[0]->IsUint32()) break;
+				Local<Object> self = args.This();
+				T* cobj;
+				if(GetCHandle(cobj,self)){
+					R::on_dispose(self,cobj);
+					delete cobj;
+				}
+				cobj = GET_ARGS_INT2(0,0,T*);
+				if(!IsPointer(cobj)){
+					ThrowException(String::New("bind value not a pointer"));
+					break;
+				}
+				SetCHandle(cobj,self);
+
+				if(GET_ARGS_VALUE(1,false,Boolean)||cobj==0){
+					SELF* _self = (SELF*)getInternelPointer(self,1);
+					if(_self){
+						setInternelPointer(self,1,0);
+						_self->handle.Dispose();
+						delete _self;
+					}
+				}
+				return True();
+			}
+			return Undefined();
+		}
+		//把一个 C++ 指针解除和当前对象的绑定。
+		static Handle<Value> debind(const Arguments& args){
+			HandleScope store;
+			while(true){
+				Local<Object> self = args.This();
+				T* cobj;
+				if(GetCHandle(cobj,self)){
+					setInternelPointer(self,0,0);
+				}
+
+				SELF* _self = (SELF*)getInternelPointer(self,1);
+				if(_self){
+					setInternelPointer(self,1,0);
+					_self->handle.Dispose();
+					delete _self;
+				}
+				return store.Close(Uint32::New((UINT_PTR)cobj));
+			}
+			return Undefined();
+		}
+		static void _set(Local<String> property, Local<Value> value,const AccessorInfo& info){
+			HandleScope store;
+			Local<Object> self = info.This();
+			T* cobj;
+			if(!GetCHandle(cobj,self)) return;
+			cs::String name;
+			GetString(property,name);
+			R::set(name,cobj,value,self);
+		}
+		static Handle<Value> _get(Local<String> property,const AccessorInfo& info){
+			HandleScope store;
+			Local<Object> self = info.This();
+			T* cobj;
+			if(!GetCHandle(cobj,self)) return Undefined();
+			cs::String name;
+			GetString(property,name);
+			return store.Close(R::get(name,cobj,self));
+		}
+		static inline void set(cs::String& name,T* cobj,Local<Value>& value,Local<Object>& self){}
+		static inline Handle<Value> get(cs::String& name,T* cobj,Local<Object>& self){}
+		static inline void on_dispose(Handle<Object>& self,T* cobj){}
+		static inline void on_create(Handle<Object>& self,T* cobj){}
+		static inline void init(Handle<FunctionTemplate>& ft){}
+		static void Load(Handle<Object>& glb,LPCWSTR name,Persistent<FunctionTemplate>* inh = 0){
+			HandleScope store;
+			Handle<FunctionTemplate> ft = FunctionTemplate::New(Create);
+			Handle<ObjectTemplate> func = ft->PrototypeTemplate();
+			Handle<ObjectTemplate> inst = ft->InstanceTemplate();
+			inst->SetInternalFieldCount(2);
+
+			R::init(ft);
+
+			glb->Set(String::New((uint16_t*)name),ft->GetFunction());
+
+			cs::String tss;
+			tss.Format(L"new Function(\"{return '%s';}\")",name);
+			Handle<Value> ts = LoadJsCode(tss);
+			func->Set(String::New("toString"),ts,ReadOnly);
+			SET_CLA_FUNC(dispose);
+			SET_CLA_FUNC(isDisposed);
+			SET_CLA_FUNC(isOwned);
+			SET_CLA_FUNC(obj);
+			//SET_CLA_FUNC(debind);
+			//SET_CLA_FUNC(bind);
+
+			if(inh)
+				ft->Inherit(*inh);
+			GetEnv()->SetTemplate(ft,id);
+		}
+	};
+	/*template<typename T,typename R,int size = 128> class JsCObject2{
 	public:
 		//如果这个函数被呼叫，对象一定是一个owned对象，而且一定还没有被 dispose。
 		static void weakCallback (Persistent<Value> value, void *data) {
@@ -140,6 +304,7 @@ namespace v8{
 			_self->Clear();
 			delete _self;
 			delete cobj;
+			V8::AdjustAmountOfExternalAllocatedMemory(-size);
 		}
 		//类的构造函数。
 		static v8::Handle<Value> Create(const Arguments& args){
@@ -155,7 +320,7 @@ namespace v8{
 				setInternelPointer(self,0,0);
 				setInternelPointer(self,1,0);
 				return store.Close(self);
-			}*/
+			}
 			T* cobj;
 			//如果第一个参数是一个整数，表示一个对象指针，不再重新生成C++对象。
 			if(args.Length()>0&&args[0]->IsUint32()){
@@ -171,7 +336,8 @@ namespace v8{
 					*_self = Persistent<Object>::New(self);
 					setInternelPointer(self,1,_self);
 					_self->MakeWeak(_self, weakCallback);
-					_self->MarkIndependent();
+					V8::AdjustAmountOfExternalAllocatedMemory(size);
+					//_self->MarkIndependent();
 				}else{
 					//当第一个参数是一个指针，第二个参数是 true 的时候，生成一个包装类型的对象，这类对象不销毁内部cpp对象。
 					//指针自己不知道是否已经被包装，一个指针一般只能被包装一次，除非是简单的包装，对象本身没有特殊处理。
@@ -179,12 +345,14 @@ namespace v8{
 				}
 			}else{//其它情况，参数无效，生成新的C++对象。
 				cobj = new T();
+				if(cobj==0) ThrowException(String::New("new CPP return null"));
 				Persistent<Object>* _self = new Persistent<Object>();
 				*_self = Persistent<Object>::New(self);
 				setInternelPointer(self,0,cobj);
 				setInternelPointer(self,1,_self);
 				_self->MakeWeak(_self, weakCallback);
-				_self->MarkIndependent();
+				V8::AdjustAmountOfExternalAllocatedMemory(size);
+				//_self->MarkIndependent();
 			}
 			if(cobj!=0){
 				Handle<Function> push = GetEnv()->GetFunc(FUNC_ID_STACK_PUSH);
@@ -204,7 +372,7 @@ namespace v8{
 		量的CObject对象, 系统资源很可能会迅速耗尽, 比如GDI资源是非常有限的, 它会在远远不能触发垃圾收集器
 		的情况下被耗尽, 所以必须及时的手动清理这些资源. 配合Auto函数的堆栈管理, 可以保证CObject对象
 		在函数退出后, 被自动调用dispose, 从而省去手动清理的麻烦. 但是如果一个函数内部在运行期使用了大量的
-		系统资源, 必须手动调用dispose及时清理不用的资源.*/
+		系统资源, 必须手动调用dispose及时清理不用的资源.
 		static Handle<Value> dispose(const Arguments& args){
 			HandleScope store;
 			Local<Object> self = args.This();
@@ -226,6 +394,7 @@ namespace v8{
 					_self->Clear();
 				}
 				delete _self;
+				V8::AdjustAmountOfExternalAllocatedMemory(-size);
 			}
 			return True();
 		}
@@ -236,7 +405,7 @@ namespace v8{
 		/*@function bool isDisposed()
 		@text 一个CObject对象的内部C++指针是否为空。一个CObject对象一旦调用了 dispose
 		它内部的C++对象会被销毁或释放。
-		@return bool 指示CObject对象内部的C++对象是否有效*/
+		@return bool 指示CObject对象内部的C++对象是否有效
 		static Handle<Value> isDisposed(const Arguments& args){
 			HandleScope store;
 			Local<Object> self = args.This();
@@ -250,7 +419,7 @@ namespace v8{
 		函数时，C++对象被回收，绑定被置为空；如果返回false，表示它不负责管理它绑
 		定的C++资源，执行 dispose 函数，仅仅是把内部绑定的C++对象置为空，这就是说
 		那个C++资源实际上是被别的JavaScript对象管理的。如果返回 undefined，表示此
-		对象已经被 dispose 过了，不管是哪种类型。*/
+		对象已经被 dispose 过了，不管是哪种类型。
 		static Handle<Value> isOwned(const Arguments& args){
 			HandleScope store;
 			Local<Object> self = args.This();
@@ -258,7 +427,7 @@ namespace v8{
 		}
 		/*@function integer obj()
 		@text 获取内部C++对象的句柄。
-		@return integer 返回内部对象的指针, 如果对象已经 dispose，返回 0 .*/
+		@return integer 返回内部对象的指针, 如果对象已经 dispose，返回 0 .
 		static Handle<Value> obj(const Arguments& args){
 			HandleScope store;
 			Local<Object> self = args.This();
@@ -270,7 +439,7 @@ namespace v8{
 		@text 把一个资源句柄绑定到这个对象上, 从而可以使用这个对象的方法对它进行操作.
 		@param handle -- integer
 		@text 要绑定的句柄, 每种对象对应的句柄必须正确.
-		@return bool 指示操作是否成功*/
+		@return bool 指示操作是否成功
 		static Handle<Value> bind(const Arguments& args){
 			HandleScope store;
 			while(true){
@@ -302,7 +471,7 @@ namespace v8{
 		}
 		/*@function integer detach()
 		@text 把一个对象的句柄和这个对象解除绑定.
-		@return integer 返回资源句柄, 如果这是一个系统资源, 需要手动处理它.*/
+		@return integer 返回资源句柄, 如果这是一个系统资源, 需要手动处理它
 		static Handle<Value> debind(const Arguments& args){
 			HandleScope store;
 			while(true){
@@ -379,7 +548,7 @@ namespace v8{
 			if(tid!=0)
 				GetEnv()->SetTemplate(ft,tid);
 		}
-	};
+	};*/
 	/*@range_end*/
 	/*@class CHandleObject
 	@text 这个类继承自CObject, 它绑定的C++有一个共同点，就是C++对象都含有一个内部资源指针。
@@ -388,9 +557,9 @@ namespace v8{
 	@text handle()：内部资源指针句柄。
 	@text attach(handle)：绑定一个资源指针。
 	@text detach()：解除它绑定的资源指针的。
-	@text 如果一个CHandleObject对象的内部C++对象为空，上述函数全部返回undefined。*/
+	@text 如果一个CHandleObject对象的内部C++对象为空，上述函数全部返回undefined。
 	/*@range_begin*/
-	template<typename T,typename H,typename R> class JsHandleObject : public JsCObject<T,R>{
+	template<typename T,typename H,typename R,int id,int size = 256> class JsHandleObject : public JsCObject<T,R,id,size>{
 	public:
 		/*@function bool isNull()
 		@text 资源句柄是一个整数，一个空的资源句柄一般是 0 ，但是并不总是如此，比如有的时候是-1等等，所以需要用这个函数来判断句柄是否有效。
@@ -447,7 +616,7 @@ namespace v8{
 			}
 			return Undefined();
 		}
-		static void Load(Handle<Object>& glb,LPCWSTR name,int tid,Persistent<FunctionTemplate>* inh = 0){
+		static void Load(Handle<Object>& glb,LPCWSTR name,Persistent<FunctionTemplate>* inh = 0){
 			HandleScope store;
 			Handle<FunctionTemplate> ft = FunctionTemplate::New(&R::Create);
 			Handle<ObjectTemplate> func = ft->PrototypeTemplate();
@@ -463,8 +632,8 @@ namespace v8{
 			SET_CLA_FUNC(isDisposed);
 			SET_CLA_FUNC(isOwned);
 			SET_CLA_FUNC(obj);
-			SET_CLA_FUNC(debind);
-			SET_CLA_FUNC(bind);
+			//SET_CLA_FUNC(debind);
+			//SET_CLA_FUNC(bind);
 			SET_CLA_FUNC(handle);
 			SET_CLA_FUNC(isNull);
 			SET_CLA_FUNC(attach);
@@ -474,12 +643,11 @@ namespace v8{
 			if(inh)
 				ft->Inherit(*inh);
 			glb->Set(String::New((uint16_t*)name),ft->GetFunction());
-			GetEnv()->SetTemplate(ft,tid);
+			GetEnv()->SetTemplate(ft,id);
 		}
 	};
-	/*@range_end*/
-	//JsWrapObject 不能继承，它只能包装单独的类。
-	template<typename T,typename R> class JsWrapObject{
+	//JsWrapObject 不能继承，主要用于有回调需求的场合。它只能包装单独的类，主要用于有回调函数的类。不能生成绑定类型，因为绑定类型是没有回调的。
+	template<typename T,typename R,int id,int size = 256> class JsWrapObject{
 	public:
 		class WrapObject : public T{
 		public:
@@ -487,54 +655,69 @@ namespace v8{
 			~WrapObject(){
 				if(self.IsEmpty()) return;
 				setInternelPointer(self,0,0);
-				self.ClearWeak();
 				self.Dispose();
 				self.Clear();
 			}
 		};
-		static void weakCallback (Persistent<Value> value, void *data) {
-			delete (WrapObject*)data;
-		}
 		static v8::Handle<Value> Create(const Arguments& args){
 			HandleScope store;
 			Local<Object> self = args.This();
 			if(self==GetGlobal()){
-				//不允许直接调用构造函数，而必须使用 new 生成一个对象。
-				ThrowException(String::New("use new to create object, do not call constructor direct."));
-				return Undefined();
+				//没有使用 new 而是直接调用函数
+				Handle<Value> argv[5];
+				int count = cs::Minimum(args.Length(),5);
+				for(int i=0;i<count;i++){
+					argv[i] = args[i];
+				}
+				Handle<Value> obj = GetEnv()->GetTemplate(id)->GetFunction()->NewInstance(args.Length(),argv);
+				return store.Close(obj);
 			}
 			WrapObject* cobj = new WrapObject();
+			if(cobj==0){
+				ThrowException(String::New("new CPP return null"));
+				return Undefined();
+			}
 			cobj->self = Persistent<Object>::New(self);
 			setInternelPointer(self,0,cobj);
-			cobj->self.MakeWeak(cobj,weakCallback);
-			cobj->self.MarkIndependent();
+			//cobj->self.MakeWeak(cobj,weakCallback);
+			//cobj->self.MarkIndependent();
 
 			Handle<Function> push = GetEnv()->GetFunc(FUNC_ID_STACK_PUSH);
 			Handle<Value> argv[1];
 			argv[0] = self;
 			CallFunc(GetGlobal(),push,1,argv);
 			R::on_create(self,cobj);
+			V8::AdjustAmountOfExternalAllocatedMemory(size);
 			return store.Close(self);
 		}
 		static Handle<Value> dispose(const Arguments& args){
 			HandleScope store;
 			Local<Object> self = args.This();
 
-			WrapObject* cobj = (WrapObject*)getInternelPointer(self,0);
+			WrapObject* cobj;
+			if(!GetCHandle(cobj,self)) return Undefined();
 			R::on_dispose(self,cobj);
 			delete cobj;
+			V8::AdjustAmountOfExternalAllocatedMemory(-size);
+			Handle<Function> dis = GetEnv()->GetFunc(FUNC_ID_STACK_DISPOSE);
+			Handle<Value> argv[1];
+			argv[0] = self;
+			CallFunc(GetGlobal(),dis,1,argv);
 			return True();
 		}
-		static void Dispose(Handle<Object>& self){
+		/*static void Dispose(Handle<Object>& self){
 			WrapObject* cobj = (WrapObject*)getInternelPointer(self,0);
 			R::on_dispose(self,cobj);
 			delete cobj;
-		}
+		}*/
 		static Handle<Value> isDisposed(const Arguments& args){
 			HandleScope store;
 			Local<Object> self = args.This();
 			WrapObject* cobj;
 			return Bool(!GetCHandle(cobj,self));
+		}
+		static Handle<Value> isOwned(const Arguments& args){
+			return True();
 		}
 		static Handle<Value> obj(const Arguments& args){
 			HandleScope store;
@@ -567,7 +750,7 @@ namespace v8{
 		static inline void on_create(Handle<Object>& self,WrapObject* cobj){}
 		static inline void on_dispose(Handle<Object>& self,WrapObject* cobj){}
 		//初始化这个对象.
-		static void Load(Handle<Object>& glb,LPCWSTR name,int tid,Persistent<FunctionTemplate>* inh = 0){
+		static void Load(Handle<Object>& glb,LPCWSTR name){
 			HandleScope store;
 			Handle<FunctionTemplate> ft = FunctionTemplate::New(&R::Create);
 			Handle<ObjectTemplate> func = ft->PrototypeTemplate();
@@ -578,20 +761,17 @@ namespace v8{
 
 			R::init(ft);
 
-			func->Set(String::New("dispose"),FunctionTemplate::New(&R::dispose),ReadOnly);
 			cs::String tss;
 			tss.Format(L"new Function(\"{return '%s';}\")",name);
 			Handle<Value> ts = LoadJsCode(tss);
 			func->Set(String::New("toString"),ts,ReadOnly);
-			func->Set(String::New("isCObject"),True(),ReadOnly);
 			SET_CLA_FUNC(isDisposed);
 			SET_CLA_FUNC(obj);
+			SET_CLA_FUNC(isOwned);
+			SET_CLA_FUNC(dispose);
 
-			if(inh)
-				ft->Inherit(*inh);
 			glb->Set(String::New((uint16_t*)name),ft->GetFunction());
-			if(tid!=0)
-				GetEnv()->SetTemplate(ft,tid);
+			GetEnv()->SetTemplate(ft,id);
 		}
 	};
 }

@@ -328,10 +328,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\cpp\function.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\cpp\gdi.cpp"
 				>
 			</File>
@@ -369,6 +365,10 @@
 			</File>
 			<File
 				RelativePath=".\cpp\precitimer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\cpp\proc.cpp"
 				>
 			</File>
 			<File
@@ -474,6 +474,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\macro.h"
+				>
+			</File>
+			<File
 				RelativePath=".\mem.h"
 				>
 			</File>
@@ -483,6 +487,10 @@
 			</File>
 			<File
 				RelativePath=".\precitimer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\proc.h"
 				>
 			</File>
 			<File

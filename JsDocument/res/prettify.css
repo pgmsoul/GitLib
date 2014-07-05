@@ -2,9 +2,15 @@
 
 /* SPAN elements with the classes below are added by prettyprint. */
 .pln { color: #000 }  /* plain text */
-
+pre {
+	tab-size:4;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	text-indent:0;
+	background-color:#eee;
+}
 @media screen {
-  .str { color: #5f0 }  /* string content */
+  .str { color: #590 }  /* string content */
   .kwd { color: #00f }  /* a keyword */
   .com { color: #090 }  /* a comment */
   .typ { color: #0ff }  /* a type name */
@@ -33,7 +39,7 @@
 }
 
 /* Put a border around prettyprinted code snippets. */
-pre.prettyprint { padding: 0px; border: 0px solid #888;}
+pre.prettyprint { padding: 1em 2em; border: 1px solid #888;}
 
 /* Specify class=linenums on a pre to get line numbering */
 ol.linenums { margin-top: 0; margin-bottom: 0 } /* IE indents via margin-left */

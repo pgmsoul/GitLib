@@ -6,7 +6,9 @@ namespace v8{
 	public:
 		Persistent<Function> func;
 		cs::Function<uint>* proc;
+		cs::Event			wait;
 		CallBack():proc(0){
+			wait.Create(1,0);
 		}
 		~CallBack(){
 			if(!func.IsEmpty()){
@@ -30,7 +32,7 @@ namespace v8{
 	//		"CProc 支持的 C 回调函数必须是返回值为 32 位或者 void，每个参数也必须是 32 位，而且参数个数不能超过 5 个，大多数 C 回调函数都满足这个条件。"
 	//	],
 	//	"member":[//*
-	class JsApiCallback : public JsWrapObject<CallBack,JsApiCallback>{
+	class JsApiCallback : public JsWrapObject<CallBack,JsApiCallback,TEMPLATE_ID_API_CALLBACK>{
 	protected:
 		//*{
 		//		"type":"function",
@@ -179,70 +181,244 @@ namespace v8{
 				}
 				return 1;
 			}
-			uint cb0(){
+			typedef struct PARAM0 : public cs::_struct{
+				uint ret;
+				Persistent<Object>* self;
+				Persistent<Function>* func;
+				cs::Event* wait;
+			}PARAM0;
+			static void _cb0(void* param){
+				PARAM0* p = (PARAM0*)param;
 				HandleScope stack;
 				Handle<Value> argv[1];
-				Handle<Value> ret = CallFunc(self,func,0,argv);
-				return ret->Uint32Value();
+				Handle<Value> ret = CallFunc(*p->self,*p->func,0,argv);
+				p->ret = ret->Uint32Value();
+				p->wait->Signal();
+			}
+			uint cb0(){
+				PARAM0 param;
+				param.wait = &wait;
+				param.self = &self;
+				param.func = &func;
+				if(GetEnv()->IsMainThread()){
+					_cb0(&param);
+				}else{
+					GetEnv()->queue.PostCallback(_cb0,&param);
+					wait.Wait();
+				}
+				return param.ret;
+			}
+			typedef struct PARAM1 : public cs::_struct{
+				uint ret;
+				uint param1;
+				Persistent<Object>* self;
+				Persistent<Function>* func;
+				cs::Event* wait;
+			}PARAM1;
+			static void _cb1(void* param){
+				PARAM1* p = (PARAM1*)param;
+				HandleScope stack;
+				Handle<Value> argv[1];
+				argv[0] = Uint32::New(p->param1);
+				Handle<Value> ret = CallFunc(*p->self,*p->func,1,argv);
+				p->ret = ret->Uint32Value();
+				p->wait->Signal();
 			}
 			uint cb1(uint p1){
+				PARAM1 param;
+				param.wait = &wait;
+				param.self = &self;
+				param.func = &func;
+				param.param1 = p1;
+				if(GetEnv()->IsMainThread()){
+					_cb1(&param);
+				}else{
+					GetEnv()->queue.PostCallback(_cb1,&param);
+					wait.Wait();
+				}
+				return param.ret;
+			}
+			typedef struct PARAM2 : public cs::_struct{
+				uint ret;
+				uint param1,param2;
+				Persistent<Object>* self;
+				Persistent<Function>* func;
+				cs::Event* wait;
+			}PARAM2;
+			static void _cb2(void* param){
+				PARAM2* p = (PARAM2*)param;
 				HandleScope stack;
 				Handle<Value> argv[1];
-				argv[0] = Uint32::New(p1);
-				Handle<Value> ret = CallFunc(self,func,1,argv);
-				return ret->Uint32Value();
+				argv[0] = Uint32::New(p->param1);
+				argv[1] = Uint32::New(p->param2);
+				Handle<Value> ret = CallFunc(*p->self,*p->func,2,argv);
+				p->ret = ret->Uint32Value();
+				p->wait->Signal();
 			}
 			uint cb2(uint p1,uint p2){
-				HandleScope stack;
-				Handle<Value> argv[2];
-				argv[0] = Uint32::New(p1);
-				argv[1] = Uint32::New(p2);
-				Handle<Value> ret = CallFunc(self,func,2,argv);
-				return ret->Uint32Value();
+				PARAM2 param;
+				param.wait = &wait;
+				param.self = &self;
+				param.func = &func;
+				param.param1 = p1;
+				param.param2 = p2;
+				if(GetEnv()->IsMainThread()){
+					_cb2(&param);
+				}else{
+					GetEnv()->queue.PostCallback(_cb2,&param);
+					wait.Wait();
+				}
+				return param.ret;
 			}
-			uint cb3(uint p1,uint p2,uint p3){
+			typedef struct PARAM3 : public cs::_struct{
+				uint ret;
+				uint param1,param2,param3;
+				Persistent<Object>* self;
+				Persistent<Function>* func;
+				cs::Event* wait;
+			}PARAM3;
+			static void _cb3(void* param){
+				PARAM3* p = (PARAM3*)param;
 				HandleScope stack;
 				Handle<Value> argv[3];
-				argv[0] = Uint32::New(p1);
-				argv[1] = Uint32::New(p2);
-				argv[2] = Uint32::New(p3);
-				Handle<Value> ret = CallFunc(self,func,3,argv);
-				return ret->Uint32Value();
+				argv[0] = Uint32::New(p->param1);
+				argv[1] = Uint32::New(p->param2);
+				argv[2] = Uint32::New(p->param3);
+				Handle<Value> ret = CallFunc(*p->self,*p->func,3,argv);
+				p->ret = ret->Uint32Value();
+				p->wait->Signal();
 			}
-			uint cb4(uint p1,uint p2,uint p3,uint p4){
+			uint cb3(uint p1,uint p2,uint p3){
+				PARAM3 param;
+				param.wait = &wait;
+				param.self = &self;
+				param.func = &func;
+				param.param1 = p1;
+				param.param2 = p2;
+				param.param3 = p3;
+				if(GetEnv()->IsMainThread()){
+					_cb3(&param);
+				}else{
+					GetEnv()->queue.PostCallback(_cb3,&param);
+					wait.Wait();
+				}
+				return param.ret;
+			}
+			typedef struct PARAM4 : public cs::_struct{
+				uint ret;
+				uint param1,param2,param3,param4;
+				Persistent<Object>* self;
+				Persistent<Function>* func;
+				cs::Event* wait;
+			}PARAM4;
+			static void _cb4(void* param){
+				PARAM4* p = (PARAM4*)param;
 				HandleScope stack;
 				Handle<Value> argv[4];
-				argv[0] = Uint32::New(p1);
-				argv[1] = Uint32::New(p2);
-				argv[2] = Uint32::New(p3);
-				argv[3] = Uint32::New(p4);
-				Handle<Value> ret = CallFunc(self,func,4,argv);
-				return ret->Uint32Value();
+				argv[0] = Uint32::New(p->param1);
+				argv[1] = Uint32::New(p->param2);
+				argv[2] = Uint32::New(p->param3);
+				argv[3] = Uint32::New(p->param4);
+				Handle<Value> ret = CallFunc(*p->self,*p->func,4,argv);
+				p->ret = ret->Uint32Value();
+				p->wait->Signal();
 			}
-			uint cb5(uint p1,uint p2,uint p3,uint p4,uint p5){
+			uint cb4(uint p1,uint p2,uint p3,uint p4){
+				PARAM4 param;
+				param.wait = &wait;
+				param.self = &self;
+				param.func = &func;
+				param.param1 = p1;
+				param.param2 = p2;
+				param.param3 = p3;
+				param.param4 = p4;
+				if(GetEnv()->IsMainThread()){
+					_cb4(&param);
+				}else{
+					GetEnv()->queue.PostCallback(_cb4,&param);
+					wait.Wait();
+				}
+				return param.ret;
+			}
+			typedef struct PARAM5 : public cs::_struct{
+				uint ret;
+				uint param1,param2,param3,param4,param5;
+				Persistent<Object>* self;
+				Persistent<Function>* func;
+				cs::Event* wait;
+			}PARAM5;
+			static void _cb5(void* param){
+				PARAM5* p = (PARAM5*)param;
 				HandleScope stack;
 				Handle<Value> argv[5];
-				argv[0] = Uint32::New(p1);
-				argv[1] = Uint32::New(p2);
-				argv[2] = Uint32::New(p3);
-				argv[3] = Uint32::New(p4);
-				argv[4] = Uint32::New(p5);
-				Handle<Value> ret = CallFunc(self,func,5,argv);
-				return ret->Uint32Value();
+				argv[0] = Uint32::New(p->param1);
+				argv[1] = Uint32::New(p->param2);
+				argv[2] = Uint32::New(p->param3);
+				argv[3] = Uint32::New(p->param4);
+				argv[4] = Uint32::New(p->param5);
+				Handle<Value> ret = CallFunc(*p->self,*p->func,5,argv);
+				p->ret = ret->Uint32Value();
+				p->wait->Signal();
 			}
-			/*uint cb6(uint p1,uint p2,uint p3,uint p4,uint p5,uint p6){
+			uint cb5(uint p1,uint p2,uint p3,uint p4,uint p5){
+				PARAM5 param;
+				param.wait = &wait;
+				param.self = &self;
+				param.func = &func;
+				param.param1 = p1;
+				param.param2 = p2;
+				param.param3 = p3;
+				param.param4 = p4;
+				param.param5 = p5;
+				if(GetEnv()->IsMainThread()){
+					_cb5(&param);
+				}else{
+					GetEnv()->queue.PostCallback(_cb5,&param);
+					wait.Wait();
+				}
+				return param.ret;
+			}
+			typedef struct PARAM6 : public cs::_struct{
+				uint ret;
+				uint param1,param2,param3,param4,param5,param6;
+				Persistent<Object>* self;
+				Persistent<Function>* func;
+				cs::Event* wait;
+			}PARAM6;
+			static void _cb6(void* param){
+				PARAM6* p = (PARAM6*)param;
 				HandleScope stack;
 				Handle<Value> argv[6];
-				argv[0] = Uint32::New(p1);
-				argv[1] = Uint32::New(p2);
-				argv[2] = Uint32::New(p3);
-				argv[3] = Uint32::New(p4);
-				argv[4] = Uint32::New(p5);
-				argv[5] = Uint32::New(p6);
-				Handle<Value> ret = CallFunc(self,func,6,argv);
-				return ret->Uint32Value();
+				argv[0] = Uint32::New(p->param1);
+				argv[1] = Uint32::New(p->param2);
+				argv[2] = Uint32::New(p->param3);
+				argv[3] = Uint32::New(p->param4);
+				argv[4] = Uint32::New(p->param5);
+				argv[5] = Uint32::New(p->param6);
+				Handle<Value> ret = CallFunc(*p->self,*p->func,6,argv);
+				p->ret = ret->Uint32Value();
+				p->wait->Signal();
 			}
-			uint cb7(uint p1,uint p2,uint p3,uint p4,uint p5,uint p6,uint p7){
+			uint cb6(uint p1,uint p2,uint p3,uint p4,uint p5,uint p6){
+				PARAM6 param;
+				param.wait = &wait;
+				param.self = &self;
+				param.func = &func;
+				param.param1 = p1;
+				param.param2 = p2;
+				param.param3 = p3;
+				param.param4 = p4;
+				param.param5 = p5;
+				param.param6 = p6;
+				if(GetEnv()->IsMainThread()){
+					_cb6(&param);
+				}else{
+					GetEnv()->queue.PostCallback(_cb6,&param);
+					wait.Wait();
+				}
+				return param.ret;
+			}
+			/*uint cb7(uint p1,uint p2,uint p3,uint p4,uint p5,uint p6,uint p7){
 				HandleScope stack;
 				Handle<Value> argv[7];
 				argv[0] = Uint32::New(p1);
@@ -324,6 +500,6 @@ namespace v8{
 	};
 	//*],"source":"D:\\SoftProject\\GitLib\\jsuser\\example\\cproc.jsuser"}//*
 	void LoadAPICallback(Handle<Object>& glb){
-		JsApiCallback::Load(glb,L"CProc",TEMPLATE_ID_API_CALLBACK);
+		JsApiCallback::Load(glb,L"CProc");
 	}
 }

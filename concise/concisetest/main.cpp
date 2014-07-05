@@ -1,7 +1,8 @@
 #include <concise/conciseui.h>
-#include <time.h>
-#include <stdio.h>
-#include "../concise/xyssl/aes.h"
+//#include <time.h>
+//#include <stdio.h>
+#include "base58.h"
+#include <WinBase.h>
 #pragma usexpstyle
 
 void __stdcall onProgress(cs::DirData* dd,void* param){
@@ -86,6 +87,7 @@ int shcopy(LPCWSTR dst,LPCWSTR src,bool noundo = false,bool noask = false){
 	FILEOP_FLAGS flag = FOF_SIMPLEPROGRESS;
 	if(!noundo) flag |= FOF_ALLOWUNDO;
 	if(noask) flag |= FOF_NOCONFIRMATION;
+	flag |= FOF_NOERRORUI;
 	return shfile(dst,src,FO_COPY,flag);
 }
 int shmove(LPCWSTR dst,LPCWSTR src,bool noundo = false,bool noask = false){
@@ -192,8 +194,78 @@ int encrypt(){
 	file.Write(encData.Handle(),enclen);
 	return 0;
 }
+static int count = 0;
+class A{
+public:
+	cs::CriticalSection _cs;
+	cs::IntegerList<int> ids;
+	void proc0(){
+		;
+	}
+	void proc1(int sid){
+		Sleep(100);
+		DWORD id = GetCurrentThreadId();
+		HANDLE h = cs::DuplicateCurrentThread();
+		_cs.Lock();
+		ids.DeleteValue(sid);
+		//cs::Print(L"%d,%d,%d,%d",h,id,i,sid);
+		//cs::Print(L"call:%d",sid);
+		count++;
+		_cs.Unlock();
+	}
+	void proc2(int p1,int){
+		proc1(p1);
+	}
+	void proc3(int,int,int){
+		;
+	}
+	void proc4(int,int,int,int){
+		;
+	}
+	void proc5(int p1,int,int,int,int){
+		proc1(p1);
+	}
+	void tasktest(){
+		int count = 100;
+		cs::TaskPool2<void,int,int,int,int,int> tp;
+		for(int i=0;i<count;i++){
+			ids.Add(i);
+		}
+		for(int i=0;i<count;i++){
+			//Sleep(10);
+			tp.StartTask(this,&A::proc5,i,0,0,0,0);
+		}
+	}
+	void tasktest0(){
+		cs::TaskPool2<void> tp;
+		tp.StartTask(this,&A::proc0);
+	}
+	void tasktest2(){
+		cs::TaskPool2<void,int,int> tp;
+		tp.StartTask(this,&A::proc2,0,0);
+	}
+	void tasktest3(){
+		cs::TaskPool2<void,int,int,int> tp;
+		tp.StartTask(this,&A::proc3,0,0,0);
+	}
+	void tasktest4(){
+		cs::TaskPool2<void,int,int,int,int> tp;
+		tp.StartTask(this,&A::proc4,0,0,0,0);
+	}
+	void tasktest5(){
+		cs::TaskPool2<void,int,int,int,int,int> tp;
+		tp.StartTask(this,&A::proc5,0,0,0,0,0);
+	}
+	void show(){
+		cs::Print(L"call count: %d",count);
+		for(uint i=0;i<ids.Count();i++){
+			cs::Print(L"ids:%d",ids[i]);
+		}
+	}
+};
 WINMAIN{
-	//encrypt();
-	decrypt();
+	A a;
+	a.tasktest();
+	a.show();
 	return 0;
 };

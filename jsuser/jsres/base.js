@@ -54,7 +54,20 @@ Stack.pop = function(obj) {
 	var a = __stack__[index];
 	for (var i = a.length - 1; i >= 0; i--) {
 		if (a[i] === obj) {
-			__stack__[index-1].push(a.slice(i, 1));
+			__stack__[index-1].push(a.splice(i, 1));
+			return true;
+		}
+	}
+	return false;
+}
+Stack.dispose = function(obj) {
+	if (__stack__.length === 0) {
+		alert("使用C对象必须先初始化Stack, 先调用Stack.create()函数, 函数退出时调用Stack.close()函数, Stack.create和Stack.close必须成对调用.");
+	}
+	var a = __stack__[__stack__.length - 1];
+	for(var i=a.length-1;i>=0;i--){
+		if(a[i]==obj){
+			a.splice(i,1);
 			return true;
 		}
 	}

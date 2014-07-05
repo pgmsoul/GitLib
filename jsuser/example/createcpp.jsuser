@@ -1,0 +1,203 @@
+
+"use strict";
+require("base");
+
+function getNStr(sub,sub1,sub2,n){
+	if(n==0) return "";
+	var str = sub;
+	for(var i=2;i<=n;i++){
+		str += sub1 + i + sub2;
+	}
+	return str;
+}
+function main(){
+	var n = 10;
+	var str = [
+		"#pragma once",
+		"namespace cs{"
+	];
+	
+	var paramStr = getNStr("T1",",T","",n);
+	var firstLine = createFirstFunctionFirstLine(n);
+	str.push(createFunction(n,firstLine,paramStr));
+	
+	for(var i=n-1;i>=0;i--){
+		var paramStr = getNStr("T1",",T","",i);
+		firstLine = createFunctionFirstLine(i,paramStr);
+		str.push(createFunction(i,firstLine,paramStr));
+	}
+	
+	var paramStr = getNStr("T1",",T","",n);
+	var firstLine = createFirstDelegateFirstLine(n);
+	str.push(createDelegate(n,firstLine,paramStr));
+	
+	for(var i=n-1;i>=0;i--){
+		var paramStr = getNStr("T1",",T","",i);
+		firstLine = createDelegateFirstLine(i,paramStr);
+		str.push(createDelegate(i,firstLine,paramStr));
+	}
+	
+	str.push("}");
+	str = str.join("\r\n");
+	save(str);
+}
+function createFunction(n,firstLine,paramStr){
+	var str = [
+		"	" + firstLine,
+		"	public:",
+		"		typedef R (__stdcall* PROC)(" + paramStr + ");",
+		"		Function(){}",
+		"		void Empty(){",
+		"			uint dsp = " + getNStr("GetAlignment<T1>()"," + GetAlignment<T",">()",n) + ";",
+		"			_StdClassProc::Bind<PROC>(0,0,dsp);",
+		"		}",
+		"		template<typename C,typename P> void Bind(C* obj,P func){",
+		"			typedef R (C::*CP)(" + paramStr +");",
+		"			_StdClassProc::Bind<CP>(obj,func);",
+		"		}",
+		"		template<typename P> void BindStd(P func){",
+		"			_StdClassProc::BindStd<PROC>(func);",
+		"		}",
+		"		void operator = (Function<R" + (paramStr==""?"":(","+paramStr)) + ">& func){",
+		"			_StdClassProc::operator = (func);",
+		"		}",
+		"		inline PROC Procedure(){",
+		"			return _StdClassProc::Procedure<PROC>();",
+		"		}",
+		"		operator PROC (){",
+		"			return _StdClassProc::Procedure<PROC>();",
+		"		}",
+		"	};"
+	];
+	str = str.join("\r\n");
+	return str;
+}
+function createFirstFunctionFirstLine(n){
+	var str = "template<typename R";
+	for(var i=1;i<=n;i++){
+		str += ",typename T" + i + " = NullType";
+	}
+	str += "> class CONCISETL_API Function : public _StdClassProc{";
+	return str;
+}
+function createFirstDelegateFirstLine(n){
+	var str = "template<";
+	var pm = "";
+	for(var i=1;i<=n;i++){
+		if(pm!="") pm += ",";
+		pm += "typename T" + i + " = NullType";
+	}
+	str += pm + "> class CONCISETL_API Delegate : public _delegate{";
+	return str;
+}
+function createFunctionFirstLine(n,paramStr){
+	var str = "template<typename R";
+	for(var i=1;i<=n;i++){
+		str += ",typename T" + i;
+	}
+	str += "> class CONCISETL_API Function<R" + (paramStr==""?"":(","+paramStr)) + "> : public _StdClassProc{";
+	return str;
+}
+function createDelegateFirstLine(n,paramStr){
+	var str = "template<";
+	for(var i=1;i<=n;i++){
+		if(str!="template<") str += ",";
+		str += "typename T" + i;
+	}
+	str += "> class CONCISETL_API Delegate<" + paramStr + "> : public _delegate{";
+	return str;
+}
+function createDelegate(n,firstLine,paramStr){
+	var str = [
+		"	" + firstLine,
+		"	public:",
+		"		typedef void (__stdcall* STDCALLTYPE)(" + paramStr + ");",
+		"		//添加一个类的实例和成员函数调用.",
+		"		template<typename R,typename P> uint Add(R* object,P proc,uint index = -1){",
+		"			typedef void (R::*THISCALLTYPE)(" + paramStr + ");",
+		"			void* p = _CProcedure();",
+		"			_InitCProcdure(object,SuperCast<void*,THISCALLTYPE>(proc),p);",
+		"			return _Ptrs.Add(p,index);",
+		"		}",
+		"		//添加一个函数调用.函数必须是void返回类型.",
+		"		uint Add(Function<void," + paramStr + "> func,uint index = -1){",
+		"			void* p = _CProcedure();",
+		"			if(func.IsNull()) return 0;",
+		"			_InitCProcdure(func.GetObject(),func.Procedure(),p);",
+		"			return _Ptrs.Add(p,index);",
+		"		}",
+		"		//添加一个静态函数调用.",
+		"		uint Add(STDCALLTYPE func,uint index = -1){",
+		"			void* p = _CProcedure();",
+		"			_InitStdProcdure(SuperCast<void*>(func),p);",
+		"			return _Ptrs.Add(p,index);",
+		"		}",
+		"		//删除指定索引的函数.",
+		"		bool Delete(uint index){",
+		"			return _delegate::Delete(index);",
+		"		}",
+		"		//删除特定的函数,如果函数没有在实例中,返回false.",
+		"		template<typename R,typename P> bool Delete(R* object,P proc){",
+		"			return Delete(IndexOf(object,proc));",
+		"		}",
+		"		//删除静态函数.",
+		"		bool Delete(STDCALLTYPE func)",
+		"		{",
+		"			return Delete(IndexOf(func));",
+		"		}",
+		"		//删除一个调用.",
+		"		bool Delete(Function<void," + paramStr + "> func){",
+		"			return Delete(IndexOf(func));",
+		"		}",
+		"		//返回指定调用的索引,如果调用不在代表中,则返回-1;",
+		"		template<typename R,typename P> uint IndexOf(R* object,P proc){",
+		"			typedef void (R::*THISCALLTYPE)(" + paramStr + ");",
+		"			for(uint i=0;i<_Ptrs.Count();i++){",
+		"				if((void*)object!=GetObject(i)) continue;",
+		"				if(SuperCast<void*,THISCALLTYPE>(proc)!=GetFunction(i)) continue;",
+		"				return i;",
+		"			}",
+		"			return -1;",
+		"		}",
+		"		uint IndexOf(STDCALLTYPE proc){",
+		"			for(uint i=0;i<_Ptrs.Count();i++){",
+		"				if(SuperCast<void*>(proc)!=GetFunction(i)) continue;",
+		"				return i;",
+		"			}",
+		"			return -1;",
+		"		}",
+		"		uint IndexOf(Function<void," + paramStr + "> func){",
+		"			for(uint i=0;i<_Ptrs.Count();i++){",
+		"				if(func.GetObject()!=GetObject(i)) continue;",
+		"				if(func.Procedure()!=GetFunction(i)) continue;",
+		"				return i;",
+		"			}",
+		"			return -1;",
+		"		}",
+		"		//调用代表.添加的所有函数都会被呼叫.",
+		"		void Call(" + createCallParam(n) + "){",
+		"			for(uint i=0;i<_Ptrs.Count();i++){",
+		"				((STDCALLTYPE)_Ptrs[i])(" + paramStr + ");",
+		"			}",
+		"		}",
+		"	};"
+	];
+	return str.join("\r\n");
+}
+function createCallParam(n){
+	var str = "";
+	for(var i=1;i<=n;i++){
+		if(str!="") str += ",";
+		str += "T" + i + " t" + i;
+	}
+	return str;
+}
+Class(function save(str){
+	var file = new CFile();
+	var tmpf = "D:\\SoftProject\\GitLib\\concise\\concise\\template.h";
+	file.create(tmpf);
+	file.length = 0;
+	file.writeString(str,3);
+},true);
+main();
+

@@ -17,6 +17,7 @@ namespace v8{
 #define FUNC_ID_TEXTDRAW	9
 #define FUNC_ID_MOUSE		10
 #define FUNC_ID_MESSAGE		11
+#define FUNC_ID_STACK_DISPOSE	12
 
 #define FUNC_ID_MAX			16
 	//GDI
@@ -92,6 +93,7 @@ namespace v8{
 #define TEMPLATE_ID_SOCKET			66
 #define TEMPLATE_ID_TCPSERVER		67
 #define TEMPLATE_ID_UPNP			68
+#define TEMPLATE_ID_TEST			69
 #define TEMPLATE_ID_
 
 #define TEMPLATE_ID_MAX		128

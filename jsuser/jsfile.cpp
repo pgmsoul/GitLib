@@ -13,7 +13,7 @@ namespace v8{
 	//	"name":"CFile",
 	//	"text":"对文件内容进行读写操作。",
 	//	"member":[//*
-	class JSFile : public JsHandleObject<cs::File,HANDLE,JSFile>{
+	class JSFile : public JsHandleObject<cs::File,HANDLE,JSFile,TEMPLATE_ID_FILE>{
 		//*{
 		//	"type":"function",
 		//	"name":"create(name,[exist],[readonly],[share],[attribute])",
@@ -146,6 +146,7 @@ namespace v8{
 				if(!GetCHandle<cs::Memory<char> >(m,args[0]->ToObject())) break;
 				cs::File* f;
 				if(!GetCHandle(f,args.This())) break;
+				if(f->IsNull()) break;
 				uint readLen,memPos;
 				readLen = GET_ARGS_INT(1,0x1000000);
 				uint64 pos = f->GetPointer();
@@ -205,6 +206,7 @@ namespace v8{
 				if(!GetCHandle<cs::Memory<char> >(m,args[0]->ToObject())) break;
 				cs::File* f;
 				if(!GetCHandle(f,args.This())) break;
+				if(f->IsNull()) break;
 
 				uint writeLen,memPos;
 				writeLen = GET_ARGS_INT(1,-1);
@@ -243,6 +245,7 @@ namespace v8{
 			while(1){
 				cs::File* f;
 				if(!GetCHandle(f,args.This())) break;
+				if(f->IsNull()) break;
 
 				int readLen = (uint)f->GetLength();
 				if((uint)readLen>0x100000){
@@ -305,17 +308,14 @@ namespace v8{
 			HandleScope store;
 			while(1){
 				int len = 0;
-				if(args.Length()<1){
-					break;
-				}
+				if(args.Length()<1) break;
+
+				cs::File* f;
+				if(!GetCHandle(f,args.This())) break;
+				if(f->IsNull()) break;
 
 				cs::String str;
 				GetString(args[0],str);
-
-				cs::File* f;
-				if(!GetCHandle(f,args.This())){
-					break;
-				}
 
 				DWORD cp = 3;
 				if(args.Length()>1){
@@ -350,8 +350,10 @@ namespace v8{
 		//}//*
 		static Handle<Value> get(cs::String& name,cs::File* cobj,Local<Object>& self){
 			if(name==L"length"){
+				if(cobj->IsNull()) return Int32::New(-1);
 				return Number::New((double)cobj->GetLength());
 			}else if(name==L"pointer"){
+				if(cobj->IsNull()) return Int32::New(-1);
 				return Number::New((double)cobj->GetPointer());
 			}
 			return Undefined();
@@ -359,12 +361,11 @@ namespace v8{
 		static void set(cs::String& name,cs::File* cobj,Local<Value>& value,Local<Object>& self){
 			if(name==L"length"){
 				uint64 len = (uint64)value->NumberValue();
-				if(len==0x8000000000000000) return;
+				if(len>=0x8000000000000000) return;
 				cobj->SetLength(len);
 			}else if(name==L"pointer"){
 				uint64 poi = (uint64)value->NumberValue();
-				if(poi==0x8000000000000000) return;
-				if(poi==-1)
+				if(poi>=0x8000000000000000)
 					cobj->SetPointer(0,FILE_END);
 				else
 					cobj->SetPointer(poi);
@@ -602,9 +603,8 @@ namespace v8{
 			cs::DSParam dsp;
 			GetString(args[0],dsp.Source);
 			GetString(args[1],dsp.Destinate);
-			cs::DirectorySystem fs;
 			FSINF fi;
-			_bfs(dsp,fi,args);
+			_bfs(dsp,fi,args); 
 			return Bool(cs::DirectorySystem::Copy(&dsp));
 		}
 		//*,{
@@ -889,13 +889,14 @@ namespace v8{
 		static int shfile(LPCWSTR dst,LPCWSTR src,UINT func,FILEOP_FLAGS flag){
 			cs::String from = src;
 			cs::FPToFullPath(from);
-			from.SetCubage(from.Length()+1);
-			from[from.Length()] = 0;
+			int pos = from.Length() + 1;
+			from.SetCubage(pos);
+			from[pos] = 0;
 
 			cs::String to = dst;
 			cs::FPToFullPath(to);
 			to.SetCubage(to.Length()+1);
-			to[to.Length()] = 0;
+			to[to.Length()+1] = 0;
 
 			SHFILEOPSTRUCT fos;
 			::ZeroMemory(&fos,sizeof(fos));
@@ -907,33 +908,37 @@ namespace v8{
 
 			return SHFileOperation(&fos);
 		}
-		static int shcopy(LPCWSTR dst,LPCWSTR src,bool noundo = false,bool noask = false){
+		static int shcopy(LPCWSTR dst,LPCWSTR src,bool noundo = false,bool noask = false,bool noerr = false){
 			FILEOP_FLAGS flag = FOF_SIMPLEPROGRESS;
 			if(!noundo) flag |= FOF_ALLOWUNDO;
 			if(noask) flag |= FOF_NOCONFIRMATION;
+			if(noerr) flag |= FOF_NOERRORUI;
 			return shfile(dst,src,FO_COPY,flag);
 		}
-		static int shmove(LPCWSTR dst,LPCWSTR src,bool noundo = false,bool noask = false){
+		static int shmove(LPCWSTR dst,LPCWSTR src,bool noundo = false,bool noask = false,bool noerr = false){
 			FILEOP_FLAGS flag = FOF_SIMPLEPROGRESS;
 			if(!noundo) flag |= FOF_ALLOWUNDO;
 			if(noask) flag |= FOF_NOCONFIRMATION;
+			if(noerr) flag |= FOF_NOERRORUI;
 			return shfile(dst,src,FO_MOVE,flag);
 		}
-		static int shrename(LPCWSTR dst,LPCWSTR src,bool noundo = false,bool askexist = false){
+		static int shrename(LPCWSTR dst,LPCWSTR src,bool noundo = false,bool noask = false,bool noerr = false){
 			FILEOP_FLAGS flag = FOF_SIMPLEPROGRESS;
 			if(!noundo) flag |= FOF_ALLOWUNDO;
-			if(!askexist) flag |= FOF_RENAMEONCOLLISION;
+			if(noask) flag |= FOF_RENAMEONCOLLISION;
+			if(noerr) flag |= FOF_NOERRORUI;
 			return shfile(dst,src,FO_RENAME,flag);
 		}
-		static int shdelete(LPCWSTR path,bool noundo = false,bool noask = false){
+		static int shdelete(LPCWSTR path,bool noundo = false,bool noask = false,bool noerr = false){
 			FILEOP_FLAGS flag = FOF_SIMPLEPROGRESS;
 			if(!noundo) flag |= FOF_ALLOWUNDO;
 			if(noask) flag |= FOF_NOCONFIRMATION;
+			if(noerr) flag |= FOF_NOERRORUI;
 			return shfile(0,path,FO_DELETE,flag);
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"shCopy(src,dst,[noAskExist],[noUndo])",
+		//	"name":"shCopy(src,dst,[noAsk],[noUndo],[noError])",
 		//	"text":"复制 src 文件（夹），包括子文件夹和它的文件，dst 是新名字。如果目的位置有同名文件，默认会弹出确认对话框，可以把 noAskExist 设为 true 强制覆盖目的文件。",
 		//	"param":[
 		//		{
@@ -948,13 +953,18 @@ namespace v8{
 		//		},
 		//		{
 		//			"type":"boolean",
-		//			"name":"[noAskExist]",
-		//			"text":"参数默认值是 false，如果设为 true，当目的文件已经存在的时候，不再弹出选择操作对话框，而是强制覆盖。"
+		//			"name":"[noAsk]",
+		//			"text":"如果出现需要询问用户选择的情况，比如复制的时候目标文件已经存在，是否不弹出选择框，而是按默认行为自动处理，参数默认值是 false，即询问用户。如果设为 true，则不会询问用户，比如复制时目的文件夹已经存在，会强制覆盖。"
 		//		},
 		//		{
 		//			"type":"boolelan",
 		//			"name":"[noUndo]",
 		//			"text":"这个复制操作默认是可以在 Windows 资源管理器里撤销的，此参数设为 true，关闭可撤销选项。"
+		//		},
+		//		{
+		//			"type":"boolelan",
+		//			"name":"[noError]",
+		//			"text":"当出现错误时，是否不弹出错误提示对话框，默认值 false，出现错误时会弹出一个对话框提示错误信息，和让用户做出处理确认。"
 		//		}
 		//	],
 		//	"return":{
@@ -971,14 +981,15 @@ namespace v8{
 				GetString(args[1],dst);
 				bool noask = GET_ARGS_VALUE(2,false,Boolean);
 				bool noundo = GET_ARGS_VALUE(3,false,Boolean);
-				if(0!=shcopy(dst,src,noundo,noask)) break;
+				bool noerr = GET_ARGS_VALUE(4,false,Boolean);
+				if(0!=shcopy(dst,src,noundo,noask,noerr)) break;
 				return True();
 			}
 			return Undefined();
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"shMove(src,dst,[noAskExist],[noUndo])",
+		//	"name":"shMove(src,dst,[noAskExist],[noUndo],[noError])",
 		//	"text":"移动 src 文件（夹），包括子文件夹和它的文件，dst 是新名字。如果目的位置有同名文件，默认会弹出确认对话框，可以把 noAskExist 设为 true 强制覆盖目的文件。",
 		//	"param":[
 		//		{
@@ -989,17 +1000,22 @@ namespace v8{
 		//		{
 		//			"type":"string",
 		//			"name":"dst",
-		//			"text":"如果这个参数指定的文件夹不存在，这个参数就是新文件夹的路径；如果这个参数指定的文件夹已经存在，则移动到这个文件夹内，成为它的子文件夹，名称不变。如果参数指定的文件夹不存在，则试图创建它，如果没有关闭询问的话，会出现询问对话框。"
+		//			"text":"如果这个参数指定的文件夹不存在，这个参数就是新文件夹的路径；如果这个参数指定的文件夹已经存在，则移动到这个文件夹内，成为它的子文件夹，名称和源文件夹相同。"
 		//		},
 		//		{
 		//			"type":"boolean",
-		//			"name":"[noAskExist]",
-		//			"text":"参数默认值是 false，如果设为 true，当目的文件已经存在的时候，不再弹出选择操作对话框，而是强制覆盖。"
+		//			"name":"[noAsk]",
+		//			"text":"如果出现需要询问用户选择的情况，比如复制的时候目标文件已经存在，是否不弹出选择框，而是按默认行为自动处理，参数默认值是 false，即询问用户。如果设为 true，则不会询问用户，比如复制时目的文件夹已经存在，会强制覆盖。"
 		//		},
 		//		{
 		//			"type":"boolelan",
 		//			"name":"[noUndo]",
-		//			"text":"这个复制操作默认是可以在 Windows 资源管理器里撤销的，此参数设为 true，关闭可撤销选项。"
+		//			"text":"这个移动操作默认是可以在 Windows 资源管理器里撤销的，此参数设为 true，关闭可撤销选项。"
+		//		},
+		//		{
+		//			"type":"boolelan",
+		//			"name":"[noError]",
+		//			"text":"当出现错误时，是否不弹出错误提示对话框，默认值 false，出现错误时会弹出一个对话框提示错误信息，和让用户做出处理确认。"
 		//		}
 		//	],
 		//	"return":{
@@ -1016,14 +1032,15 @@ namespace v8{
 				GetString(args[1],dst);
 				bool noask = GET_ARGS_VALUE(2,false,Boolean);
 				bool noundo = GET_ARGS_VALUE(3,false,Boolean);
-				if(0!=shmove(dst,src,noundo,noask)) break;
+				bool noerr = GET_ARGS_VALUE(4,false,Boolean);
+				if(0!=shmove(dst,src,noundo,noask,noerr)) break;
 				return True();
 			}
 			return Undefined();
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"shRename(src,dst,[noAskExist],[noUndo])",
+		//	"name":"shRename(src,dst,[noAskExist],[noUndo],[noError])",
 		//	"text":"重命名文件（夹）。",
 		//	"param":[
 		//		{
@@ -1038,13 +1055,18 @@ namespace v8{
 		//		},
 		//		{
 		//			"type":"boolean",
-		//			"name":"[noAskExist]",
-		//			"text":"参数默认值是 false，如果设为 true，当目的文件已经存在的时候，不再弹出选择操作对话框，而是强制覆盖。"
+		//			"name":"[noAsk]",
+		//			"text":"如果出现需要询问用户选择的情况，比如重命名文件时目标文件已经存在，是否不弹出选择框，而是按默认行为自动处理，参数默认值是 false，即询问用户。如果设为 true，则不会询问用户，比如重命名时目的文件夹已经存在，而是自动选择一个新文件名。"
 		//		},
 		//		{
 		//			"type":"boolelan",
 		//			"name":"[noUndo]",
-		//			"text":"这个复制操作默认是可以在 Windows 资源管理器里撤销的，此参数设为 true，关闭可撤销选项。"
+		//			"text":"这个重命名操作默认是可以在 Windows 资源管理器里撤销的，此参数设为 true，关闭可撤销选项。"
+		//		},
+		//		{
+		//			"type":"boolelan",
+		//			"name":"[noError]",
+		//			"text":"当出现错误时，是否不弹出错误提示对话框，默认值 false，出现错误时会弹出一个对话框提示错误信息，和让用户做出处理确认。"
 		//		}
 		//	],
 		//	"return":{
@@ -1061,14 +1083,15 @@ namespace v8{
 				GetString(args[1],dst);
 				bool noask = GET_ARGS_VALUE(2,false,Boolean);
 				bool noundo = GET_ARGS_VALUE(3,false,Boolean);
-				if(0!=shrename(dst,src,noundo,noask)) break;
+				bool noerr = GET_ARGS_VALUE(4,false,Boolean);
+				if(0!=shrename(dst,src,noundo,noask,noerr)) break;
 				return True();
 			}
 			return Undefined();
 		}
 		//*,{
 		//	"type":"function",
-		//	"name":"shDelete(path,[noAskExist],[noUndo])",
+		//	"name":"shDelete(path,[noAsk],[noUndo],[noError])",
 		//	"text":"删除文件（夹），包括子项。",
 		//	"param":[
 		//		{
@@ -1078,13 +1101,18 @@ namespace v8{
 		//		},
 		//		{
 		//			"type":"boolean",
-		//			"name":"[noAskExist]",
-		//			"text":"参数默认值是 false，如果设为 true，当目的文件已经存在的时候，不再弹出选择操作对话框，而是强制覆盖。"
+		//			"name":"[noAsk]",
+		//			"text":"如果出现需要询问用户选择的情况，比如复制的时候目标文件已经存在，是否不弹出选择框，而是按默认行为自动处理，参数默认值是 false，即询问用户。如果设为 true，则不会询问用户，比如复制时目的文件夹已经存在，会强制覆盖。"
 		//		},
 		//		{
 		//			"type":"boolelan",
 		//			"name":"[noUndo]",
-		//			"text":"这个复制操作默认是可以在 Windows 资源管理器里撤销的，此参数设为 true，关闭可撤销选项。"
+		//			"text":"删除操作默认是删除到回收站，如果想直接删除文件（夹），设置此参数为 true。"
+		//		},
+		//		{
+		//			"type":"boolelan",
+		//			"name":"[noError]",
+		//			"text":"当出现错误时，是否不弹出错误提示对话框，默认值 false，出现错误时会弹出一个对话框提示错误信息，和让用户做出处理确认。"
 		//		}
 		//	],
 		//	"return":{
@@ -1100,7 +1128,8 @@ namespace v8{
 				GetString(args[0],path);
 				bool noask = GET_ARGS_VALUE(1,false,Boolean);
 				bool noundo = GET_ARGS_VALUE(2,false,Boolean);
-				if(0!=shdelete(path,noundo,noask)) break;
+				bool noerr = GET_ARGS_VALUE(3,false,Boolean);
+				if(0!=shdelete(path,noundo,noask,noerr)) break;
 				return True();
 			}
 			return Undefined();
@@ -1134,7 +1163,7 @@ namespace v8{
 	//	"name":"CFileList",
 	//	"text":"列出一个文件夹和它的子文件夹的文件。",
 	//	"member":[//*
-	class JSFileSearch : public JsCObject<cs::FileTree,JSFileSearch>{
+	class JSFileSearch : public JsCObject<cs::FileTree,JSFileSearch,TEMPLATE_ID_FILELIST>{
 		typedef struct _FTINF : public cs::_struct{
 			Handle<Object> self;
 			Handle<Function> onList;
@@ -1517,9 +1546,9 @@ namespace v8{
 		SET_OBJ_FUNC(filepath,getFullPath,FilePath_getFullPath);
 	}
 	void LoadFile(Handle<Object>& glb){
-		JSFile::Load(glb,L"CFile",TEMPLATE_ID_FILE);
+		JSFile::Load(glb,L"CFile");
 		JSFileSystem::Load(glb);
-		JSFileSearch::Load(glb,L"CFileList",TEMPLATE_ID_FILELIST);
+		JSFileSearch::Load(glb,L"CFileList");
 		LoadJsRes(IDR_JS_FILE,L"file.js");
 		loadFilePath(glb);
 	}

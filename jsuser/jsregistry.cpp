@@ -12,7 +12,7 @@ namespace v8{
 	//	"name":"CRegistry",
 	//	"text":"操作 Windows 注册表的类.",
 	//	"member":[//*
-	class JSRegistry : public JsHandleObject<cs::Registry,HKEY,JSRegistry>{
+	class JSRegistry : public JsHandleObject<cs::Registry,HKEY,JSRegistry,TEMPLATE_ID_REGISTRY>{
 	public:
 		//*{
 		//	"type":"function",
@@ -361,7 +361,7 @@ namespace v8{
 	void LoadRegistry(Handle<Object>& glb){
 		SET_OBJ_FUNC_RO(glb,getLastError,getLastError);
 		SET_OBJ_FUNC_RO(glb,getSysMessage,getSysMessage);
-		JSRegistry::Load(glb,L"CRegistry",TEMPLATE_ID_REGISTRY);
+		JSRegistry::Load(glb,L"CRegistry");
 	}
 	//*]}//*
 }

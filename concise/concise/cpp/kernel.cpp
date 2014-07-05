@@ -101,7 +101,7 @@ namespace cs{
 		return ::WaitForSingleObject(_Handle,ms);
 	}
 
-	_StaticThread::_StaticThread(){
+	/*_StaticThread::_StaticThread(){
 		_evExit.Create(1,0);
 	}
 	//等待线程结束，除非主动结束线程（调用Close），否则线程不会随线程函数返回而结束。
@@ -132,7 +132,11 @@ namespace cs{
 			//Suspend to Running
 			if(THREAD_STATUS_SUSPEND==::InterlockedCompareExchange(&_Handle->Status,THREAD_STATUS_RUNNING,THREAD_STATUS_SUSPEND)){
 				//_evExit.Signal(0);
-				::ResumeThread(_Handle->Handle);
+				DWORD count = ::ResumeThread(_Handle->Handle);
+				if(count==-1||count>1){
+					cs::Print(L"resume failed: %d,%d",count,_Handle->Handle);
+					//_ASSERT(0);
+				}
 				return &_evExit;
 			}
 			if(wait) ::Sleep(100);
@@ -142,7 +146,7 @@ namespace cs{
 	bool _StaticThread::IsRunning(){
 		LocalCriticalSection lcs(_Cs);
 		if(!_Handle||!_Handle->Handle) return 0;
-		return (THREAD_STATUS_RUNNING==::InterlockedCompareExchange(&_Handle->Status,_Handle->Status,THREAD_STATUS_RUNNING));
+		return (THREAD_STATUS_RUNNING==::InterlockedCompareExchange(&_Handle->Status,THREAD_STATUS_RUNNING,THREAD_STATUS_RUNNING));
 	}
 	inline void _StaticThread::SetContinue(bool cont){
 		LocalCriticalSection lcs(_Cs);
@@ -167,8 +171,11 @@ namespace cs{
 		}else{
 			::InterlockedCompareExchange(&_Handle->Flag,THREAD_FLAG_EXIT,_Handle->Flag);
 			::ResumeThread(_Handle->Handle);
-			if(WAIT_TIMEOUT==WaitForSingleObject(_Handle->Handle,timeOut)){
+			DWORD waitRst = WaitForSingleObject(_Handle->Handle,timeOut);
+			if(WAIT_TIMEOUT==waitRst){
 				TerminateThread(_Handle->Handle,-1);
+			}else if(waitRst!=WAIT_OBJECT_0){
+				_ASSERT(0);
 			}
 		}
 		CloseHandle(_Handle->Handle);
@@ -266,7 +273,7 @@ namespace cs{
 	}
 	_TaskPool::~_TaskPool(){
 		Close();
-	}
+	}*/
 	int GetCurrentExeFileName(String& str){
 		str.SetCubage(260);
 		int len = ::GetModuleFileName(0,str.Handle(),260);
